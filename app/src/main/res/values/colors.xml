@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_200">#9FA8DA</color>
+    <color name="primary_500">#3F51B5</color>
+    <color name="primary_700">#303F9F</color>
+
+    <color name="secondary_200">#B0BEC5</color>
+    <color name="secondary_500">#607D8B</color>
+    <color name="secondary_700">#455A64</color>
+
+    <color name="black">#222831</color>
+    <color name="white">#EEEEEE</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color">#303F9F</color>
+</resources>
