@@ -11,11 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import org.android.silvervault.crypto.Crypto
 
-/*
-    TODO:
-        * Find encryption library
-        * Find ways to encrypt data
- */
 
 class MainActivity : AppCompatActivity() {
 
