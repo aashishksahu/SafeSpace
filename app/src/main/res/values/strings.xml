@@ -1,17 +1,11 @@
 <resources>
-    <string name="app_name">Silver Vault</string>
-    <string name="encrypt">Encrypt</string>
-    <string name="decrypt">Decrypt</string>
+    <string name="app_name">Safe Space</string>
     <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
     <string name="select_files">Select File(s)</string>
-    <string name="files_count">File(s) Selected: </string>
-    <string name="info_block">Information </string>
-    <string name="password_hint">Enter Password </string>
-    <string name="passwordInputError">Please enter a password</string>
-    <string name="passwordFormatError">Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character </string>
-
-    <string name="files_selected"> [*] Files selected; Old selections dismissed</string>
-    <string name="files_count_error">[X] Error: No Files Selected</string>
+    <string name="create_folder">Create Folder</string>
+    <string name="import_files">Import Files</string>
+    <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
 
     <string name="aboutText">Made In India. Learn More</string>
 </resources>

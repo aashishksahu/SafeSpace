@@ -1,4 +1,4 @@
-package org.android.silvervault
+package org.android.safespace
 
 import org.junit.Test
 

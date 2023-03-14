@@ -9,7 +9,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SilverVault"
+        android:theme="@style/Theme.SafeSpace"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
