@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
                             fileUtils.importFile(
                                 data.clipData?.getItemAt(i)?.uri!!,
                                 viewModel.getInternalPath()
-
                             )
                         }
                     }
