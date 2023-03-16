@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,6 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 /*
  Todo:
   * Add recycler view navigation slide animation
-  * System back button action
   * Long press context menu on file item
   * Sort options [Low Priority]
   * Change icons [Low Priority]
@@ -135,14 +135,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         // back button on screen
         val backButton = findViewById<Button>(R.id.backButton)
         backButton.setOnClickListener {
-            viewModel.setPreviousPath()
-            filesRecyclerViewAdapter.setData(
-                fileUtils.getContents(
-                    applicationContext,
-                    viewModel.getInternalPath()
-                )
-            )
+            backButtonAction()
         }
+
+        // back button - system navigation
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backButtonAction()
+            }
+        })
+
 
         // about button
         val aboutBtn = findViewById<Button>(R.id.about)
@@ -210,6 +212,19 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         } else {
             // ToDo: Open file in respective app
         }
+    }
+
+    private fun backButtonAction() {
+        if (viewModel.isRootDirectory()) {
+            finish()
+        }
+        viewModel.setPreviousPath()
+        filesRecyclerViewAdapter.setData(
+            fileUtils.getContents(
+                applicationContext,
+                viewModel.getInternalPath()
+            )
+        )
     }
 
 }

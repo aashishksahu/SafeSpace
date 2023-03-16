@@ -24,4 +24,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         if (internalPath.isNotEmpty()) internalPath.removeLast()
     }
 
+    fun isRootDirectory(): Boolean{
+        return internalPath.isEmpty()
+    }
+
 }
