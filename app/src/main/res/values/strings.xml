@@ -5,7 +5,12 @@
     <string name="select_files">Select File(s)</string>
     <string name="create_folder">Create Folder</string>
     <string name="import_files">Import Files</string>
+    <string name="import_files_error">Some files were not imported, please try again</string>
     <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
+    <string name="file_icon_description">File or folder icon</string>
+    <string name="back_button_text">Back</string>
+    <string name="your_files_title">Your Files</string>
+
 
     <string name="aboutText">Made In India. Learn More</string>
 </resources>

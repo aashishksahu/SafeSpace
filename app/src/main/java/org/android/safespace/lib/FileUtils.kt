@@ -8,6 +8,8 @@ import java.io.*
 
 class FileUtils(private val context: Context) {
 
+    private var filesList: ArrayList<FileItem> = ArrayList()
+
     fun importFile(uri: Uri, internalPath: String): Int {
 
         val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
@@ -54,15 +56,9 @@ class FileUtils(private val context: Context) {
             sourceFileByteArray.close()
             outputStreamDestinationFile.close()
 
-        } catch (e: FileSystemException) {
+        } catch (e: Exception) {
             println(e.message)
             return -1
-        } catch (e: FileNotFoundException) {
-            println(e.message)
-            return -2
-        } catch (e: IOException) {
-            println(e.message)
-            return -3
         } finally {
             parcelFileDescriptor?.close()
         }
@@ -92,5 +88,23 @@ class FileUtils(private val context: Context) {
 
     }
 
+    fun getContents(context: Context, internalPath: String): List<FileItem> {
+
+        val dirPath = File(context.filesDir.absolutePath + File.separator + internalPath)
+
+        val contents = dirPath.listFiles()
+
+        filesList.clear()
+
+        for (item in contents!!) {
+            filesList.add(FileItem(item.name, item.length(), item.isDirectory))
+        }
+
+        // sort -> folders first -> ascending by name
+        filesList.sortWith(compareByDescending<FileItem> { it.isDir }.thenBy { it.name })
+
+        return filesList
+
+    }
 
 }
