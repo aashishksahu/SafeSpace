@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -212,6 +215,34 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         } else {
             // ToDo: Open file in respective app
         }
+    }
+
+    override fun onLongClick(data: FileItem, view: View) {
+        val popup = PopupMenu(this, view)
+
+        popup.inflate(R.menu.files_context_menu)
+
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
+
+            when (item!!.itemId) {
+                R.id.rename_item -> {
+                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                }
+                R.id.delete_item -> {
+                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                }
+                R.id.move_item -> {
+                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                }
+                R.id.copy_item -> {
+                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            true
+        }
+
+        popup.show()
     }
 
     private fun backButtonAction() {

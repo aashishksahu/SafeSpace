@@ -66,6 +66,10 @@ class FileUtils(private val context: Context) {
         return 1
     }
 
+    fun renameFile(file: File){
+
+    }
+
     fun createDir(internalPath: String, newDirName: String): Int {
 
         try {

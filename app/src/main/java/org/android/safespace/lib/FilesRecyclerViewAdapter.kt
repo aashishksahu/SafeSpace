@@ -27,7 +27,6 @@ class FilesRecyclerViewAdapter(
         val fileName: TextView = itemView.findViewById(R.id.fileName)
         val fileDescription: TextView = itemView.findViewById(R.id.fileDescription)
         val fileIcon: ShapeableImageView = itemView.findViewById(R.id.fileIcon)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,8 +46,16 @@ class FilesRecyclerViewAdapter(
 
         holder.fileName.text = fileItem.name
         holder.fileDescription.text = getSize(fileItem.size)
-        holder.itemView.setOnClickListener{
+
+        // tap on item
+        holder.itemView.setOnClickListener {
             onItemClickListener.onClick(fileItem)
+        }
+
+        // long press on item
+        holder.itemView.setOnLongClickListener {
+            onItemClickListener.onLongClick(fileItem, holder.itemView)
+            true
         }
 
         if (fileItem.isDir) {
