@@ -8,12 +8,16 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginStart
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -144,6 +148,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                finish()
                 backButtonAction()
             }
         })
@@ -226,10 +231,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
             when (item!!.itemId) {
                 R.id.rename_item -> {
-                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                    renameFilePopup(data, view.context)
                 }
                 R.id.delete_item -> {
-                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                    deleteFilePopup(data, view.context)
                 }
                 R.id.move_item -> {
                     Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
@@ -239,6 +244,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
             }
 
+            filesRecyclerViewAdapter.setData(
+                fileUtils.getContents(
+                    view.context,
+                    viewModel.getInternalPath()
+                )
+            )
+
             true
         }
 
@@ -246,16 +258,80 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     private fun backButtonAction() {
-        if (viewModel.isRootDirectory()) {
-            finish()
-        }
-        viewModel.setPreviousPath()
-        filesRecyclerViewAdapter.setData(
-            fileUtils.getContents(
-                applicationContext,
-                viewModel.getInternalPath()
+        if (!viewModel.isRootDirectory()) {
+            viewModel.setPreviousPath()
+            filesRecyclerViewAdapter.setData(
+                fileUtils.getContents(
+                    applicationContext,
+                    viewModel.getInternalPath()
+                )
             )
-        )
+        }
+    }
+
+    private fun renameFilePopup(file: FileItem, context: Context) {
+        val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
+
+        val inflater: LayoutInflater = layoutInflater
+        val renameLayout = inflater.inflate(R.layout.rename_layout, null)
+        val folderNameTextView =
+            renameLayout.findViewById<TextInputLayout>(R.id.renameTextLayout)
+
+        builder.setTitle(getString(R.string.context_menu_rename))
+            .setCancelable(true)
+            .setView(renameLayout)
+            .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
+
+                val result = fileUtils.renameFile(
+                    file,
+                    viewModel.getInternalPath(),
+                    folderNameTextView.editText!!.text.toString()
+                )
+
+                if (result == 0) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.generic_error),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun deleteFilePopup(file: FileItem, context: Context) {
+
+        // Todo: create layout for delete popup with textview
+
+        val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
+        builder.setTitle(getString(R.string.context_menu_delete))
+            .setCancelable(true)
+            .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
+
+                val result = fileUtils.deleteFile(
+                    file,
+                    viewModel.getInternalPath()
+                )
+
+                if (result == 0) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.generic_error),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
 }

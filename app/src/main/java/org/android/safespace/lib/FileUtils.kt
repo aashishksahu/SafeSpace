@@ -9,6 +9,11 @@ import java.io.*
 class FileUtils(private val context: Context) {
 
     private var filesList: ArrayList<FileItem> = ArrayList()
+    private var filesDirAbsolutePath: String
+
+    init {
+        filesDirAbsolutePath = context.filesDir.absolutePath.toString()
+    }
 
     fun importFile(uri: Uri, internalPath: String): Int {
 
@@ -25,7 +30,8 @@ class FileUtils(private val context: Context) {
             val sourceFileByteArray = FileInputStream(parcelFileDescriptor?.fileDescriptor)
 
             // files directory in internal storage + the current subdirectory
-            val absoluteDestination = context.filesDir.absolutePath + internalPath
+            val absoluteDestination =
+                filesDirAbsolutePath + File.separator + internalPath
 
             // files directory in internal storage + the current subdirectory + file name
             val absoluteDestinationFilePath = absoluteDestination + File.separator + sourceFile.name
@@ -66,10 +72,6 @@ class FileUtils(private val context: Context) {
         return 1
     }
 
-    fun renameFile(file: File){
-
-    }
-
     fun createDir(internalPath: String, newDirName: String): Int {
 
         try {
@@ -108,6 +110,44 @@ class FileUtils(private val context: Context) {
         filesList.sortWith(compareByDescending<FileItem> { it.isDir }.thenBy { it.name })
 
         return filesList
+
+    }
+
+    fun renameFile(file: FileItem, internalPath: String, newFileName: String): Int {
+
+        try {
+            val absolutePath = filesDirAbsolutePath + File.separator + internalPath + File.separator
+
+            val absoluteFilePathOld = File(absolutePath + file.name)
+
+            val absoluteFilePathNew =
+                File(absolutePath + newFileName + "." + file.name.split(".").last())
+
+            absoluteFilePathOld.renameTo(absoluteFilePathNew)
+
+        } catch (e: Exception) {
+            return 0
+        }
+
+        return 1
+    }
+
+    fun deleteFile(file: FileItem, internalPath: String): Int {
+        try {
+            val fileToDelete = File(
+                filesDirAbsolutePath + File.separator + internalPath +
+                        File.separator + file.name
+            )
+
+            if (fileToDelete.exists()) {
+                fileToDelete.delete()
+            }
+
+        } catch (e: Exception) {
+            return 0
+        }
+
+        return 1
 
     }
 

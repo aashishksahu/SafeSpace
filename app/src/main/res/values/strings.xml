@@ -14,6 +14,8 @@
     <string name="context_menu_delete">Delete</string>
     <string name="context_menu_move">Move</string>
     <string name="context_menu_Copy">Copy</string>
+    <string name="generic_error">Something went wrong. Please try again</string>
+    <string name="delete_confirmation">Are you sure you want to delete this?</string>
 
 
     <string name="aboutText">Made In India. Learn More</string>
