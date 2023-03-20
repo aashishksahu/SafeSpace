@@ -4,24 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginStart
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.android.safespace.lib.FileItem
 import org.android.safespace.lib.FileUtils
@@ -32,7 +28,7 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 /*
  Todo:
   * Add recycler view navigation slide animation
-  * Long press context menu on file item
+  * implement multiple select
   * Sort options [Low Priority]
   * Change icons [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -140,7 +136,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         }
 
         // back button on screen
-        val backButton = findViewById<Button>(R.id.backButton)
+        val backButton = findViewById<FloatingActionButton>(R.id.backButton)
         backButton.setOnClickListener {
             backButtonAction()
         }
@@ -148,7 +144,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                finish()
+                if (viewModel.isRootDirectory()) {
+                    finish()
+                }
+
                 backButtonAction()
             }
         })
@@ -242,14 +241,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 R.id.copy_item -> {
                     Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            filesRecyclerViewAdapter.setData(
-                fileUtils.getContents(
-                    view.context,
-                    viewModel.getInternalPath()
-                )
-            )
+            }
 
             true
         }
@@ -294,6 +287,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         getString(R.string.generic_error),
                         Toast.LENGTH_LONG
                     ).show()
+                }else{
+                    filesRecyclerViewAdapter.setData(
+                        fileUtils.getContents(
+                            context,
+                            viewModel.getInternalPath()
+                        )
+                    )
                 }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
@@ -306,11 +306,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun deleteFilePopup(file: FileItem, context: Context) {
 
-        // Todo: create layout for delete popup with textview
+        val inflater: LayoutInflater = layoutInflater
+        val deleteLayout = inflater.inflate(R.layout.delete_confirmation, null)
 
         val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
         builder.setTitle(getString(R.string.context_menu_delete))
             .setCancelable(true)
+            .setView(deleteLayout)
             .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
 
                 val result = fileUtils.deleteFile(
@@ -324,6 +326,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         getString(R.string.generic_error),
                         Toast.LENGTH_LONG
                     ).show()
+                }else{
+                    filesRecyclerViewAdapter.setData(
+                        fileUtils.getContents(
+                            context,
+                            viewModel.getInternalPath()
+                        )
+                    )
                 }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->

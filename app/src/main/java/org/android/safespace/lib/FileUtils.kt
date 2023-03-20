@@ -9,11 +9,7 @@ import java.io.*
 class FileUtils(private val context: Context) {
 
     private var filesList: ArrayList<FileItem> = ArrayList()
-    private var filesDirAbsolutePath: String
-
-    init {
-        filesDirAbsolutePath = context.filesDir.absolutePath.toString()
-    }
+    private var filesDirAbsolutePath: String = context.filesDir.absolutePath.toString()
 
     fun importFile(uri: Uri, internalPath: String): Int {
 
@@ -76,9 +72,9 @@ class FileUtils(private val context: Context) {
 
         try {
             val dirPath = if (newDirName == "") {
-                context.filesDir.absolutePath + internalPath
+                filesDirAbsolutePath + File.separator + internalPath
             } else {
-                context.filesDir.absolutePath + internalPath + File.separator + newDirName
+                filesDirAbsolutePath + File.separator + internalPath + File.separator + newDirName
             }
 
             val newDir = File(dirPath)
@@ -139,9 +135,14 @@ class FileUtils(private val context: Context) {
                         File.separator + file.name
             )
 
+
             if (fileToDelete.exists()) {
+                if (file.isDir) {
+                    deleteDirectory(fileToDelete)
+                }
                 fileToDelete.delete()
             }
+
 
         } catch (e: Exception) {
             return 0
@@ -149,6 +150,19 @@ class FileUtils(private val context: Context) {
 
         return 1
 
+    }
+
+    private fun deleteDirectory(fileToDelete: File): Int {
+        val dirContents = fileToDelete.listFiles()
+        for (file in dirContents!!) {
+            if (file.isDirectory) {
+                deleteDirectory(File(file.absolutePath))
+            } else {
+                file.delete()
+            }
+        }
+        fileToDelete.delete()
+        return 1
     }
 
 }
