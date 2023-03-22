@@ -10,7 +10,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
 
 class FilesRecyclerViewAdapter(
-    private val onItemClickListener: ItemClickListener
+    private val onItemClickListener: ItemClickListener,
+    private val messages: Map<String, String>
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 
@@ -45,7 +46,11 @@ class FilesRecyclerViewAdapter(
         val fileItem = fileItemList[position]
 
         holder.fileName.text = fileItem.name
-        holder.fileDescription.text = getSize(fileItem.size)
+        if (fileItem.isDir) {
+            holder.fileDescription.text = messages["directory_indicator"]
+        } else {
+            holder.fileDescription.text = getSize(fileItem.size)
+        }
 
         // tap on item
         holder.itemView.setOnClickListener {
@@ -167,7 +172,7 @@ class FilesRecyclerViewAdapter(
 
         val unit = arrayOf("Bytes", "KB", "MB", "GB", "TB")
         var unitIndex = 0
-        var size = sizeInBytes
+        var size: Double = sizeInBytes.toDouble()
 
         try {
 
@@ -176,7 +181,7 @@ class FilesRecyclerViewAdapter(
             } else {
                 while (size >= 1024) {
                     unitIndex += 1
-                    size /= 1024L
+                    size /= 1024.0
                 }
             }
 
@@ -184,7 +189,7 @@ class FilesRecyclerViewAdapter(
             return "File size too big"
         }
 
-        return size.toString() + " " + unit[unitIndex]
+        return "${String.format("%.1f", size)} ${unit[unitIndex]}"
 
     }
 

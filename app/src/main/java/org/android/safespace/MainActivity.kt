@@ -1,8 +1,8 @@
 package org.android.safespace
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -20,13 +20,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.android.safespace.lib.FileItem
-import org.android.safespace.lib.FileUtils
 import org.android.safespace.lib.FilesRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
 import org.android.safespace.viewmodel.MainActivityViewModel
 
+
 /*
  Todo:
+  * Add progress circle for import file
   * Add recycler view navigation slide animation
   * implement multiple select
   * Sort options [Low Priority]
@@ -37,8 +38,8 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
-    private lateinit var fileUtils: FileUtils
     private lateinit var fileList: List<FileItem>
+    private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
 
@@ -48,16 +49,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         viewModel = MainActivityViewModel(application)
 
-        fileUtils = FileUtils(applicationContext)
-
-        fileList = fileUtils.getContents(applicationContext, viewModel.getInternalPath())
+        fileList = viewModel.getContents(viewModel.getInternalPath())
 
         // Notes: created a click listener interface with onClick method, implemented the same in
         //        main activity, then, passed the entire context (this) in the adapter
         //        onItemClickListener, adapter called the method with the row item data
 
+        val adapterMessages = mapOf(
+            "directory_indicator" to getString(R.string.directory_indicator)
+        )
+
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages)
         filesRecyclerViewAdapter.setData(fileList)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -67,55 +70,55 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val selectFilesActivityResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
-                if (result.resultCode == Activity.RESULT_OK) {
+                importList.clear()
+
+                if (result.resultCode == RESULT_OK) {
 
                     val data: Intent? = result.data
-                    var importSuccess = true
 
                     //If multiple files selected
                     if (data?.clipData != null) {
                         val count = data.clipData?.itemCount ?: 0
 
                         for (i in 0 until count) {
-                            if (fileUtils.importFile(
-                                    data.clipData?.getItemAt(i)?.uri!!,
-                                    viewModel.getInternalPath()
-                                ) != 1
-                            ) // 1: success, -1: failure
-                            {
-                                importSuccess = false
-                            }
+                            importList.add(data.clipData?.getItemAt(i)?.uri!!)
                         }
                     }
 
                     //If single file selected
                     else if (data?.data != null) {
-                        importSuccess = fileUtils.importFile(
-                            data.data!!,
+                        importList.add(data.data!!)
+                    }
+
+                    for (uri in importList) {
+
+                        val importResult = viewModel.importFile(
+                            uri,
                             viewModel.getInternalPath()
-                        ) == 1 // 1: success, -1: failure
-
-                    }
-
-                    when (importSuccess) {
-                        true -> {
-                            filesRecyclerViewAdapter.setData(
-                                fileUtils.getContents(
-                                    applicationContext,
-                                    viewModel.getInternalPath()
+                        )
+                        when (importResult) {
+                            // 1: success, -1: failure
+                            1 -> {
+                                filesRecyclerViewAdapter.setData(
+                                    viewModel.getContents(
+                                        viewModel.getInternalPath()
+                                    )
                                 )
-                            )
-                        }
-                        else -> {
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.import_files_error),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            }
+                            -1 -> {
+                                Toast.makeText(
+                                    applicationContext,
+                                    getString(R.string.import_files_error),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
+
                 }
+
             }
+
 
         // Top App Bar
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
@@ -178,14 +181,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
                 if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
 
-                    if (fileUtils.createDir(
+                    if (viewModel.createDir(
                             viewModel.getInternalPath(),
                             folderNameTextView.editText?.text.toString()
                         ) == 1
                     ) {
                         filesRecyclerViewAdapter.setData(
-                            fileUtils.getContents(
-                                applicationContext,
+                            viewModel.getContents(
                                 viewModel.getInternalPath()
                             )
                         )
@@ -211,8 +213,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         if (data.isDir) {
             viewModel.setInternalPath(data.name)
             filesRecyclerViewAdapter.setData(
-                fileUtils.getContents(
-                    applicationContext,
+                viewModel.getContents(
                     viewModel.getInternalPath()
                 )
             )
@@ -254,8 +255,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         if (!viewModel.isRootDirectory()) {
             viewModel.setPreviousPath()
             filesRecyclerViewAdapter.setData(
-                fileUtils.getContents(
-                    applicationContext,
+                viewModel.getContents(
                     viewModel.getInternalPath()
                 )
             )
@@ -275,7 +275,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             .setView(renameLayout)
             .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
 
-                val result = fileUtils.renameFile(
+                val result = viewModel.renameFile(
                     file,
                     viewModel.getInternalPath(),
                     folderNameTextView.editText!!.text.toString()
@@ -287,10 +287,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         getString(R.string.generic_error),
                         Toast.LENGTH_LONG
                     ).show()
-                }else{
+                } else {
                     filesRecyclerViewAdapter.setData(
-                        fileUtils.getContents(
-                            context,
+                        viewModel.getContents(
                             viewModel.getInternalPath()
                         )
                     )
@@ -315,7 +314,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             .setView(deleteLayout)
             .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
 
-                val result = fileUtils.deleteFile(
+                val result = viewModel.deleteFile(
                     file,
                     viewModel.getInternalPath()
                 )
@@ -326,10 +325,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         getString(R.string.generic_error),
                         Toast.LENGTH_LONG
                     ).show()
-                }else{
+                } else {
                     filesRecyclerViewAdapter.setData(
-                        fileUtils.getContents(
-                            context,
+                        viewModel.getContents(
                             viewModel.getInternalPath()
                         )
                     )
