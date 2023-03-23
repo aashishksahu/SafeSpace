@@ -36,7 +36,23 @@
         android:layout_margin="10sp"
         android:contentDescription="@string/back_button_text"
         android:src="@drawable/arrow_back_ios_white_36dp"
+        app:backgroundTint="?attr/colorSecondaryVariant"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteButton"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:contentDescription="@string/context_menu_delete"
+        android:src="@drawable/delete_white_36dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorSecondaryVariant"
+        app:layout_constraintBottom_toTopOf="@+id/filesRecyclerView"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
         app:tint="@color/white" />
 
@@ -58,7 +74,6 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10sp"
         android:gravity="center"
         android:text="@string/aboutText"
         android:textColor="@color/white"

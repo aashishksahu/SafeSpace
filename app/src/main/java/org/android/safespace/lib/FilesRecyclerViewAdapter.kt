@@ -23,6 +23,8 @@ class FilesRecyclerViewAdapter(
     private val imageType = "image"
     private val otherType = "other"
 
+    private val selectedItems = ArrayList<FileItem>()
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val fileName: TextView = itemView.findViewById(R.id.fileName)
@@ -34,6 +36,7 @@ class FilesRecyclerViewAdapter(
         val inflater = LayoutInflater.from(parent.context)
         // Inflate the custom layout
         val fileView = inflater.inflate(R.layout.files_view, parent, false)
+
         // Return a new holder instance
         return ViewHolder(fileView)
     }
@@ -63,6 +66,22 @@ class FilesRecyclerViewAdapter(
             true
         }
 
+        setFileIcon(holder, fileItem)
+
+        holder.fileIcon.setOnClickListener {
+            if (fileItem !in selectedItems) {
+                holder.fileIcon.setImageResource(R.drawable.check_circle_white_36dp)
+                selectedItems.add(fileItem)
+            } else {
+                setFileIcon(holder, fileItem)
+                selectedItems.remove(fileItem)
+            }
+            onItemClickListener.onItemSelect(fileItem, selectedItems)
+        }
+
+    }
+
+    private fun setFileIcon(holder: ViewHolder, fileItem: FileItem) {
         if (fileItem.isDir) {
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
         } else if (getFileType(fileItem.name) == documentType) {
@@ -76,7 +95,6 @@ class FilesRecyclerViewAdapter(
         } else if (getFileType(fileItem.name) == otherType) {
             holder.fileIcon.setImageResource(R.drawable.insert_drive_file_white_36dp)
         }
-
     }
 
     private fun getFileType(fileName: String): String {

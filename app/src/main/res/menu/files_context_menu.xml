@@ -11,6 +11,6 @@
         android:title="@string/context_menu_move" />
     <item
         android:id="@+id/copy_item"
-        android:title="@string/context_menu_Copy" />
+        android:title="@string/context_menu_copy" />
 
 </menu>

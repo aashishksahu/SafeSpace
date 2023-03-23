@@ -19,6 +19,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.android.safespace.lib.FileItem
 import org.android.safespace.lib.FilesRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
@@ -27,9 +30,8 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * Add progress circle for import file
-  * Add recycler view navigation slide animation
-  * implement multiple select
+  * Open file in respective app
+  * fix "importing in background" toast bug
   * Sort options [Low Priority]
   * Change icons [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
+    private lateinit var deleteButton: FloatingActionButton
+    private var selectedItems = ArrayList<FileItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +69,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        deleteButton = findViewById(R.id.deleteButton)
+        deleteButton.setOnClickListener {
+            // file = null because multiple selections to be deleted and there's no single file
+            deleteFilePopup(null, deleteButton.context)
+        }
 
         // File picker result
         val selectFilesActivityResult =
@@ -92,25 +101,38 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
                     for (uri in importList) {
 
-                        val importResult = viewModel.importFile(
-                            uri,
-                            viewModel.getInternalPath()
-                        )
-                        when (importResult) {
-                            // 1: success, -1: failure
-                            1 -> {
-                                filesRecyclerViewAdapter.setData(
-                                    viewModel.getContents(
-                                        viewModel.getInternalPath()
-                                    )
-                                )
-                            }
-                            -1 -> {
-                                Toast.makeText(
-                                    applicationContext,
-                                    getString(R.string.import_files_error),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                        Toast.makeText(
+                            applicationContext,
+                            getString(R.string.import_files_progress),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val importResult = viewModel.importFile(
+                                uri,
+                                viewModel.getInternalPath()
+                            )
+
+                            when (importResult) {
+                                // 1: success, -1: failure
+                                1 -> {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        filesRecyclerViewAdapter.setData(
+                                            viewModel.getContents(
+                                                viewModel.getInternalPath()
+                                            )
+                                        )
+                                    }
+                                }
+                                -1 -> {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            getString(R.string.import_files_error),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                     }
@@ -154,7 +176,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 backButtonAction()
             }
         })
-
 
         // about button
         val aboutBtn = findViewById<Button>(R.id.about)
@@ -217,6 +238,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     viewModel.getInternalPath()
                 )
             )
+            // clear selection on directory change and hide delete button
+            deleteButton.visibility = View.GONE
+            this.selectedItems.clear()
+
         } else {
             // ToDo: Open file in respective app
         }
@@ -249,6 +274,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         }
 
         popup.show()
+    }
+
+    override fun onItemSelect(
+        data: FileItem,
+        selectedItems: ArrayList<FileItem>
+    ) {
+        this.selectedItems = selectedItems
+        if (selectedItems.isEmpty()) {
+            deleteButton.visibility = View.GONE
+        } else {
+            deleteButton.visibility = View.VISIBLE
+        }
     }
 
     private fun backButtonAction() {
@@ -303,7 +340,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         alert.show()
     }
 
-    private fun deleteFilePopup(file: FileItem, context: Context) {
+    private fun deleteFilePopup(file: FileItem?, context: Context) {
 
         val inflater: LayoutInflater = layoutInflater
         val deleteLayout = inflater.inflate(R.layout.delete_confirmation, null)
@@ -314,23 +351,42 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             .setView(deleteLayout)
             .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
 
-                val result = viewModel.deleteFile(
-                    file,
-                    viewModel.getInternalPath()
-                )
+                if (this.selectedItems.isNotEmpty() && file == null) {
+                    for (item in this.selectedItems) {
+                        viewModel.deleteFile(
+                            item,
+                            viewModel.getInternalPath()
+                        )
+                    }
 
-                if (result == 0) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.generic_error),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
+                    // hide delete button after items are deleted
+                    deleteButton.visibility = View.GONE
+
                     filesRecyclerViewAdapter.setData(
                         viewModel.getContents(
                             viewModel.getInternalPath()
                         )
                     )
+                } else {
+
+                    val result = viewModel.deleteFile(
+                        file!!,
+                        viewModel.getInternalPath()
+                    )
+
+                    if (result == 0) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.generic_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        filesRecyclerViewAdapter.setData(
+                            viewModel.getContents(
+                                viewModel.getInternalPath()
+                            )
+                        )
+                    }
                 }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
