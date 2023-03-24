@@ -99,13 +99,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         importList.add(data.data!!)
                     }
 
-                    for (uri in importList) {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.import_files_progress),
+                        Toast.LENGTH_LONG
+                    ).show()
 
-                        Toast.makeText(
-                            applicationContext,
-                            getString(R.string.import_files_progress),
-                            Toast.LENGTH_LONG
-                        ).show()
+                    for (uri in importList) {
 
                         CoroutineScope(Dispatchers.IO).launch {
                             val importResult = viewModel.importFile(
