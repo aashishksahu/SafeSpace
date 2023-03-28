@@ -22,19 +22,22 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.android.safespace.lib.Constants
 import org.android.safespace.lib.FileItem
 import org.android.safespace.lib.FilesRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
 import org.android.safespace.viewmodel.MainActivityViewModel
+import java.io.File
 
 
 /*
  Todo:
-  * Open file in respective app
-  * fix "importing in background" toast bug
+  * implement pdf viewer
+  * implement audio/video player
+  *
   * Sort options [Low Priority]
-  * Change icons [Low Priority]
   * Add thumbnails for files [Low Priority]
+  * Change icons [Low Priority]
 */
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var deleteButton: FloatingActionButton
     private var selectedItems = ArrayList<FileItem>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         )
 
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
         filesRecyclerViewAdapter.setData(fileList)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -243,7 +247,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             this.selectedItems.clear()
 
         } else {
-            // ToDo: Open file in respective app
+
+            val filePath =
+                filesDir.absolutePath + viewModel.getInternalPath() + File.separator + data.name
+
+            when (viewModel.getFileType(data.name)) {
+                Constants.IMAGE_TYPE -> {
+                    loadImage(filePath)
+                }
+            }
+
         }
     }
 
@@ -281,7 +294,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         selectedItems: ArrayList<FileItem>
     ) {
         this.selectedItems = selectedItems
-        if (selectedItems.isEmpty()) {
+        if (this.selectedItems.isEmpty()) {
             deleteButton.visibility = View.GONE
         } else {
             deleteButton.visibility = View.VISIBLE
@@ -395,6 +408,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun loadImage(filePath: String) {
+        val imageViewIntent = Intent(this, ImageView::class.java)
+        imageViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+        startActivity(imageViewIntent)
     }
 
 }

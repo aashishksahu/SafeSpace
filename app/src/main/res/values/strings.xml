@@ -19,6 +19,7 @@
     <string name="delete_confirmation">Are you sure you want to delete this?</string>
     <string name="directory_indicator">Folder</string>
     <string name="import_files_progress">Importing in background, please wait…</string>
+    <string name="image_view_desc">Image View</string>
 
 
     <string name="aboutText">Made In India. Learn More</string>

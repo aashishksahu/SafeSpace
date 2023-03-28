@@ -8,20 +8,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
+import org.android.safespace.viewmodel.MainActivityViewModel
 
 class FilesRecyclerViewAdapter(
     private val onItemClickListener: ItemClickListener,
-    private val messages: Map<String, String>
+    private val messages: Map<String, String>,
+    private val viewModel: MainActivityViewModel
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 
     private lateinit var fileItemList: List<FileItem>
-
-    private val documentType = "document"
-    private val audioType = "audio"
-    private val videoType = "video"
-    private val imageType = "image"
-    private val otherType = "other"
 
     private val selectedItems = ArrayList<FileItem>()
 
@@ -52,7 +48,7 @@ class FilesRecyclerViewAdapter(
         if (fileItem.isDir) {
             holder.fileDescription.text = messages["directory_indicator"]
         } else {
-            holder.fileDescription.text = getSize(fileItem.size)
+            holder.fileDescription.text = viewModel.getSize(fileItem.size)
         }
 
         // tap on item
@@ -84,132 +80,20 @@ class FilesRecyclerViewAdapter(
     private fun setFileIcon(holder: ViewHolder, fileItem: FileItem) {
         if (fileItem.isDir) {
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
-        } else if (getFileType(fileItem.name) == documentType) {
+        } else if (viewModel.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
-        } else if (getFileType(fileItem.name) == imageType) {
+        } else if (viewModel.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.image_white_36dp)
-        } else if (getFileType(fileItem.name) == audioType) {
+        } else if (viewModel.getFileType(fileItem.name) == Constants.AUDIO_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.music_note_white_36dp)
-        } else if (getFileType(fileItem.name) == videoType) {
+        } else if (viewModel.getFileType(fileItem.name) == Constants.VIDEO_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.video_file_white_36dp)
-        } else if (getFileType(fileItem.name) == otherType) {
+        } else if (viewModel.getFileType(fileItem.name) == Constants.OTHER_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.insert_drive_file_white_36dp)
         }
     }
 
-    private fun getFileType(fileName: String): String {
-        val fileExtension = fileName.split(".").last()
 
-        val imageExtensions = arrayOf(
-            "jpg",
-            "png",
-            "gif",
-            "webp",
-            "tiff",
-            "psd",
-            "raw",
-            "bmp",
-            "svg",
-            "heif"
-        )
-
-        val audioExtensions = arrayOf(
-            "aif",
-            "cd",
-            "midi",
-            "mp3",
-            "mp2",
-            "mpeg",
-            "ogg",
-            "wav",
-            "wma"
-        )
-
-        val documentExtensions = arrayOf(
-            "csv",
-            "dat",
-            "db",
-            "log",
-            "mdb",
-            "sav",
-            "sql",
-            "tar",
-            "ods",
-            "xlsx",
-            "xls",
-            "xlsm",
-            "xlsb",
-            "xml",
-            "doc",
-            "odt",
-            "pdf",
-            "rtf",
-            "tex",
-            "txt",
-            "wpd"
-        )
-
-        val videoExtensions = arrayOf(
-            "3g2",
-            "3gp",
-            "avi",
-            "flv",
-            "h264",
-            "m4v",
-            "mkv",
-            "mov",
-            "mp4",
-            "mpg",
-            "mpeg",
-            "rm",
-            "swf",
-            "vob",
-            "webm",
-            "wmv"
-        )
-
-        return when (fileExtension.lowercase()) {
-            in imageExtensions -> {
-                imageType
-            }
-            in audioExtensions -> {
-                audioType
-            }
-            in documentExtensions -> {
-                documentType
-            }
-            in videoExtensions -> {
-                videoType
-            }
-            else -> otherType
-        }
-
-    }
-
-    private fun getSize(sizeInBytes: Long): String {
-
-        val unit = arrayOf("Bytes", "KB", "MB", "GB", "TB")
-        var unitIndex = 0
-        var size: Double = sizeInBytes.toDouble()
-
-        try {
-
-            if (sizeInBytes in 0..1024) {
-                return sizeInBytes.toString() + " " + unit[unitIndex]
-            } else {
-                while (size >= 1024) {
-                    unitIndex += 1
-                    size /= 1024.0
-                }
-            }
-
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            return "File size too big"
-        }
-
-        return "${String.format("%.1f", size)} ${unit[unitIndex]}"
-
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<FileItem>) {
