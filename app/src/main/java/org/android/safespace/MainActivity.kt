@@ -27,13 +27,13 @@ import org.android.safespace.lib.FileItem
 import org.android.safespace.lib.FilesRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
 import org.android.safespace.viewmodel.MainActivityViewModel
-import java.io.File
 
 
 /*
  Todo:
+  * FIX BACK BUTTON VISIBILITY
+  * implement ExoPlayer
   * implement pdf viewer
-  * implement audio/video player
   *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var deleteButton: FloatingActionButton
+    private lateinit var backButton: FloatingActionButton
     private var selectedItems = ArrayList<FileItem>()
 
 
@@ -78,6 +79,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             // file = null because multiple selections to be deleted and there's no single file
             deleteFilePopup(null, deleteButton.context)
         }
+
+        backButton = findViewById(R.id.backButton)
+        backButtonHide()
 
         // File picker result
         val selectFilesActivityResult =
@@ -235,6 +239,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     override fun onClick(data: FileItem) {
+        // item single tap
         if (data.isDir) {
             viewModel.setInternalPath(data.name)
             filesRecyclerViewAdapter.setData(
@@ -244,12 +249,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             )
             // clear selection on directory change and hide delete button
             deleteButton.visibility = View.GONE
+            // make back button visible when directory change
+            backButton.visibility = View.VISIBLE
             this.selectedItems.clear()
 
         } else {
 
             val filePath =
-                filesDir.absolutePath + viewModel.getInternalPath() + File.separator + data.name
+                viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), data.name)
 
             when (viewModel.getFileType(data.name)) {
                 Constants.IMAGE_TYPE -> {
@@ -293,6 +300,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         data: FileItem,
         selectedItems: ArrayList<FileItem>
     ) {
+        // Item multi select on icon click
         this.selectedItems = selectedItems
         if (this.selectedItems.isEmpty()) {
             deleteButton.visibility = View.GONE
@@ -309,6 +317,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     viewModel.getInternalPath()
                 )
             )
+        }
+
+        backButtonHide()
+    }
+
+    private fun backButtonHide() {
+        if (viewModel.isNextRootDirectory() || viewModel.isRootDirectory()) {
+            backButton.visibility = View.GONE
+        } else {
+            backButton.visibility = View.VISIBLE
         }
     }
 

@@ -24,9 +24,7 @@ class MainActivityViewModel(
     }
 
     fun setInternalPath(dir: String) {
-        if (internalPath.isEmpty()) {
-            internalPath.add(dir)
-        } else if (internalPath.last() != dir) {
+        if (internalPath.isEmpty() || internalPath.last() != dir) {
             internalPath.add(dir)
         }
     }
@@ -37,6 +35,16 @@ class MainActivityViewModel(
 
     fun isRootDirectory(): Boolean {
         return internalPath.isEmpty()
+    }
+
+    fun isNextRootDirectory(): Boolean {
+        return internalPath.size == 1
+    }
+
+    fun joinPath(vararg pathList: String): String {
+
+        return pathList.joinToString(File.separator)
+
     }
 
     fun importFile(uri: Uri, internalPath: String): Int {
@@ -67,11 +75,7 @@ class MainActivityViewModel(
             // output stream for target file
             val targetFileStream =
                 FileOutputStream(
-                    File(
-                        filesDirAbsolutePath + File.separator +
-                                internalPath + File.separator +
-                                sourceFileName
-                    )
+                    File(joinPath(filesDirAbsolutePath, internalPath, sourceFileName))
                 )
 
             if (sourceFileStream != null) {
@@ -93,11 +97,7 @@ class MainActivityViewModel(
     fun createDir(internalPath: String, newDirName: String): Int {
 
         try {
-            val dirPath = if (newDirName == "") {
-                filesDirAbsolutePath + File.separator + internalPath
-            } else {
-                filesDirAbsolutePath + File.separator + internalPath + File.separator + newDirName
-            }
+            val dirPath = joinPath(filesDirAbsolutePath, internalPath, newDirName)
 
             val newDir = File(dirPath)
 
@@ -115,7 +115,7 @@ class MainActivityViewModel(
 
     fun getContents(internalPath: String): List<FileItem> {
 
-        val dirPath = File(application.filesDir.absolutePath + File.separator + internalPath)
+        val dirPath = File(joinPath(application.filesDir.absolutePath, internalPath))
 
         val contents = dirPath.listFiles()
 
@@ -135,8 +135,7 @@ class MainActivityViewModel(
     fun renameFile(file: FileItem, internalPath: String, newFileName: String): Int {
 
         try {
-            val absolutePath =
-                filesDirAbsolutePath + File.separator + internalPath + File.separator
+            val absolutePath = joinPath(filesDirAbsolutePath, internalPath, File.separator)
 
             val absoluteFilePathOld = File(absolutePath + file.name)
 
@@ -154,11 +153,7 @@ class MainActivityViewModel(
 
     fun deleteFile(file: FileItem, internalPath: String): Int {
         try {
-            val fileToDelete = File(
-                filesDirAbsolutePath + File.separator + internalPath +
-                        File.separator + file.name
-            )
-
+            val fileToDelete = File(joinPath(filesDirAbsolutePath, internalPath, file.name))
 
             if (fileToDelete.exists()) {
                 if (file.isDir) {
