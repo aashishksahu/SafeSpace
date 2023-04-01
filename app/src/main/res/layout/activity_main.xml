@@ -22,24 +22,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/dialogThemeMenu"
             android:textColor="@color/white"
             app:menu="@menu/actions"
             app:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/backButton"
-        style="@style/Widget.Material3.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:contentDescription="@string/back_button_text"
-        android:src="@drawable/arrow_back_ios_white_36dp"
-        app:backgroundTint="?attr/colorSecondaryVariant"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:tint="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"
@@ -51,9 +39,8 @@
         android:src="@drawable/delete_white_36dp"
         android:visibility="gone"
         app:backgroundTint="?attr/colorSecondaryVariant"
-        app:layout_constraintBottom_toTopOf="@+id/filesRecyclerView"
-        app:layout_constraintStart_toEndOf="@+id/backButton"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -61,26 +48,35 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10sp"
-        android:layout_marginTop="560dp"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/about"
+        app:layout_constraintBottom_toTopOf="@+id/deleteButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backButton" />
+        app:layout_constraintTop_toBottomOf="@+id/homeIcon" />
 
-    <Button
-        android:id="@+id/about"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+    <TextView
+        android:id="@+id/breadCrumbs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/aboutText"
+        android:layout_margin="5sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/filesRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/homeIcon"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:contentDescription="@string/homeIcon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_max="400dp" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:srcCompat="@drawable/home_white_24dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

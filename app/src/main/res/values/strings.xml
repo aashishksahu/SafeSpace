@@ -11,6 +11,7 @@
     <string name="back_button_text">Back</string>
     <string name="your_files_title">Your Files</string>
     <string name="context_menu_rename">Rename</string>
+    <string name="context_menu_rename_hint">Enter name</string>
     <string name="context_menu_delete">Delete</string>
     <string name="context_menu_move">Move</string>
     <string name="context_menu_copy">Copy</string>
@@ -20,7 +21,9 @@
     <string name="directory_indicator">Folder</string>
     <string name="import_files_progress">Importing in background, please wait…</string>
     <string name="image_view_desc">Image View</string>
+    <string name="back_press_again">Press back again to exit</string>
+    <string name="homeIcon">Home</string>
+    <string name="cryptoUtilityText">Encrypt/Decrypt Files (Coming Soon)</string>
 
-
-    <string name="aboutText">Made In India. Learn More</string>
+    <string name="aboutText">About</string>
 </resources>

@@ -8,12 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
-import org.android.safespace.viewmodel.MainActivityViewModel
 
 class FilesRecyclerViewAdapter(
     private val onItemClickListener: ItemClickListener,
-    private val messages: Map<String, String>,
-    private val viewModel: MainActivityViewModel
+    private val messages: Map<String, String>
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 
@@ -48,7 +46,7 @@ class FilesRecyclerViewAdapter(
         if (fileItem.isDir) {
             holder.fileDescription.text = messages["directory_indicator"]
         } else {
-            holder.fileDescription.text = viewModel.getSize(fileItem.size)
+            holder.fileDescription.text = Utils.getSize(fileItem.size)
         }
 
         // tap on item
@@ -80,15 +78,15 @@ class FilesRecyclerViewAdapter(
     private fun setFileIcon(holder: ViewHolder, fileItem: FileItem) {
         if (fileItem.isDir) {
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
-        } else if (viewModel.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
-        } else if (viewModel.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.image_white_36dp)
-        } else if (viewModel.getFileType(fileItem.name) == Constants.AUDIO_TYPE) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.AUDIO_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.music_note_white_36dp)
-        } else if (viewModel.getFileType(fileItem.name) == Constants.VIDEO_TYPE) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.VIDEO_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.video_file_white_36dp)
-        } else if (viewModel.getFileType(fileItem.name) == Constants.OTHER_TYPE) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.OTHER_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.insert_drive_file_white_36dp)
         }
     }

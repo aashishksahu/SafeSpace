@@ -1,5 +1,6 @@
 package org.android.safespace
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -7,8 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,17 +23,14 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.android.safespace.lib.Constants
-import org.android.safespace.lib.FileItem
-import org.android.safespace.lib.FilesRecyclerViewAdapter
-import org.android.safespace.lib.ItemClickListener
+import org.android.safespace.lib.*
 import org.android.safespace.viewmodel.MainActivityViewModel
+import java.io.File
 
 
 /*
  Todo:
-  * FIX BACK BUTTON VISIBILITY
-  * implement ExoPlayer
+  * Fullscreen Video player
   * implement pdf viewer
   *
   * Sort options [Low Priority]
@@ -48,9 +46,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var deleteButton: FloatingActionButton
-    private lateinit var backButton: FloatingActionButton
     private var selectedItems = ArrayList<FileItem>()
-
+    private lateinit var breadCrumbs: TextView
+    private val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,19 +67,19 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         )
 
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages)
         filesRecyclerViewAdapter.setData(fileList)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        breadCrumbs = findViewById(R.id.breadCrumbs)
+        updateBreadCrumbs()
 
         deleteButton = findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
             // file = null because multiple selections to be deleted and there's no single file
             deleteFilePopup(null, deleteButton.context)
         }
-
-        backButton = findViewById(R.id.backButton)
-        backButtonHide()
 
         // File picker result
         val selectFilesActivityResult =
@@ -148,11 +146,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
 
             }
+        // End: File picker result
 
 
         // Top App Bar
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.create_dir -> {
@@ -164,15 +162,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     intent.type = "*/*"
                     selectFilesActivityResult.launch(intent)
                 }
+                R.id.about -> {
+                    // open new intent with MIT Licence and github link and library credits
+                }
+                R.id.cryptoUtility -> {
+                    // open new intent for cryptography
+                }
             }
             true
         }
-
-        // back button on screen
-        val backButton = findViewById<FloatingActionButton>(R.id.backButton)
-        backButton.setOnClickListener {
-            backButtonAction()
-        }
+        // End: Top App Bar
 
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -180,21 +179,19 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 if (viewModel.isRootDirectory()) {
                     finish()
                 }
-
                 backButtonAction()
             }
         })
+        //End: back button - system navigation
 
-        // about button
-        val aboutBtn = findViewById<Button>(R.id.about)
-        aboutBtn.setOnClickListener {
-            // open new intent with MIT Licence and github link and library credits
-        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateBreadCrumbs() {
+        breadCrumbs.text = "\\ ${viewModel.getInternalPath().replace(File.separator, " \\ ")}"
     }
 
     private fun createDirPopup(context: Context) {
-
-        val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
 
         val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
 
@@ -249,8 +246,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             )
             // clear selection on directory change and hide delete button
             deleteButton.visibility = View.GONE
-            // make back button visible when directory change
-            backButton.visibility = View.VISIBLE
+            // update breadcrumbs
+            updateBreadCrumbs()
+
             this.selectedItems.clear()
 
         } else {
@@ -258,9 +256,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             val filePath =
                 viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), data.name)
 
-            when (viewModel.getFileType(data.name)) {
+            when (Utils.getFileType(data.name)) {
                 Constants.IMAGE_TYPE -> {
                     loadImage(filePath)
+                }
+                Constants.VIDEO_TYPE, Constants.AUDIO_TYPE -> {
+                    loadAV(filePath)
                 }
             }
 
@@ -311,24 +312,20 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun backButtonAction() {
         if (!viewModel.isRootDirectory()) {
+            // remove the current directory
             viewModel.setPreviousPath()
+
+            // display contents of the navigated path
             filesRecyclerViewAdapter.setData(
                 viewModel.getContents(
                     viewModel.getInternalPath()
                 )
             )
         }
+        updateBreadCrumbs()
 
-        backButtonHide()
     }
 
-    private fun backButtonHide() {
-        if (viewModel.isNextRootDirectory() || viewModel.isRootDirectory()) {
-            backButton.visibility = View.GONE
-        } else {
-            backButton.visibility = View.VISIBLE
-        }
-    }
 
     private fun renameFilePopup(file: FileItem, context: Context) {
         val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
@@ -343,24 +340,32 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             .setView(renameLayout)
             .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
 
-                val result = viewModel.renameFile(
-                    file,
-                    viewModel.getInternalPath(),
-                    folderNameTextView.editText!!.text.toString()
-                )
+                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                    val result = viewModel.renameFile(
+                        file,
+                        viewModel.getInternalPath(),
+                        folderNameTextView.editText!!.text.toString()
+                    )
 
-                if (result == 0) {
+                    if (result == 0) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.generic_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        filesRecyclerViewAdapter.setData(
+                            viewModel.getContents(
+                                viewModel.getInternalPath()
+                            )
+                        )
+                    }
+                } else {
                     Toast.makeText(
                         context,
-                        getString(R.string.generic_error),
+                        getString(R.string.create_folder_invalid_error),
                         Toast.LENGTH_LONG
                     ).show()
-                } else {
-                    filesRecyclerViewAdapter.setData(
-                        viewModel.getContents(
-                            viewModel.getInternalPath()
-                        )
-                    )
                 }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
@@ -432,6 +437,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val imageViewIntent = Intent(this, ImageView::class.java)
         imageViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(imageViewIntent)
+    }
+
+    private fun loadAV(filePath: String) {
+        val mediaViewIntent = Intent(this, MediaView::class.java)
+        mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+        startActivity(mediaViewIntent)
     }
 
 }
