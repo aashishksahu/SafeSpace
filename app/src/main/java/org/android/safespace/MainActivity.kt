@@ -30,7 +30,6 @@ import java.io.File
 
 /*
  Todo:
-  * Fullscreen Video player
   * implement pdf viewer
   *
   * Sort options [Low Priority]

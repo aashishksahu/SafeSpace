@@ -8,15 +8,24 @@ import org.android.safespace.lib.Constants
 
 
 class ImageView : AppCompatActivity() {
+
+    private lateinit var imageView: PhotoView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
 
-        val imageView = findViewById<PhotoView>(R.id.imageView)
+        imageView = findViewById(R.id.imageView)
 
         val imagePath = intent.extras?.getString(Constants.INTENT_KEY_PATH)
 
-        Glide.with(this).load(imagePath).into(imageView)
+        Glide.with(applicationContext).load(imagePath).into(imageView)
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        Glide.with(applicationContext).clear(imageView)
     }
 }

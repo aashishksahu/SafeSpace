@@ -18,6 +18,7 @@ class FilesRecyclerViewAdapter(
     private lateinit var fileItemList: List<FileItem>
 
     private val selectedItems = ArrayList<FileItem>()
+    private var selectedItemsPosition: IntArray? = null
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -66,13 +67,21 @@ class FilesRecyclerViewAdapter(
             if (fileItem !in selectedItems) {
                 holder.fileIcon.setImageResource(R.drawable.check_circle_white_36dp)
                 selectedItems.add(fileItem)
+                selectedItemsPosition?.set(position, 1)
             } else {
                 setFileIcon(holder, fileItem)
                 selectedItems.remove(fileItem)
+                selectedItemsPosition?.set(position, 0)
             }
             onItemClickListener.onItemSelect(fileItem, selectedItems)
         }
 
+        // update the right icons while scrolling
+        if (selectedItemsPosition!![position] == 1) {
+            holder.fileIcon.setImageResource(R.drawable.check_circle_white_36dp)
+        } else {
+            setFileIcon(holder, fileItem)
+        }
     }
 
     private fun setFileIcon(holder: ViewHolder, fileItem: FileItem) {
@@ -92,12 +101,12 @@ class FilesRecyclerViewAdapter(
     }
 
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<FileItem>) {
-        // This method updates the adapter with the new updated data from database.
+        // This method updates the adapter with the new updated data.
         // Replaces the old data with the new one and notify listeners about that change.
         this.fileItemList = data
+        selectedItemsPosition = IntArray(data.size)
         notifyDataSetChanged()
     }
 

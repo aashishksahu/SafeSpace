@@ -2,6 +2,9 @@ package org.android.safespace
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -13,11 +16,18 @@ import org.android.safespace.lib.Utils
 class MediaView : AppCompatActivity() {
 
     private var player: ExoPlayer? = null
-//    private val isPlaying get() = player?.isPlaying ?: false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_view)
+
+        // hide navigation and status bar
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
 
         val mediaPath = intent.extras?.getString(Constants.INTENT_KEY_PATH)
 
@@ -25,6 +35,11 @@ class MediaView : AppCompatActivity() {
             initializePlayer(mediaPath)
         }
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        player?.release()
     }
 
     private fun initializePlayer(path: String) {
