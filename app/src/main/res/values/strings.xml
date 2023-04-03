@@ -24,6 +24,13 @@
     <string name="back_press_again">Press back again to exit</string>
     <string name="homeIcon">Home</string>
     <string name="cryptoUtilityText">Encrypt/Decrypt Files (Coming Soon)</string>
+    <string name="textAreaHint">Write Something</string>
+    <string name="save">Save</string>
+    <string name="save_success">File Saved!</string>
+    <string name="save_error">Error while saving file!</string>
+    <string name="read_only">Read-only</string>
+    <string name="edit_mode">Edit</string>
+    <string name="theme_background">Change Background</string>
 
     <string name="aboutText">About</string>
 </resources>

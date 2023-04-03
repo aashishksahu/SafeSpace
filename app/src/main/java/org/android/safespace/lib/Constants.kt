@@ -10,6 +10,8 @@ class Constants {
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
 
+        const val PDF = "pdf"
+
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
             "png",
@@ -35,28 +37,29 @@ class Constants {
             "wma"
         )
 
+//       commented formats are not internally supported
         val DOCUMENT_EXTENSIONS = arrayOf(
             "csv",
             "dat",
-            "db",
-            "log",
-            "mdb",
-            "sav",
-            "sql",
-            "tar",
-            "ods",
-            "xlsx",
-            "xls",
-            "xlsm",
-            "xlsb",
-            "xml",
-            "doc",
-            "odt",
+//            "db",
+//            "log",
+//            "mdb",
+//            "sav",
+//            "sql",
+//            "tar",
+//            "ods",
+//            "xlsx",
+//            "xls",
+//            "xlsm",
+//            "xlsb",
+//            "xml",
+//            "doc",
+//            "odt",
             "pdf",
-            "rtf",
-            "tex",
+//            "rtf",
+//            "tex",
             "txt",
-            "wpd"
+//            "wpd"
         )
 
         val VIDEO_EXTENSIONS = arrayOf(

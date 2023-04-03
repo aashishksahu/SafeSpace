@@ -37,7 +37,7 @@ class MainActivityViewModel(
 
     fun joinPath(vararg pathList: String): String {
 
-        return pathList.joinToString(File.separator)
+        return pathList.joinToString(File.separator).replace("//", "/")
 
     }
 

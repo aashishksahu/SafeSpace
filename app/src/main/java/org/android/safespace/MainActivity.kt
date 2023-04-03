@@ -30,7 +30,7 @@ import java.io.File
 
 /*
  Todo:
-  * implement pdf viewer
+  * text view input type none single line [BUG]
   *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -262,6 +262,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 Constants.VIDEO_TYPE, Constants.AUDIO_TYPE -> {
                     loadAV(filePath)
                 }
+                Constants.DOCUMENT_TYPE -> {
+                    loadDocument(filePath)
+                }
             }
 
         }
@@ -442,6 +445,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val mediaViewIntent = Intent(this, MediaView::class.java)
         mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(mediaViewIntent)
+    }
+
+    private fun loadDocument(filePath: String) {
+
+        val documentViewIntent = if (filePath.split('.').last() == Constants.PDF) {
+            Intent(this, PDFView::class.java)
+        } else {
+            Intent(this, TextDocumentView::class.java)
+        }
+
+        documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+        startActivity(documentViewIntent)
     }
 
 }

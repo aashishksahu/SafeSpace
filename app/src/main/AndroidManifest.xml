@@ -12,6 +12,12 @@
         android:theme="@style/Theme.SafeSpace"
         tools:targetApi="31">
         <activity
+            android:name=".TextDocumentView"
+            android:exported="false" />
+        <activity
+            android:name=".PDFView"
+            android:exported="false" />
+        <activity
             android:name=".MediaView"
             android:exported="false" />
         <activity
