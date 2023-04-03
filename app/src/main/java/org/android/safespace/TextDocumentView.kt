@@ -14,6 +14,9 @@ import java.io.*
 
 class TextDocumentView : AppCompatActivity() {
 
+    /*
+        Todo: text view input type none single line [BUG]
+    */
     private var isDarkTheme = true
     private var isReadOnly = true
 

@@ -30,8 +30,6 @@ import java.io.File
 
 /*
  Todo:
-  * text view input type none single line [BUG]
-  *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
   * Change icons [Low Priority]
