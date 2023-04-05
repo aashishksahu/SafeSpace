@@ -27,8 +27,18 @@ class MainActivityViewModel(
         }
     }
 
-    fun setPreviousPath() {
+    fun setGetPreviousPath(): String {
+        val lastPath = internalPath.last()
         if (internalPath.isNotEmpty()) internalPath.removeLast()
+        return lastPath
+    }
+
+    fun getLastDirectory(): String {
+        return try {
+            internalPath.last().toString()
+        } catch (e: NoSuchElementException) {
+            ""
+        }
     }
 
     fun isRootDirectory(): Boolean {
@@ -183,6 +193,14 @@ class MainActivityViewModel(
             return -1
         }
         return 1
+    }
+
+    fun setPath(currentPath: String) {
+        val indexOfCurrentPath = internalPath.indexOf(currentPath)
+
+        for (i in indexOfCurrentPath + 1 until internalPath.size) {
+            internalPath.removeAt(i)
+        }
     }
 
 }
