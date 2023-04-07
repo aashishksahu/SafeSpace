@@ -195,11 +195,14 @@ class MainActivityViewModel(
         return 1
     }
 
-    fun setPath(currentPath: String) {
+    fun setPathDynamic(currentPath: String) {
         val indexOfCurrentPath = internalPath.indexOf(currentPath)
 
-        for (i in indexOfCurrentPath + 1 until internalPath.size) {
-            internalPath.removeAt(i)
+        var indexesToDelete = internalPath.size - indexOfCurrentPath - 1
+
+        while (indexesToDelete > 0) {
+            internalPath.removeLast()
+            indexesToDelete -= 1
         }
     }
 

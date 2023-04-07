@@ -11,4 +11,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="breadCrumbsButtonStyle" parent="Widget.Material3.Button.TextButton">
+<!--        <item name="android:background">#00000000</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+
+    </style>
+
 </resources>

@@ -5,11 +5,13 @@ import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -19,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -32,7 +33,7 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * fix breadcrumbs
+  * fix breadcrumbs layout
   *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -60,14 +61,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         fileList = viewModel.getContents(viewModel.getInternalPath())
 
-        // Notes: created a click listener interface with onClick method, implemented the same in
-        //        main activity, then, passed the entire context (this) in the adapter
-        //        onItemClickListener, adapter called the method with the row item data
-
         val adapterMessages = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
         )
 
+        // Notes: created a click listener interface with onClick method, implemented the same in
+        //        main activity, then, passed the entire context (this) in the adapter
+        //        onItemClickListener, adapter called the method with the row item data
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
         filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages)
         filesRecyclerViewAdapter.setData(fileList)
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
 
         breadCrumbs = findViewById(R.id.breadCrumbsLayout)
-        updateBreadCrumbs(Constants.INIT, null)
+        updateBreadCrumbs(Constants.INIT, viewModel.getInternalPath())
 
         deleteButton = findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
@@ -189,41 +189,67 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateBreadCrumbs(action: Int, path: String?) {
+    private fun updateBreadCrumbs(action: Int, _path: String) {
 
-        val currentDir = viewModel.getLastDirectory()
+        var isHomeDirectory = false
+
+        val path = if (_path == "") {
+            getString(R.string.homeIcon)
+        } else {
+            _path
+        }
+
+        var currentDir = viewModel.getLastDirectory()
 
         if (currentDir == "") {
-            return
+            isHomeDirectory = true
+            currentDir = getString(R.string.homeIcon)
+        }else{
+            currentDir = " > $currentDir"
         }
+
 
         when (action) {
 
-            // user clicks on a path on the bread crumb
-            Constants.CLICK -> {
-
-            }
-            // user clicks on file item
-            Constants.FORWARD -> {
+            // user clicks on file item or app loads for the first time
+            Constants.INIT, Constants.FORWARD -> {
 
                 val params = LayoutParams(
                     LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT
                 )
-                params.setMargins(5, 2, 5, 2)
 
-                val pathBtn = MaterialButton(applicationContext)
+                val pathBtn = Button(applicationContext)
                 pathBtn.setTextColor(getColor(R.color.white))
-                pathBtn.text = " \\ $currentDir"
+                pathBtn.minHeight = 0
+                pathBtn.minWidth = 0
+
+                // set icon for home directory
+                if (isHomeDirectory) {
+                    params.setMargins(5, 2, 0, 2)
+                    pathBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.home_white_24dp,
+                        0,
+                        0,
+                        0
+                    )
+                }
+
+                pathBtn.text = currentDir
                 pathBtn.layoutParams = params
+                pathBtn.setBackgroundColor(Color.TRANSPARENT)
 
                 breadCrumbsButtonList.add(
-                    BreadCrumb(path!!, pathBtn)
+                    BreadCrumb(path, pathBtn)
                 )
 
                 attachClickAction(pathBtn)
 
                 breadCrumbs.addView(pathBtn)
+
+            }
+            // user clicks on a path on the bread crumb
+            Constants.CLICK -> {
 
             }
             // user clicks on back button
@@ -236,19 +262,31 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     }
 
-    private fun attachClickAction(pathBtn: MaterialButton) {
+    private fun attachClickAction(pathBtn: Button) {
         pathBtn.setOnClickListener {
-            val btn = it as MaterialButton
-            val btnPath = btn.text
+            val btn = it as Button
+
+            // path of the clicked breadcrumb
+            val btnPath = btn.text.toString().replace(" > ", "")
+
+            // currently open directory
             val currentPath = viewModel.getLastDirectory()
 
             if (btnPath != currentPath) {
 
-                viewModel.setPath(currentPath)
-
                 while (true) {
-                    if (breadCrumbsButtonList.size > 0 && breadCrumbsButtonList.last().path != currentPath) {
+                    if (breadCrumbsButtonList.size > 0 && breadCrumbsButtonList.last().path != btnPath) {
+                        breadCrumbs.removeView(breadCrumbsButtonList.last().pathBtn)
                         breadCrumbsButtonList.removeLast()
+
+                        viewModel.setPathDynamic(btnPath)
+
+                        // display contents of the navigated path
+                        filesRecyclerViewAdapter.setData(
+                            viewModel.getContents(
+                                viewModel.getInternalPath()
+                            )
+                        )
                         continue
                     }
                     break
@@ -503,7 +541,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     private fun loadImage(filePath: String) {
-        val imageViewIntent = Intent(this, ImageView::class.java)
+        val imageViewIntent = Intent(this, PictureView::class.java)
         imageViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(imageViewIntent)
     }

@@ -54,26 +54,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/breadCrumbsLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
-    <LinearLayout
-        android:id="@+id/breadCrumbsLayout"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="5sp"
-        android:orientation="horizontal"
+        android:contentDescription="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-        <ImageView
-            android:id="@+id/homeIcon"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/breadCrumbsLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
-            android:contentDescription="@string/homeIcon"
-            app:srcCompat="@drawable/home_white_24dp" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
+    </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

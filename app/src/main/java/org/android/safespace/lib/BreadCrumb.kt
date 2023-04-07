@@ -1,13 +1,13 @@
 package org.android.safespace.lib
 
-import com.google.android.material.button.MaterialButton
+import android.widget.Button
 
 class BreadCrumb(
     path: String,
-    pathBtn: MaterialButton
+    pathBtn: Button
 ) {
     val path: String
-    val pathBtn: MaterialButton
+    val pathBtn: Button
 
     init {
         this.path = path

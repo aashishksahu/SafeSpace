@@ -7,7 +7,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import org.android.safespace.lib.Constants
 
 
-class ImageView : AppCompatActivity() {
+class PictureView : AppCompatActivity() {
 
     private lateinit var imageView: PhotoView
 
