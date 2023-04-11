@@ -31,6 +31,12 @@
     <string name="read_only">Read-only</string>
     <string name="edit_mode">Edit</string>
     <string name="theme_background">Change Background</string>
+    <string name="move_file_title">Move Here</string>
+    <string name="move_copy_file_failure">Action failed</string>
+    <string name="move_copy_file_success">File moved/copied successfully</string>
+    <string name="copy_file_title">Copy Here</string>
+    <string name="move_copy_btn_text">Move or copy here</string>
+    <string name="is_directory_info">Only files can be moved</string>
 
     <string name="aboutText">About</string>
 </resources>

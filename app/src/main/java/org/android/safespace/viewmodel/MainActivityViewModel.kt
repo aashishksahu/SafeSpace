@@ -7,7 +7,10 @@ import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
 import org.android.safespace.lib.FileItem
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class MainActivityViewModel(
     private val application: Application
@@ -16,6 +19,8 @@ class MainActivityViewModel(
     private var internalPath: ArrayList<String> = ArrayList()
     private var filesList: ArrayList<FileItem> = ArrayList()
     private var filesDirAbsolutePath: String = application.filesDir.absolutePath.toString()
+    var moveFileFrom: String? = null
+    var moveFileTo: String? = null
 
     fun getInternalPath(): String {
         return internalPath.joinToString(File.separator)
@@ -204,6 +209,57 @@ class MainActivityViewModel(
             internalPath.removeLast()
             indexesToDelete -= 1
         }
+    }
+
+    fun moveFile(): Int {
+
+        try {
+
+            // byte array of source file
+            val sourceFileStream = FileInputStream(moveFileFrom)
+
+            // output stream for target file
+            val targetFileStream = FileOutputStream(moveFileTo)
+
+            Files.move(Paths.get(moveFileFrom), Paths.get(moveFileTo))
+
+            sourceFileStream.close()
+            targetFileStream.close()
+
+        } catch (e: Exception) {
+            return -1
+        } finally {
+
+            moveFileFrom = null
+            moveFileTo = null
+        }
+        return 1
+    }
+
+    fun copyFile(): Int {
+
+
+        try {
+
+            // byte array of source file
+            val sourceFileStream = FileInputStream(moveFileFrom)
+
+            // output stream for target file
+            val targetFileStream = FileOutputStream(moveFileTo)
+
+            Files.copy(Paths.get(moveFileFrom), Paths.get(moveFileTo))
+
+            sourceFileStream.close()
+            targetFileStream.close()
+
+        } catch (e: Exception) {
+            return -1
+        } finally {
+
+            moveFileFrom = null
+            moveFileTo = null
+        }
+        return 1
     }
 
 }

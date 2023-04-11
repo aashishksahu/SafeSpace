@@ -11,16 +11,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -33,7 +32,7 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * fix breadcrumbs layout
+  * fix move and copy functionality
   *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -52,6 +51,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var breadCrumbs: LinearLayout
     private var breadCrumbsButtonList = ArrayList<BreadCrumb>()
     private val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
+    private lateinit var fileMoveCopyView: ConstraintLayout
+    private lateinit var fileMoveCopyName: TextView
+    private lateinit var fileMoveCopyButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +83,54 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         deleteButton.setOnClickListener {
             // file = null because multiple selections to be deleted and there's no single file
             deleteFilePopup(null, deleteButton.context)
+        }
+
+        fileMoveCopyView = findViewById(R.id.moveCopyFileView)
+        fileMoveCopyView.visibility = View.GONE
+        fileMoveCopyName = findViewById(R.id.moveCopyFileName)
+        fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
+        val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
+        fileMoveCopyName.isSelected = true
+
+        fileMoveCopyButton.setOnClickListener {
+
+            val fileName = fileMoveCopyName.text.toString()
+
+            viewModel.moveFileTo = viewModel.joinPath(
+                filesDir.absolutePath,
+                viewModel.getInternalPath(),
+                fileName
+            )
+
+            if (viewModel.moveFileFrom != null && viewModel.moveFileFrom != viewModel.moveFileTo) {
+                val status = if (fileMoveCopyButton.text == getString(R.string.move_file_title)) {
+                    viewModel.moveFile()
+                } else {
+                    viewModel.copyFile()
+                }
+
+                if (status == -1) {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.move_copy_file_failure),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.move_copy_file_success),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            fileMoveCopyView.visibility = View.GONE
+
+        }
+
+        fileMoveCopyButtonCancel.setOnClickListener {
+            fileMoveCopyView.visibility = View.GONE
+            viewModel.moveFileFrom = null
+            viewModel.moveFileTo = null
         }
 
         // File picker result
@@ -204,8 +254,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         if (currentDir == "") {
             isHomeDirectory = true
             currentDir = getString(R.string.homeIcon)
-        }else{
-            currentDir = " > $currentDir"
+        } else {
+            currentDir = " \\ $currentDir"
         }
 
 
@@ -267,7 +317,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             val btn = it as Button
 
             // path of the clicked breadcrumb
-            val btnPath = btn.text.toString().replace(" > ", "")
+            val btnPath = btn.text.toString().replace(" \\ ", "")
 
             // currently open directory
             val currentPath = viewModel.getLastDirectory()
@@ -390,10 +440,26 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     deleteFilePopup(data, view.context)
                 }
                 R.id.move_item -> {
-                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                    if (data.isDir) {
+                        Toast.makeText(
+                            applicationContext,
+                            getString(R.string.is_directory_info),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        moveFile(data)
+                    }
                 }
                 R.id.copy_item -> {
-                    Toast.makeText(this@MainActivity, item.title, Toast.LENGTH_SHORT).show()
+                    if (data.isDir) {
+                        Toast.makeText(
+                            applicationContext,
+                            getString(R.string.is_directory_info),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        copyFile(data)
+                    }
                 }
 
             }
@@ -432,7 +498,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         }
 
     }
-
 
     private fun renameFilePopup(file: FileItem, context: Context) {
         val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
@@ -562,6 +627,25 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(documentViewIntent)
+    }
+
+    private fun moveFile(file: FileItem) {
+        viewModel.moveFileFrom =
+            viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), file.name)
+
+        fileMoveCopyView.visibility = View.VISIBLE
+        fileMoveCopyName.text = file.name
+        fileMoveCopyButton.text = getString(R.string.move_file_title)
+
+    }
+
+    private fun copyFile(file: FileItem) {
+        viewModel.moveFileFrom =
+            viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), file.name)
+
+        fileMoveCopyView.visibility = View.VISIBLE
+        fileMoveCopyName.text = file.name
+        fileMoveCopyButton.text = getString(R.string.copy_file_title)
     }
 
 }
