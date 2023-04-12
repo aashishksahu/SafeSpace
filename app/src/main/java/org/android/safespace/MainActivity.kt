@@ -32,7 +32,6 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * fix move and copy functionality
   *
   * Sort options [Low Priority]
   * Add thumbnails for files [Low Priority]
@@ -61,6 +60,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         viewModel = MainActivityViewModel(application)
 
+        // initialize at first run of app
+        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        if (!sharedPreferences.getBoolean("firstRun", false)) {
+            if (initializeApp() == 1) {
+                with(sharedPreferences.edit()) {
+                    putBoolean(Constants.APP_FIRST_RUN, true)
+                    apply()
+                }
+            }
+        }
+
         fileList = viewModel.getContents(viewModel.getInternalPath())
 
         val adapterMessages = mapOf(
@@ -71,7 +81,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         //        main activity, then, passed the entire context (this) in the adapter
         //        onItemClickListener, adapter called the method with the row item data
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
         filesRecyclerViewAdapter.setData(fileList)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -88,16 +98,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         fileMoveCopyView = findViewById(R.id.moveCopyFileView)
         fileMoveCopyView.visibility = View.GONE
         fileMoveCopyName = findViewById(R.id.moveCopyFileName)
-        fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
-        val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         fileMoveCopyName.isSelected = true
+        fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
+
+        val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
 
         fileMoveCopyButton.setOnClickListener {
 
             val fileName = fileMoveCopyName.text.toString()
 
             viewModel.moveFileTo = viewModel.joinPath(
-                filesDir.absolutePath,
+                viewModel.getFilesDir(),
                 viewModel.getInternalPath(),
                 fileName
             )
@@ -121,6 +132,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         getString(R.string.move_copy_file_success),
                         Toast.LENGTH_LONG
                     ).show()
+
+                    // update recycler view
+                    filesRecyclerViewAdapter.setData(
+                        viewModel.getContents(
+                            viewModel.getInternalPath()
+                        )
+                    )
                 }
             }
             fileMoveCopyView.visibility = View.GONE
@@ -238,6 +256,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     }
 
+    private fun initializeApp(): Int {
+        return viewModel.initRootDir()
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateBreadCrumbs(action: Int, _path: String) {
 
@@ -254,8 +276,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         if (currentDir == "") {
             isHomeDirectory = true
             currentDir = getString(R.string.homeIcon)
-        } else {
-            currentDir = " \\ $currentDir"
         }
 
 
@@ -276,9 +296,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
                 // set icon for home directory
                 if (isHomeDirectory) {
-                    params.setMargins(5, 2, 0, 2)
+                    params.setMargins(15, 2, 0, 2)
                     pathBtn.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.home_white_24dp,
+                        0,
+                        0,
+                        0
+                    )
+                } else {
+                    pathBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.navigate_next_white_18dp,
                         0,
                         0,
                         0
@@ -317,7 +344,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             val btn = it as Button
 
             // path of the clicked breadcrumb
-            val btnPath = btn.text.toString().replace(" \\ ", "")
+            val btnPath = btn.text.toString()
 
             // currently open directory
             val currentPath = viewModel.getLastDirectory()
@@ -408,7 +435,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         } else {
 
             val filePath =
-                viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), data.name)
+                viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), data.name)
 
             when (Utils.getFileType(data.name)) {
                 Constants.IMAGE_TYPE -> {
@@ -631,7 +658,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun moveFile(file: FileItem) {
         viewModel.moveFileFrom =
-            viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), file.name)
+            viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), file.name)
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
@@ -641,7 +668,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun copyFile(file: FileItem) {
         viewModel.moveFileFrom =
-            viewModel.joinPath(filesDir.absolutePath, viewModel.getInternalPath(), file.name)
+            viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), file.name)
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name

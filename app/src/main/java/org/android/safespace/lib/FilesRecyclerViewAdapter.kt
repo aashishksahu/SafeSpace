@@ -1,17 +1,23 @@
 package org.android.safespace.lib
 
 import android.annotation.SuppressLint
+import android.content.ContentUris
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
+import org.android.safespace.viewmodel.MainActivityViewModel
+
 
 class FilesRecyclerViewAdapter(
     private val onItemClickListener: ItemClickListener,
-    private val messages: Map<String, String>
+    private val messages: Map<String, String>,
+    private val viewModel: MainActivityViewModel
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 
@@ -89,12 +95,35 @@ class FilesRecyclerViewAdapter(
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
         } else if (Utils.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
-        } else if (Utils.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
-            holder.fileIcon.setImageResource(R.drawable.image_white_36dp)
+        } else if (Utils.getFileType(fileItem.name) in arrayOf(
+                Constants.IMAGE_TYPE,
+                Constants.VIDEO_TYPE
+            )
+        ) {
+            Glide.with(holder.fileIcon)
+                .load(
+                    viewModel.joinPath(
+                        viewModel.getFilesDir(),
+                        viewModel.getInternalPath(),
+                        fileItem.name
+                    )
+                )
+                .centerCrop()
+                .placeholder(R.color.black)
+                .into(holder.fileIcon)
         } else if (Utils.getFileType(fileItem.name) == Constants.AUDIO_TYPE) {
-            holder.fileIcon.setImageResource(R.drawable.music_note_white_36dp)
-        } else if (Utils.getFileType(fileItem.name) == Constants.VIDEO_TYPE) {
-            holder.fileIcon.setImageResource(R.drawable.video_file_white_36dp)
+
+            Glide.with(holder.fileIcon)
+                .load(
+                    viewModel.joinPath(
+                        viewModel.getFilesDir(),
+                        viewModel.getInternalPath(),
+                        fileItem.name
+                    )
+                )
+                .centerCrop()
+                .placeholder(R.drawable.music_note_white_36dp)
+                .into(holder.fileIcon)
         } else if (Utils.getFileType(fileItem.name) == Constants.OTHER_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.insert_drive_file_white_36dp)
         }

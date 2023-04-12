@@ -16,6 +16,8 @@ class Constants {
         const val INTENT_KEY_PATH = "path"
 
         const val PDF = "pdf"
+        const val ROOT = "root"
+        const val APP_FIRST_RUN = "FIRST_RUN"
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
@@ -36,6 +38,7 @@ class Constants {
             "midi",
             "mp3",
             "mp2",
+            "m4b",
             "mpeg",
             "ogg",
             "wav",

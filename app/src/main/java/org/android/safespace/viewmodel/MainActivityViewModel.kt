@@ -5,12 +5,14 @@ import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
+import org.android.safespace.lib.Constants
 import org.android.safespace.lib.FileItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 class MainActivityViewModel(
     private val application: Application
@@ -18,9 +20,14 @@ class MainActivityViewModel(
 
     private var internalPath: ArrayList<String> = ArrayList()
     private var filesList: ArrayList<FileItem> = ArrayList()
-    private var filesDirAbsolutePath: String = application.filesDir.absolutePath.toString()
+
     var moveFileFrom: String? = null
     var moveFileTo: String? = null
+
+    fun getFilesDir(): String {
+        // root folder inside app files directory will be the first folder
+        return application.filesDir.absolutePath.toString() + File.separator + Constants.ROOT
+    }
 
     fun getInternalPath(): String {
         return internalPath.joinToString(File.separator)
@@ -84,7 +91,7 @@ class MainActivityViewModel(
             // output stream for target file
             val targetFileStream =
                 FileOutputStream(
-                    File(joinPath(filesDirAbsolutePath, internalPath, sourceFileName))
+                    File(joinPath(getFilesDir(), internalPath, sourceFileName))
                 )
 
             if (sourceFileStream != null) {
@@ -106,7 +113,7 @@ class MainActivityViewModel(
     fun createDir(internalPath: String, newDirName: String): Int {
 
         try {
-            val dirPath = joinPath(filesDirAbsolutePath, internalPath, newDirName)
+            val dirPath = joinPath(getFilesDir(), internalPath, newDirName)
 
             val newDir = File(dirPath)
 
@@ -122,9 +129,27 @@ class MainActivityViewModel(
 
     }
 
+    fun initRootDir(): Int {
+
+        try {
+
+            val newDir = File(getFilesDir())
+
+            if (!newDir.exists()) {
+                newDir.mkdirs()
+            }
+
+        } catch (e: FileSystemException) {
+            return 0
+        }
+
+        return 1
+
+    }
+
     fun getContents(internalPath: String): List<FileItem> {
 
-        val dirPath = File(joinPath(application.filesDir.absolutePath, internalPath))
+        val dirPath = File(joinPath(getFilesDir(), internalPath))
 
         val contents = dirPath.listFiles()
 
@@ -144,7 +169,7 @@ class MainActivityViewModel(
     fun renameFile(file: FileItem, internalPath: String, newFileName: String): Int {
 
         try {
-            val absolutePath = joinPath(filesDirAbsolutePath, internalPath, File.separator)
+            val absolutePath = joinPath(getFilesDir(), internalPath, File.separator)
 
             val absoluteFilePathOld = File(absolutePath + file.name)
 
@@ -165,7 +190,7 @@ class MainActivityViewModel(
 
     fun deleteFile(file: FileItem, internalPath: String): Int {
         try {
-            val fileToDelete = File(joinPath(filesDirAbsolutePath, internalPath, file.name))
+            val fileToDelete = File(joinPath(getFilesDir(), internalPath, file.name))
 
             if (fileToDelete.exists()) {
                 if (file.isDir) {
@@ -215,16 +240,11 @@ class MainActivityViewModel(
 
         try {
 
-            // byte array of source file
-            val sourceFileStream = FileInputStream(moveFileFrom)
-
-            // output stream for target file
-            val targetFileStream = FileOutputStream(moveFileTo)
-
-            Files.move(Paths.get(moveFileFrom), Paths.get(moveFileTo))
-
-            sourceFileStream.close()
-            targetFileStream.close()
+            Files.move(
+                Paths.get(moveFileFrom),
+                Paths.get(moveFileTo),
+                StandardCopyOption.REPLACE_EXISTING
+            )
 
         } catch (e: Exception) {
             return -1
@@ -238,7 +258,6 @@ class MainActivityViewModel(
 
     fun copyFile(): Int {
 
-
         try {
 
             // byte array of source file
@@ -247,7 +266,7 @@ class MainActivityViewModel(
             // output stream for target file
             val targetFileStream = FileOutputStream(moveFileTo)
 
-            Files.copy(Paths.get(moveFileFrom), Paths.get(moveFileTo))
+            FileUtils.copy(sourceFileStream, targetFileStream)
 
             sourceFileStream.close()
             targetFileStream.close()
