@@ -34,8 +34,6 @@ import org.android.safespace.viewmodel.MainActivityViewModel
  Todo:
   *
   * Sort options [Low Priority]
-  * Add thumbnails for files [Low Priority]
-  * Change icons [Low Priority]
 */
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
@@ -325,10 +323,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 breadCrumbs.addView(pathBtn)
 
             }
-            // user clicks on a path on the bread crumb
-            Constants.CLICK -> {
-
-            }
             // user clicks on back button
             Constants.BACK -> {
                 // remove button from bread crumbs linear layout
@@ -358,18 +352,22 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
                         viewModel.setPathDynamic(btnPath)
 
-                        // display contents of the navigated path
-                        filesRecyclerViewAdapter.setData(
-                            viewModel.getContents(
-                                viewModel.getInternalPath()
-                            )
-                        )
+                        updateRecyclerView()
                         continue
                     }
                     break
                 }
             }
         }
+    }
+
+    private fun updateRecyclerView() {
+        // display contents of the navigated path
+        filesRecyclerViewAdapter.setData(
+            viewModel.getContents(
+                viewModel.getInternalPath()
+            )
+        )
     }
 
     private fun createDirPopup(context: Context) {
@@ -446,6 +444,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
                 Constants.DOCUMENT_TYPE -> {
                     loadDocument(filePath)
+                }
+                else ->{
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.unsupported_format),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 

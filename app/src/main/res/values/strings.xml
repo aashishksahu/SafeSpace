@@ -37,6 +37,8 @@
     <string name="copy_file_title">Copy Here</string>
     <string name="move_copy_btn_text">Move or copy here</string>
     <string name="is_directory_info">Only files can be moved or copied</string>
+    <string name="unsupported_format">File format not supported</string>
+    <string name="create_txt_menu">Create a Text Note</string>
 
     <string name="aboutText">About</string>
 </resources>

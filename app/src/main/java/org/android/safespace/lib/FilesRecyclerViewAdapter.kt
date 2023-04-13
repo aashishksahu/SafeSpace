@@ -1,8 +1,6 @@
 package org.android.safespace.lib
 
 import android.annotation.SuppressLint
-import android.content.ContentUris
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,11 +93,7 @@ class FilesRecyclerViewAdapter(
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
         } else if (Utils.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
-        } else if (Utils.getFileType(fileItem.name) in arrayOf(
-                Constants.IMAGE_TYPE,
-                Constants.VIDEO_TYPE
-            )
-        ) {
+        } else if (Utils.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
             Glide.with(holder.fileIcon)
                 .load(
                     viewModel.joinPath(
@@ -109,7 +103,19 @@ class FilesRecyclerViewAdapter(
                     )
                 )
                 .centerCrop()
-                .placeholder(R.color.black)
+                .placeholder(R.drawable.image_white_36dp)
+                .into(holder.fileIcon)
+        } else if (Utils.getFileType(fileItem.name) == Constants.VIDEO_TYPE) {
+            Glide.with(holder.fileIcon)
+                .load(
+                    viewModel.joinPath(
+                        viewModel.getFilesDir(),
+                        viewModel.getInternalPath(),
+                        fileItem.name
+                    )
+                )
+                .centerCrop()
+                .placeholder(R.drawable.video_file_white_36dp)
                 .into(holder.fileIcon)
         } else if (Utils.getFileType(fileItem.name) == Constants.AUDIO_TYPE) {
 

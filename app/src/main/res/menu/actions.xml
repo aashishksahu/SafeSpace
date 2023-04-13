@@ -14,6 +14,10 @@
         android:icon="@drawable/baseline_file_upload_24"
         android:title="@string/import_files"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/create_txt"
+        android:title="@string/create_txt_menu"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/about"
