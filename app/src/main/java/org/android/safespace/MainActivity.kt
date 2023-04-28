@@ -32,6 +32,10 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
+  * Implement text document creation
+  * Implement export files similar to multi select delete
+  * Implement about page
+  * Implement file encryption page with individual files encryption/decryption and encrypted backup export
   *
   * Sort options [Low Priority]
 */
@@ -232,6 +236,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
                 R.id.about -> {
                     // open new intent with MIT Licence and github link and library credits
+                }
+                R.id.create_txt -> {
+
                 }
                 R.id.cryptoUtility -> {
                     // open new intent for cryptography
