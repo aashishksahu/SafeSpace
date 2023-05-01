@@ -32,7 +32,7 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * Implement text document creation
+  * move recyclerview logic to viewModel
   * Implement export files similar to multi select delete
   * Implement about page
   * Implement file encryption page with individual files encryption/decryption and encrypted backup export
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         // initialize at first run of app
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        if (!sharedPreferences.getBoolean("firstRun", false)) {
+        if (!sharedPreferences.getBoolean(Constants.APP_FIRST_RUN, false)) {
             if (initializeApp() == 1) {
                 with(sharedPreferences.edit()) {
                     putBoolean(Constants.APP_FIRST_RUN, true)
@@ -135,12 +135,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    // update recycler view
-                    filesRecyclerViewAdapter.setData(
-                        viewModel.getContents(
-                            viewModel.getInternalPath()
-                        )
-                    )
+                    updateRecyclerView()
                 }
             }
             fileMoveCopyView.visibility = View.GONE
@@ -195,11 +190,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                                 // 1: success, -1: failure
                                 1 -> {
                                     CoroutineScope(Dispatchers.Main).launch {
-                                        filesRecyclerViewAdapter.setData(
-                                            viewModel.getContents(
-                                                viewModel.getInternalPath()
-                                            )
-                                        )
+                                        updateRecyclerView()
                                     }
                                 }
                                 -1 -> {
@@ -223,6 +214,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         // Top App Bar
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setTitleTextColor(getColor(R.color.white))
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.create_dir -> {
@@ -238,7 +230,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     // open new intent with MIT Licence and github link and library credits
                 }
                 R.id.create_txt -> {
-
+                    createTextNote(topAppBar.context)
                 }
                 R.id.cryptoUtility -> {
                     // open new intent for cryptography
@@ -398,11 +390,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                             folderNameTextView.editText?.text.toString()
                         ) == 1
                     ) {
-                        filesRecyclerViewAdapter.setData(
-                            viewModel.getContents(
-                                viewModel.getInternalPath()
-                            )
-                        )
+                        updateRecyclerView()
                     }
                 } else {
 
@@ -421,15 +409,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         alert.show()
     }
 
+    // item single tap
     override fun onClick(data: FileItem) {
-        // item single tap
         if (data.isDir) {
             viewModel.setInternalPath(data.name)
-            filesRecyclerViewAdapter.setData(
-                viewModel.getContents(
-                    viewModel.getInternalPath()
-                )
-            )
+            updateRecyclerView()
+
             // clear selection on directory change and hide delete button
             deleteButton.visibility = View.GONE
             // update breadcrumbs
@@ -452,7 +437,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 Constants.DOCUMENT_TYPE -> {
                     loadDocument(filePath)
                 }
-                else ->{
+                else -> {
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.unsupported_format),
@@ -509,11 +494,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         popup.show()
     }
 
+    // Item multi select on icon click
     override fun onItemSelect(
         data: FileItem,
         selectedItems: ArrayList<FileItem>
     ) {
-        // Item multi select on icon click
         this.selectedItems = selectedItems
         if (this.selectedItems.isEmpty()) {
             deleteButton.visibility = View.GONE
@@ -528,11 +513,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             val lastPath = viewModel.setGetPreviousPath()
 
             // display contents of the navigated path
-            filesRecyclerViewAdapter.setData(
-                viewModel.getContents(
-                    viewModel.getInternalPath()
-                )
-            )
+            updateRecyclerView()
             updateBreadCrumbs(Constants.BACK, lastPath)
         }
 
@@ -565,11 +546,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        filesRecyclerViewAdapter.setData(
-                            viewModel.getContents(
-                                viewModel.getInternalPath()
-                            )
-                        )
+                        updateRecyclerView()
                     }
                 } else {
                     Toast.makeText(
@@ -609,11 +586,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     // hide delete button after items are deleted
                     deleteButton.visibility = View.GONE
 
-                    filesRecyclerViewAdapter.setData(
-                        viewModel.getContents(
-                            viewModel.getInternalPath()
-                        )
-                    )
+                    updateRecyclerView()
                 } else {
 
                     val result = viewModel.deleteFile(
@@ -628,11 +601,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        filesRecyclerViewAdapter.setData(
-                            viewModel.getContents(
-                                viewModel.getInternalPath()
-                            )
-                        )
+                        updateRecyclerView()
                     }
                 }
             }
@@ -658,14 +627,23 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun loadDocument(filePath: String) {
 
-        val documentViewIntent = if (filePath.split('.').last() == Constants.PDF) {
-            Intent(this, PDFView::class.java)
-        } else {
-            Intent(this, TextDocumentView::class.java)
+        var documentViewIntent: Intent? = null
+
+        if (filePath.split('.').last() == Constants.PDF) {
+            documentViewIntent = Intent(this, PDFView::class.java)
+        } else if (filePath.split('.').last() in arrayOf(
+                Constants.TXT,
+                Constants.JSON,
+                Constants.XML
+            )
+        ) {
+            documentViewIntent = Intent(this, TextDocumentView::class.java)
         }
 
-        documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
-        startActivity(documentViewIntent)
+        if (documentViewIntent != null) {
+            documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+            startActivity(documentViewIntent)
+        }
     }
 
     private fun moveFile(file: FileItem) {
@@ -685,6 +663,51 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
         fileMoveCopyButton.text = getString(R.string.copy_file_title)
+    }
+
+    private fun createTextNote(viewContext: Context) {
+
+        val builder = MaterialAlertDialogBuilder(viewContext, R.style.dialogTheme)
+
+        val inflater: LayoutInflater = layoutInflater
+        val textNoteNameLayout = inflater.inflate(R.layout.text_note_name_layout, null)
+        val noteNameTextView =
+            textNoteNameLayout.findViewById<TextInputLayout>(R.id.newNoteTextLayout)
+
+        builder.setTitle(getString(R.string.new_text_note))
+            .setCancelable(true)
+            .setView(textNoteNameLayout)
+            .setPositiveButton(getString(R.string.create)) { _, _ ->
+
+                if (folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
+                    val result = viewModel.createTextNote(
+                        noteNameTextView.editText!!.text.toString() + "." + Constants.TXT
+                    )
+
+                    if (result == Constants.FILE_EXIST) {
+                        Toast.makeText(
+                            viewContext,
+                            getString(R.string.file_exists_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        loadDocument(result)
+                        updateRecyclerView()
+                    }
+                } else {
+                    Toast.makeText(
+                        viewContext,
+                        getString(R.string.create_folder_invalid_error),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
 }

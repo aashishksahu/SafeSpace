@@ -39,6 +39,8 @@
     <string name="is_directory_info">Only files can be moved or copied</string>
     <string name="unsupported_format">File format not supported</string>
     <string name="create_txt_menu">Create a Text Note</string>
+    <string name="new_text_note">New Text Note</string>
+    <string name="file_exists_error">This File Already Exists</string>
 
     <string name="aboutText">About</string>
 </resources>

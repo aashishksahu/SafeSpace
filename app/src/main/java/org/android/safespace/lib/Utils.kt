@@ -1,6 +1,9 @@
 package org.android.safespace.lib
 
+import android.annotation.SuppressLint
 import com.google.android.exoplayer2.util.MimeTypes
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class Utils {
     companion object {
@@ -64,6 +67,13 @@ class Utils {
                 }
             }
 
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun convertLongToTime(time: Long): String {
+            val date = Date(time)
+            val format = SimpleDateFormat("dd MMM, yyyy hh:mm a")
+            return format.format(date)
         }
     }
 }

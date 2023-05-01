@@ -156,7 +156,7 @@ class MainActivityViewModel(
         filesList.clear()
 
         for (item in contents!!) {
-            filesList.add(FileItem(item.name, item.length(), item.isDirectory))
+            filesList.add(FileItem(item.name, item.length(), item.isDirectory, item.lastModified()))
         }
 
         // sort -> folders first -> ascending by name
@@ -279,6 +279,21 @@ class MainActivityViewModel(
             moveFileTo = null
         }
         return 1
+    }
+
+    fun createTextNote(noteName: String): String {
+
+        val filePath = joinPath(getFilesDir(), getInternalPath(), noteName)
+
+        val newTextNote = File(filePath)
+        val result = newTextNote.createNewFile()
+
+        return if (result) {
+            filePath
+        }else{
+            Constants.FILE_EXIST
+        }
+
     }
 
 }

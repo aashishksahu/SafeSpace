@@ -6,7 +6,6 @@ class Constants {
         const val INIT = 0
         const val BACK = 1
         const val FORWARD = 2
-        const val CLICK = 3
 
         const val DOCUMENT_TYPE = "document"
         const val AUDIO_TYPE = "audio"
@@ -16,8 +15,14 @@ class Constants {
         const val INTENT_KEY_PATH = "path"
 
         const val PDF = "pdf"
+        const val TXT = "txt"
+        const val JSON = "json"
+        const val XML = "xml"
         const val ROOT = "root"
         const val APP_FIRST_RUN = "FIRST_RUN"
+
+        const val FILE_EXIST = "FILE_EXIST"
+
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",

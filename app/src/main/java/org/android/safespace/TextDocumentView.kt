@@ -108,4 +108,5 @@ class TextDocumentView : AppCompatActivity() {
             }
         }
     }
+
 }

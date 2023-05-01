@@ -29,6 +29,7 @@ class FilesRecyclerViewAdapter(
         val fileName: TextView = itemView.findViewById(R.id.fileName)
         val fileDescription: TextView = itemView.findViewById(R.id.fileDescription)
         val fileIcon: ShapeableImageView = itemView.findViewById(R.id.fileIcon)
+        val fileLastModified: TextView = itemView.findViewById(R.id.fileDateModified)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,6 +47,8 @@ class FilesRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val fileItem = fileItemList[position]
+
+        holder.fileLastModified.text = Utils.convertLongToTime(fileItem.lastModified)
 
         holder.fileName.text = fileItem.name
         if (fileItem.isDir) {
