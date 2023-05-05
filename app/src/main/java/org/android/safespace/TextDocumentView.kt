@@ -7,7 +7,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.android.safespace.lib.Constants
 import java.io.*
@@ -17,7 +16,6 @@ class TextDocumentView : AppCompatActivity() {
     /*
         Todo: text view input type none single line [BUG]
     */
-    private var isDarkTheme = true
     private var isReadOnly = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +53,6 @@ class TextDocumentView : AppCompatActivity() {
 
 
         val saveButton = findViewById<FloatingActionButton>(R.id.saveButton)
-        val themeButton = findViewById<FloatingActionButton>(R.id.themeButton)
 
         saveButton.setOnClickListener {
 
@@ -91,20 +88,6 @@ class TextDocumentView : AppCompatActivity() {
                     Log.d("ERROR", e.message!!)
                 }
 
-            }
-        }
-
-        themeButton.setOnClickListener {
-            if (isDarkTheme) {
-                // set to bright
-                textView.background = ContextCompat.getDrawable(applicationContext, R.color.white)
-                textView.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
-                isDarkTheme = false
-            } else {
-                // set to dark
-                textView.background = ContextCompat.getDrawable(applicationContext, R.color.black)
-                textView.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
-                isDarkTheme = true
             }
         }
     }

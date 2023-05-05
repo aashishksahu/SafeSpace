@@ -32,7 +32,6 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * move recyclerview logic to viewModel
   * Implement export files similar to multi select delete
   * Implement about page
   * Implement file encryption page with individual files encryption/decryption and encrypted backup export
