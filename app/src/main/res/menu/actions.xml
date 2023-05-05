@@ -20,6 +20,11 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/theme_menu"
+        android:title="@string/change_theme"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/about"
         android:title="@string/aboutText"
         app:showAsAction="never" />

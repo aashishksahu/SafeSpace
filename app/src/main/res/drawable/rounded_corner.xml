@@ -5,7 +5,7 @@
         android:width="1dp"
         android:color="?attr/colorPrimary" />
 
-    <solid android:color="?attr/backgroundColor" />
+    <solid android:color="?attr/cardBackgroundColor" />
 
     <padding
         android:left="1dp"

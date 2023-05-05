@@ -18,7 +18,7 @@
         app:backgroundTint="?attr/colorSecondaryVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+        app:tint="?attr/colorPrimary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/themeButton"
@@ -31,7 +31,7 @@
         app:backgroundTint="?attr/colorSecondaryVariant"
         app:layout_constraintEnd_toStartOf="@+id/saveButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+        app:tint="?attr/colorPrimary" />
 
     <EditText
         android:id="@+id/textView"
@@ -60,7 +60,7 @@
         android:layout_margin="10sp"
         android:text="@string/read_only"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toStartOf="@+id/themeButton"
         app:layout_constraintStart_toStartOf="parent"

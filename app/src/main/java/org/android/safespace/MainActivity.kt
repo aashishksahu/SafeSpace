@@ -1,13 +1,13 @@
 package org.android.safespace
 
-import android.R.attr.*
 import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyButton: MaterialButton
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,16 +63,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         viewModel = MainActivityViewModel(application)
 
+        sharedPref = getPreferences(MODE_PRIVATE)
+
         // initialize at first run of app
-        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        if (!sharedPreferences.getBoolean(Constants.APP_FIRST_RUN, false)) {
+        if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
             if (initializeApp() == 1) {
-                with(sharedPreferences.edit()) {
+                with(sharedPref.edit()) {
                     putBoolean(Constants.APP_FIRST_RUN, true)
                     apply()
                 }
             }
         }
+        changeTheme(true, getString(R.string.is_dark), sharedPref)
 
         fileList = viewModel.getContents(viewModel.getInternalPath())
 
@@ -214,7 +217,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         // Top App Bar
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        topAppBar.setTitleTextColor(getColor(R.color.white))
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.create_dir -> {
@@ -225,6 +227,15 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                     intent.type = "*/*"
                     selectFilesActivityResult.launch(intent)
+                }
+                R.id.theme_menu -> {
+                    changeTheme(false, getString(R.string.is_dark), sharedPref)
+                    // restart app after theme change
+                    val i =
+                        baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)
+                    i!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(i)
+                    finish()
                 }
                 R.id.about -> {
                     // open new intent with MIT Licence and github link and library credits
@@ -286,8 +297,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     LayoutParams.WRAP_CONTENT
                 )
 
-                val pathBtn = Button(applicationContext)
-                pathBtn.setTextColor(getColor(R.color.white))
+                val btnContext = ContextThemeWrapper(breadCrumbs.context, R.style.breadCrumbsButtonStyle)
+                val pathBtn = MaterialButton(btnContext)
                 pathBtn.minHeight = 0
                 pathBtn.minWidth = 0
 
@@ -301,6 +312,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         0
                     )
                 } else {
+                    params.setMargins(5, 2, 0, 2)
                     pathBtn.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.navigate_next_white_18dp,
                         0,
@@ -311,7 +323,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
                 pathBtn.text = currentDir
                 pathBtn.layoutParams = params
-                pathBtn.setBackgroundColor(Color.TRANSPARENT)
 
                 breadCrumbsButtonList.add(
                     BreadCrumb(path, pathBtn)
@@ -333,6 +344,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     private fun attachClickAction(pathBtn: Button) {
+
         pathBtn.setOnClickListener {
             val btn = it as Button
 
@@ -358,6 +370,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
             }
         }
+
     }
 
     private fun updateRecyclerView() {
