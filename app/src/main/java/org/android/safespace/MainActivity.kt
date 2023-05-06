@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -43,6 +42,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var fileList: List<FileItem>
+    private lateinit var nothingHereText: TextView
     private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
@@ -60,9 +60,23 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = MainActivityViewModel(application)
+        /* initialize things on activity start */
 
+        viewModel = MainActivityViewModel(application)
         sharedPref = getPreferences(MODE_PRIVATE)
+        nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
+        val adapterMessages = mapOf(
+            "directory_indicator" to getString(R.string.directory_indicator)
+        )
+        filesRecyclerView = findViewById(R.id.filesRecyclerView)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
+        breadCrumbs = findViewById(R.id.breadCrumbsLayout)
+        deleteButton = findViewById(R.id.deleteButton)
+        fileMoveCopyView = findViewById(R.id.moveCopyFileView)
+        fileMoveCopyName = findViewById(R.id.moveCopyFileName)
+        fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
+        val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
 
         // initialize at first run of app
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
@@ -75,37 +89,23 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         }
         changeTheme(true, getString(R.string.is_dark), sharedPref)
 
-        fileList = viewModel.getContents(viewModel.getInternalPath())
-
-        val adapterMessages = mapOf(
-            "directory_indicator" to getString(R.string.directory_indicator)
-        )
-
         // Notes: created a click listener interface with onClick method, implemented the same in
         //        main activity, then, passed the entire context (this) in the adapter
         //        onItemClickListener, adapter called the method with the row item data
-        filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
-        filesRecyclerViewAdapter.setData(fileList)
+        fileList = viewModel.getContents(viewModel.getInternalPath())
+        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        breadCrumbs = findViewById(R.id.breadCrumbsLayout)
         updateBreadCrumbs(Constants.INIT, viewModel.getInternalPath())
 
-        deleteButton = findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
             // file = null because multiple selections to be deleted and there's no single file
             deleteFilePopup(null, deleteButton.context)
         }
 
-        fileMoveCopyView = findViewById(R.id.moveCopyFileView)
         fileMoveCopyView.visibility = View.GONE
-        fileMoveCopyName = findViewById(R.id.moveCopyFileName)
         fileMoveCopyName.isSelected = true
-        fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
-
-        val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
 
         fileMoveCopyButton.setOnClickListener {
 
@@ -213,9 +213,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             }
         // End: File picker result
 
-
         // Top App Bar
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.create_dir -> {
@@ -236,14 +234,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     startActivity(i)
                     finish()
                 }
-                R.id.about -> {
-                    // open new intent with MIT Licence and github link and library credits
-                }
                 R.id.create_txt -> {
                     createTextNote(topAppBar.context)
                 }
                 R.id.cryptoUtility -> {
                     // open new intent for cryptography
+                }
+                R.id.about -> {
+                    // open new intent with MIT Licence and github link and library credits
                 }
             }
             true
@@ -296,8 +294,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     LayoutParams.WRAP_CONTENT
                 )
 
-                val btnContext = ContextThemeWrapper(breadCrumbs.context, R.style.breadCrumbsButtonStyle)
-                val pathBtn = MaterialButton(btnContext)
+                val pathBtn = Button(breadCrumbs.context)
                 pathBtn.minHeight = 0
                 pathBtn.minWidth = 0
 
@@ -311,7 +308,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         0
                     )
                 } else {
-                    params.setMargins(5, 2, 0, 2)
+                    params.setMargins(2, 2, 0, 2)
                     pathBtn.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.navigate_next_white_18dp,
                         0,
@@ -377,13 +374,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         filesRecyclerViewAdapter.setData(
             viewModel.getContents(
                 viewModel.getInternalPath()
-            )
+            ),
+            nothingHereText
         )
     }
 
     private fun createDirPopup(context: Context) {
 
-        val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
+        val builder = MaterialAlertDialogBuilder(context)
 
         val inflater: LayoutInflater = layoutInflater
         val createFolderLayout = inflater.inflate(R.layout.create_dir, null)
@@ -532,7 +530,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     private fun renameFilePopup(file: FileItem, context: Context) {
-        val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
+        val builder = MaterialAlertDialogBuilder(context)
 
         val inflater: LayoutInflater = layoutInflater
         val renameLayout = inflater.inflate(R.layout.rename_layout, null)
@@ -581,7 +579,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val inflater: LayoutInflater = layoutInflater
         val deleteLayout = inflater.inflate(R.layout.delete_confirmation, null)
 
-        val builder = MaterialAlertDialogBuilder(context, R.style.dialogTheme)
+        val builder = MaterialAlertDialogBuilder(context)
         builder.setTitle(getString(R.string.context_menu_delete))
             .setCancelable(true)
             .setView(deleteLayout)
@@ -679,7 +677,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun createTextNote(viewContext: Context) {
 
-        val builder = MaterialAlertDialogBuilder(viewContext, R.style.dialogTheme)
+        val builder = MaterialAlertDialogBuilder(viewContext)
 
         val inflater: LayoutInflater = layoutInflater
         val textNoteNameLayout = inflater.inflate(R.layout.text_note_name_layout, null)

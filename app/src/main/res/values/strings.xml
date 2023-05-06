@@ -43,6 +43,7 @@
     <string name="file_exists_error">This File Already Exists</string>
     <string name="change_theme">Change Theme</string>
     <string name="is_dark">IS_DARK</string>
+    <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>
 
-    <string name="aboutText">About</string>
+    <string name="aboutText">About (Coming Soon)</string>
 </resources>

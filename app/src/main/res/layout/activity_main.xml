@@ -29,6 +29,19 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:id="@+id/nothingHere"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/nothing_here"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"
         style="@style/Widget.Material3.Button.Icon"
@@ -38,7 +51,7 @@
         android:contentDescription="@string/context_menu_delete"
         android:src="@drawable/delete_white_36dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorSecondaryVariant"
+        app:backgroundTint="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tint="?attr/colorPrimary" />
@@ -93,7 +106,8 @@
             android:id="@+id/moveCopyFileName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10sp"
+            android:layout_margin="20sp"
+            android:layout_marginBottom="40sp"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
@@ -113,14 +127,12 @@
             android:contentDescription="@string/move_copy_btn_text"
             android:textAlignment="textEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="?attr/colorPrimary"
-            app:backgroundTint="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/moveCopyFileButtonCancel"
-            style="@style/Widget.Material3.Button.TextButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
@@ -128,7 +140,7 @@
             android:text="@string/cancel"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="?attr/colorPrimary"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
 

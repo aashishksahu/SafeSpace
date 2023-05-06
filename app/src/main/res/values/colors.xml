@@ -5,50 +5,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#EBE7ED</color>
 
-    <color name="primary_500">#242331</color>
-    <color name="primary_700">#1B1A25</color>
-    <color name="primary_900">#0D0C13</color>
+    <color name="primary_500">#E0DDCF</color>
+    <color name="primary_700">#D8D4C3</color>
+    <color name="primary_900">#CBC7B2</color>
+    <color name="border_light">#FFFFFF</color>
     <color name="card_background_light">#FFFFFF</color>
-    <color name="border">#FFFFFF</color>
 
-    <color name="d_primary_500">#E0DDCF</color>
-    <color name="d_primary_700">#D8D4C3</color>
-    <color name="d_primary_900">#CBC7B2</color>
-    <color name="d_border">#000000</color>
+    <color name="secondary_500">#242331</color>
+    <color name="secondary_700">#1B1A25</color>
+    <color name="secondary_900">#0D0C13</color>
+    <color name="border_dark">#000000</color>
     <color name="card_background_dark">#3A3A3A</color>
 
-    <color name="amount_green">#8BC34A</color>
-    <color name="inactive_text">#656565</color>
-
-<!--    <color name="primary_200">#9FA8DA</color>-->
-<!--&lt;!&ndash;    <color name="primary_500">#3F51B5</color>&ndash;&gt;-->
-<!--&lt;!&ndash;    <color name="primary_700">#303F9F</color>&ndash;&gt;-->
-
-<!--    <color name="secondary_200">#B0BEC5</color>-->
-<!--    <color name="secondary_500">#607D8B</color>-->
-<!--    <color name="secondary_700">#455A64</color>-->
-
-<!--&lt;!&ndash;    <color name="black">#222831</color>&ndash;&gt;-->
-<!--&lt;!&ndash;    <color name="white">#EEEEEE</color>&ndash;&gt;-->
-
-<!--&lt;!&ndash;    Replace &ndash;&gt;-->
-<!--    <color name="transparent">#00FFFFFF</color>-->
-<!--    <color name="black">#FF000000</color>-->
-<!--    <color name="white">#EBE7ED</color>-->
-
-<!--    <color name="primary_500">#242331</color>-->
-<!--    <color name="primary_700">#1B1A25</color>-->
-<!--    <color name="primary_900">#0D0C13</color>-->
-<!--    <color name="card_background_light">#FFFFFF</color>-->
-<!--    <color name="border">#FFFFFF</color>-->
-
-<!--    <color name="d_primary_500">#E0DDCF</color>-->
-<!--    <color name="d_primary_700">#D8D4C3</color>-->
-<!--    <color name="d_primary_900">#CBC7B2</color>-->
-<!--    <color name="d_border">#000000</color>-->
-<!--    <color name="card_background_dark">#3A3A3A</color>-->
-
-<!--    <color name="amount_green">#8BC34A</color>-->
-<!--    <color name="inactive_text">#656565</color>-->
     <color name="mtrl_textinput_default_box_stroke_color">#303F9F</color>
 </resources>

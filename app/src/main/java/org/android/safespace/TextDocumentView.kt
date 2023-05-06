@@ -1,7 +1,6 @@
 package org.android.safespace
 
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
@@ -16,21 +15,21 @@ class TextDocumentView : AppCompatActivity() {
     /*
         Todo: text view input type none single line [BUG]
     */
-    private var isReadOnly = true
+    private lateinit var textFileContentView: EditText
+    private lateinit var file: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
 
-        val textView = findViewById<EditText>(R.id.textView)
-        // start in read-only mode
-        textView.inputType = InputType.TYPE_NULL
+        textFileContentView = findViewById(R.id.textView)
 
-        val mode = findViewById<TextView>(R.id.mode)
+        file = File(intent.extras?.getString(Constants.INTENT_KEY_PATH)!!)
 
         val content = StringBuilder()
 
-        val file = File(intent.extras?.getString(Constants.INTENT_KEY_PATH)!!)
+        val mode = findViewById<TextView>(R.id.mode)
+        mode.text = file.name
 
         try {
 
@@ -49,47 +48,46 @@ class TextDocumentView : AppCompatActivity() {
             Log.d("ERROR", e.message!!)
         }
 
-        textView.setText(content.toString())
-
+        textFileContentView.setText(content.toString())
 
         val saveButton = findViewById<FloatingActionButton>(R.id.saveButton)
 
         saveButton.setOnClickListener {
 
-            if (isReadOnly) {
-                saveButton.setImageResource(R.drawable.save_white_24dp)
-                textView.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                mode.text = getString(R.string.edit_mode)
-                isReadOnly = false
-            } else {
+            try {
+                saveFile(textFileContentView.text.toString(), file)
 
-                val contentToSave = textView.text.toString()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.save_success),
+                    Toast.LENGTH_LONG
+                ).show()
 
-                try {
-                    file.writeText(contentToSave)
-
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.save_success),
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    saveButton.setImageResource(R.drawable.edit_black_24dp)
-                    textView.inputType = InputType.TYPE_NULL
-                    mode.text = getString(R.string.read_only)
-                    isReadOnly = true
-
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.save_error),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    Log.d("ERROR", e.message!!)
-                }
-
+            } catch (e: Exception) {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.save_error),
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.d("ERROR", e.message!!)
             }
+
+
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        saveFile(textFileContentView.text.toString(), file)
+    }
+
+    private fun saveFile(contentToSave: String?, file: File?) {
+
+        if (contentToSave?.isNotEmpty() == true && file != null) {
+            file.writeText(contentToSave)
+        }
+
+    }
+
 
 }

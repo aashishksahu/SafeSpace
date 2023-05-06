@@ -1,31 +1,20 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.SafeSpace" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <!--        <item name="colorPrimary">@color/primary_500</item>-->
-        <!--        <item name="colorPrimaryVariant">@color/primary_700</item>-->
-        <!--        <item name="colorOnPrimary">@color/white</item>-->
-        <!-- Secondary brand color. -->
-        <!--        <item name="colorSecondary">@color/secondary_200</item>-->
-        <!--        <item name="colorSecondaryVariant">@color/card_background_dark</item>-->
-        <!--        <item name="colorOnSecondary">@color/black</item>-->
-        <!-- Status bar color. -->
-        <!--        <item name="android:statusBarColor">?attr/backgroundColor</item>-->
-        <!-- Customize your theme here. -->
-        <!--        <item name="backgroundColor">@color/black</item>-->
 
         <item name="android:itemBackground">@color/card_background_dark</item>
 <!--        <item name="android:textColor">@color/d_primary_500</item>-->
 <!--        <item name="android:colorForeground">@color/d_primary_500</item>-->
 
         <!--  Primary brand color.  -->
-        <item name="colorPrimary">@color/d_primary_500</item>
-        <item name="colorPrimaryVariant">@color/d_primary_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="iconTint">@color/white</item>
+        <item name="colorPrimary">@color/primary_500</item>
+        <item name="colorOnPrimary">@color/secondary_500</item>
+        <item name="colorPrimaryVariant">@color/primary_700</item>
+        <item name="iconTint">@color/primary_500</item>
         <item name="cardBackgroundColor">@color/card_background_dark</item>
         <!--  Secondary brand color.  -->
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/secondary_500</item>
+        <item name="colorOnSecondary">@color/primary_500</item>
         <item name="backgroundColor">@color/black</item>
         <!--  Status bar color.  -->
         <item name="android:statusBarColor">?attr/backgroundColor</item>

@@ -140,9 +140,16 @@ class FilesRecyclerViewAdapter(
 
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<FileItem>) {
+    fun setData(data: List<FileItem>, emptyMsg: TextView) {
         // This method updates the adapter with the new updated data.
         // Replaces the old data with the new one and notify listeners about that change.
+
+        if (data.isEmpty()) {
+            emptyMsg.visibility = View.VISIBLE
+        } else {
+            emptyMsg.visibility = View.GONE
+        }
+
         this.fileItemList = data
         selectedItemsPosition = IntArray(data.size)
         notifyDataSetChanged()

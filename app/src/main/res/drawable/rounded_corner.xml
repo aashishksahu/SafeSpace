@@ -3,7 +3,7 @@
 
     <stroke
         android:width="1dp"
-        android:color="?attr/colorPrimary" />
+        android:color="?attr/cardBackgroundColor" />
 
     <solid android:color="?attr/cardBackgroundColor" />
 

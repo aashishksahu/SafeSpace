@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:background="?attr/backgroundColor"
         android:hint="@string/context_menu_rename_hint"
         android:textColorHint="?attr/colorPrimary"
         app:boxStrokeColor="?attr/colorPrimary"
