@@ -31,6 +31,7 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
+  * fix Top app bar & menu color
   * Implement export files similar to multi select delete
   * Implement about page
   * Implement file encryption page with individual files encryption/decryption and encrypted backup export
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
+    private lateinit var fileMoveCopyOperation: TextView
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
 
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         deleteButton = findViewById(R.id.deleteButton)
         fileMoveCopyView = findViewById(R.id.moveCopyFileView)
         fileMoveCopyName = findViewById(R.id.moveCopyFileName)
+        fileMoveCopyOperation = findViewById(R.id.moveCopyFileOperation)
         fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
@@ -662,6 +665,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
+        fileMoveCopyOperation.text = getString(R.string.move_title)
         fileMoveCopyButton.text = getString(R.string.move_file_title)
 
     }
@@ -672,6 +676,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
+        fileMoveCopyOperation.text = getString(R.string.copy_title)
         fileMoveCopyButton.text = getString(R.string.copy_file_title)
     }
 

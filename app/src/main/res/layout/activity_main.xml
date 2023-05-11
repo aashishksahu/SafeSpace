@@ -33,10 +33,10 @@
         android:id="@+id/nothingHere"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/nothing_here"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:visibility="gone"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,60 +90,86 @@
 
     </HorizontalScrollView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/moveCopyFileView"
-        android:layout_width="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:background="@drawable/rounded_corner"
-        android:padding="5sp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/transparent"
+        app:strokeWidth="0dp">
 
-        <TextView
-            android:id="@+id/moveCopyFileName"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/moveCopyFileView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20sp"
-            android:layout_marginBottom="40sp"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="?attr/colorPrimary"
+            android:padding="5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/moveCopyFileButton"
-            style="@style/Widget.Material3.Button.ElevatedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:contentDescription="@string/move_copy_btn_text"
-            android:textAlignment="textEnd"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
+            <TextView
+                android:id="@+id/moveCopyFileOperation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/moveCopyFileButtonCancel"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:contentDescription="@string/move_copy_btn_text"
-            android:text="@string/cancel"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            <TextView
+                android:id="@+id/moveCopyFileName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="5sp"
+                android:layout_marginEnd="20sp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/moveCopyFileOperation" />
 
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/moveCopyFileButton"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:contentDescription="@string/move_copy_btn_text"
+                android:textAlignment="textEnd"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/moveCopyFileButtonCancel"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:contentDescription="@string/move_copy_btn_text"
+                android:text="@string/cancel"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
