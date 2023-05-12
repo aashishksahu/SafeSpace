@@ -23,9 +23,10 @@
         android:id="@+id/cryptoUtility"
         android:title="@string/cryptoUtilityText"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/theme_menu"
-        android:title="@string/change_theme"
+        android:title="@string/light_mode"
         app:showAsAction="ifRoom" />
 
     <item

@@ -4,5 +4,10 @@
     <style name="dialogThemeMenu" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:background">?attr/cardBackgroundColor</item>
     </style>
+    <style name="buttonTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_500</item>
+        <item name="colorPrimaryDark">@color/secondary_500</item>
+        <item name="materialButtonStyle">@style/Widget.Material3.Button.TextButton</item>
+    </style>
 
 </resources>

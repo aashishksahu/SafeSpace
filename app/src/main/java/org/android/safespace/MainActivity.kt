@@ -31,7 +31,6 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * fix Top app bar & menu color
   * Implement export files similar to multi select delete
   * Implement about page
   * Implement file encryption page with individual files encryption/decryption and encrypted backup export
@@ -90,7 +89,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
             }
         }
-        changeTheme(true, getString(R.string.is_dark), sharedPref)
+
+        val themeMenu: MenuItem = topAppBar.menu.findItem(R.id.theme_menu)
+
+        changeTheme(
+            applicationContext,
+            true,
+            getString(R.string.is_dark),
+            sharedPref,
+            themeMenu
+        )
 
         // Notes: created a click listener interface with onClick method, implemented the same in
         //        main activity, then, passed the entire context (this) in the adapter
@@ -198,6 +206,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                                         updateRecyclerView()
                                     }
                                 }
+
                                 -1 -> {
                                     CoroutineScope(Dispatchers.Main).launch {
                                         Toast.makeText(
@@ -222,14 +231,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 R.id.create_dir -> {
                     createDirPopup(topAppBar.context)
                 }
+
                 R.id.import_files -> {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                     intent.type = "*/*"
                     selectFilesActivityResult.launch(intent)
                 }
+
                 R.id.theme_menu -> {
-                    changeTheme(false, getString(R.string.is_dark), sharedPref)
+                    // get the stored preference for dark mode
+                    val prefName = getString(R.string.is_dark)
+                    changeTheme(applicationContext, false, prefName, sharedPref, menuItem)
                     // restart app after theme change
                     val i =
                         baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)
@@ -237,12 +250,15 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     startActivity(i)
                     finish()
                 }
+
                 R.id.create_txt -> {
                     createTextNote(topAppBar.context)
                 }
+
                 R.id.cryptoUtility -> {
                     // open new intent for cryptography
                 }
+
                 R.id.about -> {
                     // open new intent with MIT Licence and github link and library credits
                 }
@@ -444,12 +460,15 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 Constants.IMAGE_TYPE -> {
                     loadImage(filePath)
                 }
+
                 Constants.VIDEO_TYPE, Constants.AUDIO_TYPE -> {
                     loadAV(filePath)
                 }
+
                 Constants.DOCUMENT_TYPE -> {
                     loadDocument(filePath)
                 }
+
                 else -> {
                     Toast.makeText(
                         applicationContext,
@@ -473,9 +492,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 R.id.rename_item -> {
                     renameFilePopup(data, view.context)
                 }
+
                 R.id.delete_item -> {
                     deleteFilePopup(data, view.context)
                 }
+
                 R.id.move_item -> {
                     if (data.isDir) {
                         Toast.makeText(
@@ -487,6 +508,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         moveFile(data)
                     }
                 }
+
                 R.id.copy_item -> {
                     if (data.isDir) {
                         Toast.makeText(
