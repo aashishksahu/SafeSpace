@@ -56,6 +56,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tint="?attr/colorPrimary" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clearButton"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:layout_marginStart="316dp"
+        android:layout_marginBottom="244dp"
+        android:contentDescription="@string/context_menu_delete"
+        android:src="@drawable/clear_all_black_24dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/deleteButton"
+        app:tint="?attr/colorPrimary" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/exportButton"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:layout_marginStart="316dp"
+        android:layout_marginBottom="244dp"
+        android:contentDescription="@string/context_menu_delete"
+        android:src="@drawable/file_download_black_24dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/clearButton"
+        app:tint="?attr/colorPrimary" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"
         android:layout_width="0dp"

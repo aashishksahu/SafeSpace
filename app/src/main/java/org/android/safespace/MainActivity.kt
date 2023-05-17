@@ -31,9 +31,9 @@ import org.android.safespace.viewmodel.MainActivityViewModel
 
 /*
  Todo:
-  * Implement export files similar to multi select delete
-  * Implement about page
+  * perform file export as per this guide https://medium.com/@thuat26/how-to-save-file-to-external-storage-in-android-10-and-above-a644f9293df2
   * Implement file encryption page with individual files encryption/decryption and encrypted backup export
+  * Implement about page
   *
   * Sort options [Low Priority]
 */
@@ -47,6 +47,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var deleteButton: FloatingActionButton
+    private lateinit var clearButton: FloatingActionButton
+    private lateinit var exportButton: FloatingActionButton
     private var selectedItems = ArrayList<FileItem>()
     private lateinit var breadCrumbs: LinearLayout
     private var breadCrumbsButtonList = ArrayList<BreadCrumb>()
@@ -73,6 +75,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
         breadCrumbs = findViewById(R.id.breadCrumbsLayout)
         deleteButton = findViewById(R.id.deleteButton)
+        clearButton = findViewById(R.id.clearButton)
+        exportButton = findViewById(R.id.exportButton)
         fileMoveCopyView = findViewById(R.id.moveCopyFileView)
         fileMoveCopyName = findViewById(R.id.moveCopyFileName)
         fileMoveCopyOperation = findViewById(R.id.moveCopyFileOperation)
@@ -113,6 +117,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         deleteButton.setOnClickListener {
             // file = null because multiple selections to be deleted and there's no single file
             deleteFilePopup(null, deleteButton.context)
+        }
+
+        clearButton.setOnClickListener {
+            toggleFloatingButtonVisibility(false)
+            this.selectedItems.clear()
+            updateRecyclerView()
+        }
+
+        exportButton.setOnClickListener{
+            exportItems()
         }
 
         fileMoveCopyView.visibility = View.GONE
@@ -280,6 +294,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     }
 
+
     private fun initializeApp(): Int {
         return viewModel.initRootDir()
     }
@@ -445,7 +460,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             updateRecyclerView()
 
             // clear selection on directory change and hide delete button
-            deleteButton.visibility = View.GONE
+            toggleFloatingButtonVisibility(false)
             // update breadcrumbs
             updateBreadCrumbs(Constants.FORWARD, data.name)
 
@@ -536,9 +551,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     ) {
         this.selectedItems = selectedItems
         if (this.selectedItems.isEmpty()) {
-            deleteButton.visibility = View.GONE
+            toggleFloatingButtonVisibility(false)
         } else {
-            deleteButton.visibility = View.VISIBLE
+            toggleFloatingButtonVisibility(true)
         }
     }
 
@@ -619,7 +634,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                     }
 
                     // hide delete button after items are deleted
-                    deleteButton.visibility = View.GONE
+                    toggleFloatingButtonVisibility(false)
 
                     updateRecyclerView()
                 } else {
@@ -745,6 +760,23 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun exportItems() {
+        viewModel.exportItems(this.selectedItems, viewModel.getInternalPath(), null)
+    }
+
+    private fun toggleFloatingButtonVisibility(isVisible: Boolean) {
+        if (isVisible) {
+            deleteButton.visibility = View.VISIBLE
+            clearButton.visibility = View.VISIBLE
+            exportButton.visibility = View.VISIBLE
+        } else {
+            deleteButton.visibility = View.GONE
+            clearButton.visibility = View.GONE
+            exportButton.visibility = View.GONE
+        }
+
     }
 
 }

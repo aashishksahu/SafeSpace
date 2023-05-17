@@ -290,9 +290,57 @@ class MainActivityViewModel(
 
         return if (result) {
             filePath
-        }else{
+        } else {
             Constants.FILE_EXIST
         }
+
+    }
+
+    fun exportItems(
+        selectedItems: ArrayList<FileItem>,
+        selectedPath: String,
+        _filesArray: ArrayList<String>? //keep null unless called recursively
+    ) {
+
+        var filesArray = _filesArray
+
+        if (filesArray == null) {
+            filesArray = arrayListOf()
+        }
+
+        for (item in selectedItems) {
+            val filePath = joinPath(getFilesDir(), selectedPath, item.name)
+
+            if (item.isDir) {
+                filesArray = recursiveDirectoryRead(filePath, filesArray!!)
+            } else {
+                filesArray?.add(filePath)
+            }
+        }
+
+        // start export
+
+    }
+
+    private fun recursiveDirectoryRead(
+        path: String,
+        _filesArray: ArrayList<String>
+    ): ArrayList<String> {
+
+        var filesArray = _filesArray
+
+        val directoryContents = File(path).listFiles()
+
+        for (item in directoryContents!!) {
+            val filePath = joinPath(path, item.name)
+            if (item.isDirectory) {
+                filesArray = recursiveDirectoryRead(filePath, filesArray)
+            }else{
+                filesArray.add(filePath)
+            }
+        }
+
+        return filesArray
 
     }
 
