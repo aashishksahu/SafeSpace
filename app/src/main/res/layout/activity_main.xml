@@ -42,51 +42,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/horizontalScrollView" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/deleteButton"
-        style="@style/Widget.Material3.Button.Icon"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
         android:contentDescription="@string/context_menu_delete"
-        android:src="@drawable/delete_white_36dp"
+        android:text="@string/context_menu_delete"
+        android:textColor="@color/design_default_color_error"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorSecondary"
+        app:icon="@drawable/delete_white_36dp"
+        app:iconTint = "@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tint="?attr/colorPrimary" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/clearButton"
-        style="@style/Widget.Material3.Button.Icon"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:layout_marginStart="316dp"
-        android:layout_marginBottom="244dp"
-        android:contentDescription="@string/context_menu_delete"
-        android:src="@drawable/clear_all_black_24dp"
+        android:contentDescription="@string/multi_clear"
+        android:text="@string/multi_clear"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorSecondary"
+        app:icon="@drawable/clear_all_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/deleteButton"
-        app:tint="?attr/colorPrimary" />
+        app:layout_constraintStart_toEndOf="@+id/deleteButton" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/exportButton"
-        style="@style/Widget.Material3.Button.Icon"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:layout_marginStart="316dp"
-        android:layout_marginBottom="244dp"
-        android:contentDescription="@string/context_menu_delete"
-        android:src="@drawable/file_download_black_24dp"
+        android:contentDescription="@string/multi_export"
+        android:text="@string/multi_export"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorSecondary"
+        app:icon="@drawable/file_download_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/clearButton"
-        app:tint="?attr/colorPrimary" />
+        app:layout_constraintStart_toEndOf="@+id/clearButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"

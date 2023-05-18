@@ -13,6 +13,8 @@
     <string name="context_menu_rename">Rename</string>
     <string name="context_menu_rename_hint">Enter name</string>
     <string name="context_menu_delete">Delete</string>
+    <string name="multi_clear">Clear</string>
+    <string name="multi_export">Export</string>
     <string name="context_menu_move">Move</string>
     <string name="context_menu_copy">Copy</string>
     <string name="context_menu_select">Select</string>
@@ -48,6 +50,9 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="light_mode">Light Mode</string>
     <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>
+
+    <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
+
 
     <string name="aboutText">About (Coming Soon)</string>
 </resources>

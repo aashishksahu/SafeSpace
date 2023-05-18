@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,9 +45,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
-    private lateinit var deleteButton: FloatingActionButton
-    private lateinit var clearButton: FloatingActionButton
-    private lateinit var exportButton: FloatingActionButton
+    private lateinit var deleteButton: MaterialButton
+    private lateinit var clearButton: MaterialButton
+    private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
     private lateinit var breadCrumbs: LinearLayout
     private var breadCrumbsButtonList = ArrayList<BreadCrumb>()
