@@ -24,6 +24,12 @@ class Utils {
                 in Constants.VIDEO_EXTENSIONS -> {
                     Constants.VIDEO_TYPE
                 }
+                Constants.PDF -> {
+                    Constants.PDF
+                }
+                Constants.TXT -> {
+                    Constants.TXT
+                }
                 else -> Constants.OTHER_TYPE
             }
 

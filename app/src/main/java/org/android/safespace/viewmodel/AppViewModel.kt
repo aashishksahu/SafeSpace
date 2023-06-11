@@ -7,6 +7,7 @@ import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
 import org.android.safespace.lib.Constants
 import org.android.safespace.lib.FileItem
+import org.android.safespace.lib.FolderItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -14,12 +15,13 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
-class MainActivityViewModel(
+class AppViewModel(
     private val application: Application
 ) : ViewModel() {
 
     private var internalPath: ArrayList<String> = ArrayList()
     private var filesList: ArrayList<FileItem> = ArrayList()
+    private var folderList: ArrayList<FolderItem> = ArrayList()
 
     var moveFileFrom: String? = null
     var moveFileTo: String? = null
@@ -43,14 +45,6 @@ class MainActivityViewModel(
         val lastPath = internalPath.last()
         if (internalPath.isNotEmpty()) internalPath.removeLast()
         return lastPath
-    }
-
-    fun getLastDirectory(): String {
-        return try {
-            internalPath.last().toString()
-        } catch (e: NoSuchElementException) {
-            ""
-        }
     }
 
     fun isRootDirectory(): Boolean {
@@ -147,22 +141,41 @@ class MainActivityViewModel(
 
     }
 
-    fun getContents(internalPath: String): List<FileItem> {
+    fun getContents(internalPath: String): Pair<List<FileItem>, List<FolderItem>> {
 
         val dirPath = File(joinPath(getFilesDir(), internalPath))
 
         val contents = dirPath.listFiles()
 
         filesList.clear()
+        folderList.clear()
 
         for (item in contents!!) {
-            filesList.add(FileItem(item.name, item.length(), item.isDirectory, item.lastModified()))
+            if (item.isDirectory) {
+
+                val fileInsideFolder = item.listFiles()
+
+                val fileCount = fileInsideFolder?.size ?: 0
+
+                folderList.add(FolderItem(item.name, fileCount))
+
+            } else {
+
+                filesList.add(
+                    FileItem(
+                        item.name,
+                        item.length(),
+                        item.isDirectory,
+                        item.lastModified()
+                    )
+                )
+            }
         }
 
         // sort -> folders first -> ascending by name
         filesList.sortWith(compareByDescending<FileItem> { it.isDir }.thenBy { it.name })
 
-        return filesList
+        return Pair(filesList, folderList)
 
     }
 
@@ -207,6 +220,23 @@ class MainActivityViewModel(
 
     }
 
+    fun deleteFolder(folder: FolderItem, internalPath: String): Int {
+        try {
+            val folderToDelete = File(joinPath(getFilesDir(), internalPath, folder.name))
+
+            if (folderToDelete.exists()) {
+                deleteDirectory(folderToDelete)
+                folderToDelete.delete()
+            }
+
+        } catch (e: Exception) {
+            return 0
+        }
+
+        return 1
+
+    }
+
     private fun deleteDirectory(fileToDelete: File): Int {
         try {
             val dirContents = fileToDelete.listFiles()
@@ -223,17 +253,6 @@ class MainActivityViewModel(
             return -1
         }
         return 1
-    }
-
-    fun setPathDynamic(currentPath: String) {
-        val indexOfCurrentPath = internalPath.indexOf(currentPath)
-
-        var indexesToDelete = internalPath.size - indexOfCurrentPath - 1
-
-        while (indexesToDelete > 0) {
-            internalPath.removeLast()
-            indexesToDelete -= 1
-        }
     }
 
     fun moveFile(): Int {
@@ -335,13 +354,20 @@ class MainActivityViewModel(
             val filePath = joinPath(path, item.name)
             if (item.isDirectory) {
                 filesArray = recursiveDirectoryRead(filePath, filesArray)
-            }else{
+            } else {
                 filesArray.add(filePath)
             }
         }
 
         return filesArray
 
+    }
+
+    fun isPreviousRootDirectory(): Boolean {
+        if (this.internalPath.size == 1) {
+            return true
+        }
+        return false
     }
 
 }

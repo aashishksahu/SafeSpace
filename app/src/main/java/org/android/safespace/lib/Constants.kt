@@ -2,10 +2,6 @@ package org.android.safespace.lib
 
 class Constants {
     companion object {
-        // breadcrumbs actions
-        const val INIT = 0
-        const val BACK = 1
-        const val FORWARD = 2
 
         const val DOCUMENT_TYPE = "document"
         const val AUDIO_TYPE = "audio"
@@ -68,10 +64,8 @@ class Constants {
 //            "xml",
 //            "doc",
 //            "odt",
-            "pdf",
 //            "rtf",
 //            "tex",
-            "txt",
 //            "wpd"
         )
 

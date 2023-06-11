@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
-import org.android.safespace.viewmodel.MainActivityViewModel
+import org.android.safespace.viewmodel.AppViewModel
 
 
 class FilesRecyclerViewAdapter(
     private val onItemClickListener: ItemClickListener,
     private val messages: Map<String, String>,
-    private val viewModel: MainActivityViewModel
+    private val viewModel: AppViewModel
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 
@@ -94,8 +94,16 @@ class FilesRecyclerViewAdapter(
     private fun setFileIcon(holder: ViewHolder, fileItem: FileItem) {
         if (fileItem.isDir) {
             holder.fileIcon.setImageResource(R.drawable.folder_36dp)
+
         } else if (Utils.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
+
+        } else if (Utils.getFileType(fileItem.name) == Constants.PDF) {
+            holder.fileIcon.setImageResource(R.drawable.pdf_icon)
+
+        } else if (Utils.getFileType(fileItem.name) == Constants.TXT) {
+            holder.fileIcon.setImageResource(R.drawable.edit_note_black_36dp)
+
         } else if (Utils.getFileType(fileItem.name) == Constants.IMAGE_TYPE) {
             Glide.with(holder.fileIcon)
                 .load(

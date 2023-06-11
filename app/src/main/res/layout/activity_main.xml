@@ -32,7 +32,7 @@
     <TextView
         android:id="@+id/nothingHere"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:gravity="center"
         android:text="@string/nothing_here"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <Button
         android:id="@+id/deleteButton"
@@ -84,6 +84,17 @@
         app:layout_constraintStart_toEndOf="@+id/clearButton" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folderRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:scrollbars="horizontal"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -94,28 +105,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+        app:layout_constraintTop_toBottomOf="@+id/folderRecyclerView" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
-
-        <LinearLayout
-            android:id="@+id/breadCrumbsLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    </HorizontalScrollView>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"

@@ -1,7 +1,5 @@
 package org.android.safespace
 
-import android.annotation.SuppressLint
-import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,7 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +24,16 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.android.safespace.lib.*
-import org.android.safespace.viewmodel.MainActivityViewModel
+import org.android.safespace.lib.Constants
+import org.android.safespace.lib.FileItem
+import org.android.safespace.lib.FilesRecyclerViewAdapter
+import org.android.safespace.lib.FolderClickListener
+import org.android.safespace.lib.FolderItem
+import org.android.safespace.lib.FolderRecyclerViewAdapter
+import org.android.safespace.lib.ItemClickListener
+import org.android.safespace.lib.Utils
+import org.android.safespace.lib.changeTheme
+import org.android.safespace.viewmodel.AppViewModel
 
 
 /*
@@ -37,42 +45,47 @@ import org.android.safespace.viewmodel.MainActivityViewModel
   * Sort options [Low Priority]
 */
 
-class MainActivity : AppCompatActivity(), ItemClickListener {
+class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {
 
-    private lateinit var viewModel: MainActivityViewModel
-    private lateinit var fileList: List<FileItem>
+    private lateinit var viewModel: AppViewModel
+
     private lateinit var nothingHereText: TextView
     private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
+    private lateinit var folderRecyclerView: RecyclerView
+    private lateinit var folderRecyclerViewAdapter: FolderRecyclerViewAdapter
     private lateinit var deleteButton: MaterialButton
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private lateinit var breadCrumbs: LinearLayout
-    private var breadCrumbsButtonList = ArrayList<BreadCrumb>()
     private val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
-
+    private lateinit var topAppBar: MaterialToolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         /* initialize things on activity start */
 
-        viewModel = MainActivityViewModel(application)
+        viewModel = AppViewModel(application)
         sharedPref = getPreferences(MODE_PRIVATE)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
-        val adapterMessages = mapOf(
+
+        val filesRVAdapterTexts = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
         )
+
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, adapterMessages, viewModel)
-        breadCrumbs = findViewById(R.id.breadCrumbsLayout)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, filesRVAdapterTexts, viewModel)
+
+        folderRecyclerViewAdapter = FolderRecyclerViewAdapter(this)
+        folderRecyclerView = findViewById(R.id.folderRecyclerView)
+
         deleteButton = findViewById(R.id.deleteButton)
         clearButton = findViewById(R.id.clearButton)
         exportButton = findViewById(R.id.exportButton)
@@ -81,7 +94,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         fileMoveCopyOperation = findViewById(R.id.moveCopyFileOperation)
         fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar = findViewById(R.id.topAppBar)
 
         // initialize at first run of app
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
@@ -103,15 +116,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             themeMenu
         )
 
-        // Notes: created a click listener interface with onClick method, implemented the same in
-        //        main activity, then, passed the entire context (this) in the adapter
-        //        onItemClickListener, adapter called the method with the row item data
-        fileList = viewModel.getContents(viewModel.getInternalPath())
-        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
-        filesRecyclerView.adapter = filesRecyclerViewAdapter
-        filesRecyclerView.layoutManager = LinearLayoutManager(this)
+        val (fileList, folderList) = viewModel.getContents(viewModel.getInternalPath())
 
-        updateBreadCrumbs(Constants.INIT, viewModel.getInternalPath())
+        folderRecyclerViewAdapter.setData(folderList)
+        val horizontalLayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        folderRecyclerView.layoutManager = horizontalLayoutManager
+        folderRecyclerView.adapter = folderRecyclerViewAdapter
+
+        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
+        filesRecyclerView.layoutManager = LinearLayoutManager(this)
+        filesRecyclerView.adapter = filesRecyclerViewAdapter
 
         deleteButton.setOnClickListener {
             // file = null because multiple selections to be deleted and there's no single file
@@ -124,7 +139,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             updateRecyclerView()
         }
 
-        exportButton.setOnClickListener{
+        exportButton.setOnClickListener {
             exportItems()
         }
 
@@ -298,118 +313,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         return viewModel.initRootDir()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun updateBreadCrumbs(action: Int, _path: String) {
-
-        var isHomeDirectory = false
-
-        val path = if (_path == "") {
-            getString(R.string.homeIcon)
-        } else {
-            _path
-        }
-
-        var currentDir = viewModel.getLastDirectory()
-
-        if (currentDir == "") {
-            isHomeDirectory = true
-            currentDir = getString(R.string.homeIcon)
-        }
-
-
-        when (action) {
-
-            // user clicks on file item or app loads for the first time
-            Constants.INIT, Constants.FORWARD -> {
-
-                val params = LayoutParams(
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT
-                )
-
-                val pathBtn = Button(breadCrumbs.context)
-                pathBtn.minHeight = 0
-                pathBtn.minWidth = 0
-
-                // set icon for home directory
-                if (isHomeDirectory) {
-                    params.setMargins(15, 2, 0, 2)
-                    pathBtn.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.home_white_24dp,
-                        0,
-                        0,
-                        0
-                    )
-                } else {
-                    params.setMargins(2, 2, 0, 2)
-                    pathBtn.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.navigate_next_white_18dp,
-                        0,
-                        0,
-                        0
-                    )
-                }
-
-                pathBtn.text = currentDir
-                pathBtn.layoutParams = params
-
-                breadCrumbsButtonList.add(
-                    BreadCrumb(path, pathBtn)
-                )
-
-                attachClickAction(pathBtn)
-
-                breadCrumbs.addView(pathBtn)
-
-            }
-            // user clicks on back button
-            Constants.BACK -> {
-                // remove button from bread crumbs linear layout
-                breadCrumbs.removeView(breadCrumbsButtonList.last().pathBtn)
-                breadCrumbsButtonList.removeLast()
-            }
-        }
-
-    }
-
-    private fun attachClickAction(pathBtn: Button) {
-
-        pathBtn.setOnClickListener {
-            val btn = it as Button
-
-            // path of the clicked breadcrumb
-            val btnPath = btn.text.toString()
-
-            // currently open directory
-            val currentPath = viewModel.getLastDirectory()
-
-            if (btnPath != currentPath) {
-
-                while (true) {
-                    if (breadCrumbsButtonList.size > 0 && breadCrumbsButtonList.last().path != btnPath) {
-                        breadCrumbs.removeView(breadCrumbsButtonList.last().pathBtn)
-                        breadCrumbsButtonList.removeLast()
-
-                        viewModel.setPathDynamic(btnPath)
-
-                        updateRecyclerView()
-                        continue
-                    }
-                    break
-                }
-            }
-        }
-
-    }
-
     private fun updateRecyclerView() {
         // display contents of the navigated path
+        val (files, folders) = viewModel.getContents(viewModel.getInternalPath())
+
         filesRecyclerViewAdapter.setData(
-            viewModel.getContents(
-                viewModel.getInternalPath()
-            ),
+            files,
             nothingHereText
         )
+
+        folderRecyclerViewAdapter.setData(folders)
     }
 
     private fun createDirPopup(context: Context) {
@@ -454,18 +367,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     // item single tap
     override fun onClick(data: FileItem) {
-        if (data.isDir) {
-            viewModel.setInternalPath(data.name)
-            updateRecyclerView()
-
-            // clear selection on directory change and hide delete button
-            toggleFloatingButtonVisibility(false)
-            // update breadcrumbs
-            updateBreadCrumbs(Constants.FORWARD, data.name)
-
-            this.selectedItems.clear()
-
-        } else {
+        if (!data.isDir) {
 
             val filePath =
                 viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), data.name)
@@ -512,27 +414,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                 }
 
                 R.id.move_item -> {
-                    if (data.isDir) {
-                        Toast.makeText(
-                            applicationContext,
-                            getString(R.string.is_directory_info),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        moveFile(data)
-                    }
+                    moveFile(data)
                 }
 
                 R.id.copy_item -> {
-                    if (data.isDir) {
-                        Toast.makeText(
-                            applicationContext,
-                            getString(R.string.is_directory_info),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        copyFile(data)
-                    }
+                    copyFile(data)
                 }
 
             }
@@ -558,14 +444,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private fun backButtonAction() {
         if (!viewModel.isRootDirectory()) {
-            // remove the current directory
-            val lastPath = viewModel.setGetPreviousPath()
-
+            viewModel.setGetPreviousPath()
             // display contents of the navigated path
             updateRecyclerView()
-            updateBreadCrumbs(Constants.BACK, lastPath)
         }
-
+        if (viewModel.isPreviousRootDirectory())
+            topAppBar.title = getString(R.string.app_name)
     }
 
     private fun renameFilePopup(file: FileItem, context: Context) {
@@ -643,6 +527,41 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
                         viewModel.getInternalPath()
                     )
 
+                    if (result == 0) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.generic_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        updateRecyclerView()
+                    }
+                }
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun deleteFolderPopup(folder: FolderItem?, context: Context) {
+
+        val inflater: LayoutInflater = layoutInflater
+        val deleteLayout = inflater.inflate(R.layout.delete_confirmation, null)
+
+        val builder = MaterialAlertDialogBuilder(context)
+        builder.setTitle(getString(R.string.context_menu_delete))
+            .setCancelable(true)
+            .setView(deleteLayout)
+            .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
+
+                if (folder != null) {
+                    val result = viewModel.deleteFolder(
+                        folder,
+                        viewModel.getInternalPath()
+                    )
                     if (result == 0) {
                         Toast.makeText(
                             context,
@@ -775,6 +694,45 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             clearButton.visibility = View.GONE
             exportButton.visibility = View.GONE
         }
+
+    }
+
+    override fun onFolderSelect(folderItem: FolderItem) {
+
+        topAppBar.title = folderItem.name
+
+        viewModel.setInternalPath(folderItem.name)
+        updateRecyclerView()
+
+        // clear selection on directory change and hide delete button
+        toggleFloatingButtonVisibility(false)
+
+        this.selectedItems.clear()
+        updateRecyclerView()
+    }
+
+    override fun onFolderLongPress(folderItem: FolderItem, view: View) {
+        val popup = PopupMenu(this, view)
+
+        popup.inflate(R.menu.folder_context_menu)
+
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
+
+            when (item!!.itemId) {
+                R.id.rename_item -> {
+                    renameFilePopup(FileItem(folderItem.name, 0, true, 0), view.context)
+                }
+
+                R.id.delete_item -> {
+                    deleteFolderPopup(folderItem, view.context)
+                }
+
+            }
+
+            true
+        }
+
+        popup.show()
 
     }
 

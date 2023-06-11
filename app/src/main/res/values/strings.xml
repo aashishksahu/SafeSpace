@@ -40,7 +40,6 @@
     <string name="copy_title">Copy</string>
     <string name="move_title">Move</string>
     <string name="move_copy_btn_text">Move or copy here</string>
-    <string name="is_directory_info">Only files can be moved or copied</string>
     <string name="unsupported_format">File format not supported</string>
     <string name="create_txt_menu">Create a Text Note</string>
     <string name="new_text_note">New Text Note</string>
@@ -50,7 +49,9 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="light_mode">Light Mode</string>
     <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>
-
+    <string name="file_folder_hint">Home, Important, Frequently used etc.</string>
+    <string name="file_folder_placeholder">Folder</string>
+    <string name="items">Item(s)</string>
     <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
 
 
