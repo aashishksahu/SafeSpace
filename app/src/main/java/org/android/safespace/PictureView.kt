@@ -1,6 +1,7 @@
 package org.android.safespace
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,11 +33,13 @@ class PictureView : AppCompatActivity() {
 
         Glide.with(applicationContext).load(imagePath).into(imageView)
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Glide.with(applicationContext).clear(imageView)
+                finish()
+            }
+        })
+
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        Glide.with(applicationContext).clear(imageView)
-    }
 }

@@ -59,7 +59,7 @@
                 android:layout_marginTop="35dp"
                 android:layout_marginBottom="35dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintEnd_toEndOf="@+id/imageView2"

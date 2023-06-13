@@ -1,6 +1,7 @@
 package org.android.safespace
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -35,11 +36,23 @@ class MediaView : AppCompatActivity() {
             initializePlayer(mediaPath)
         }
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                player?.stop()
+                finish()
+            }
+        })
+
     }
 
-    override fun onStop() {
-        super.onStop()
-        player?.release()
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        player?.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        player?.play()
     }
 
     private fun initializePlayer(path: String) {

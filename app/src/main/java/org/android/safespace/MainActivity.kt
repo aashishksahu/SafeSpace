@@ -38,8 +38,8 @@ import org.android.safespace.viewmodel.AppViewModel
 
 /*
  Todo:
+  * Implement lock screen user authentication
   * perform file export as per this guide https://medium.com/@thuat26/how-to-save-file-to-external-storage-in-android-10-and-above-a644f9293df2
-  * Implement file encryption page with individual files encryption/decryption and encrypted backup export
   * Implement about page
   *
   * Sort options [Low Priority]
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -283,10 +284,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     createTextNote(topAppBar.context)
                 }
 
-                R.id.cryptoUtility -> {
-                    // open new intent for cryptography
-                }
-
                 R.id.about -> {
                     // open new intent with MIT Licence and github link and library credits
                 }
@@ -298,9 +295,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (viewModel.isRootDirectory()) {
-                    finish()
-                }
                 backButtonAction()
             }
         })
@@ -381,7 +375,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     loadAV(filePath)
                 }
 
-                Constants.DOCUMENT_TYPE -> {
+                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.PDF -> {
                     loadDocument(filePath)
                 }
 
@@ -447,6 +441,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             viewModel.setGetPreviousPath()
             // display contents of the navigated path
             updateRecyclerView()
+        } else {
+            finish()
         }
         if (viewModel.isPreviousRootDirectory())
             topAppBar.title = getString(R.string.app_name)

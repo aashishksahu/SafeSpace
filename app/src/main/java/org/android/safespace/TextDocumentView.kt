@@ -8,13 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.android.safespace.lib.Constants
-import java.io.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileReader
+import java.io.IOException
 
 class TextDocumentView : AppCompatActivity() {
 
-    /*
-        Todo: text view input type none single line [BUG]
-    */
     private lateinit var textFileContentView: EditText
     private lateinit var file: File
 
