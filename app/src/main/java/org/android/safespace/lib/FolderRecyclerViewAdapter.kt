@@ -11,6 +11,7 @@ import org.android.safespace.R
 
 class FolderRecyclerViewAdapter(
     private val folderClickListener: FolderClickListener,
+    private val folderRVAdapterTexts: Map<String, String>,
 ) :
     RecyclerView.Adapter<FolderRecyclerViewAdapter.ViewHolder>() {
     private var folderItemList: List<FolderItem> = arrayListOf()
@@ -46,16 +47,21 @@ class FolderRecyclerViewAdapter(
         holder.folderName.isSelected = true
         holder.folderName.text = selectedFolder.name
 
-        val itemCountText =
-            selectedFolder.itemCount.toString()
-//        + " " + folderRVAdapterTexts["items"]
+        var itemCountText = selectedFolder.itemCount.toString()
+
+        if (selectedFolder.itemCount == 1) {
+            itemCountText = itemCountText + " " + folderRVAdapterTexts["item"]
+        } else {
+            itemCountText = itemCountText + " " + folderRVAdapterTexts["items"]
+        }
+
         holder.folderItemCount.text = itemCountText
 
         holder.folderCard.setOnClickListener {
             folderClickListener.onFolderSelect(selectedFolder)
         }
 
-        holder.folderCard.setOnLongClickListener{
+        holder.folderCard.setOnLongClickListener {
             folderClickListener.onFolderLongPress(selectedFolder, holder.itemView)
             true
         }

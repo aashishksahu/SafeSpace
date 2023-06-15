@@ -51,9 +51,14 @@
     <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>
     <string name="file_folder_hint">Home, Important, Frequently used etc.</string>
     <string name="file_folder_placeholder">Folder</string>
-    <string name="items">Item(s)</string>
+    <string name="items">Items</string>
+    <string name="item">Item</string>
+
+    <string name="auth_success">Authentication succeeded!</string>
+    <string name="auth_fail">Authentication failed!</string>
+    <string name="auth_title">Login</string>
+
+
     <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
-
-
     <string name="aboutText">About (Coming Soon)</string>
 </resources>

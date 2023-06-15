@@ -35,19 +35,29 @@ android {
 
 dependencies {
 
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+//  For Authentication
+    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
+
+//  For Pictures
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
+
+//  For Audio/Video
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+
+//  For PDF
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
-    implementation 'androidx.core:core-ktx:1.10.0'
+//  For App functionality
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation "androidx.recyclerview:recyclerview:1.3.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+//  dev dependencies
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
 }

@@ -38,7 +38,6 @@ import org.android.safespace.viewmodel.AppViewModel
 
 /*
  Todo:
-  * Implement lock screen user authentication
   * perform file export as per this guide https://medium.com/@thuat26/how-to-save-file-to-external-storage-in-android-10-and-above-a644f9293df2
   * Implement about page
   *
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /* initialize things on activity start */
+        // initialize things on activity start
 
         viewModel = AppViewModel(application)
         sharedPref = getPreferences(MODE_PRIVATE)
@@ -81,11 +80,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             "directory_indicator" to getString(R.string.directory_indicator)
         )
 
+        val folderRVAdapterTexts = mapOf(
+            "items" to getString(R.string.items),
+            "item" to getString(R.string.item)
+        )
+
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
         filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, filesRVAdapterTexts, viewModel)
 
-        folderRecyclerViewAdapter = FolderRecyclerViewAdapter(this)
         folderRecyclerView = findViewById(R.id.folderRecyclerView)
+        folderRecyclerViewAdapter = FolderRecyclerViewAdapter(this, folderRVAdapterTexts)
 
         deleteButton = findViewById(R.id.deleteButton)
         clearButton = findViewById(R.id.clearButton)
