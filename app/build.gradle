@@ -35,8 +35,8 @@ android {
 
 dependencies {
 
-//  For Authentication
-    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
+//  For Security
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
 
 //  For Pictures
     implementation 'com.github.bumptech.glide:glide:4.15.1'

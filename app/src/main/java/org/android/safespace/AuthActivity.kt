@@ -1,73 +1,79 @@
 package org.android.safespace
 
-import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
-import java.util.concurrent.Executor
+import androidx.security.crypto.MasterKey
+import com.google.android.material.textfield.TextInputLayout
+import org.android.safespace.lib.Constants
 
 class AuthActivity : AppCompatActivity() {
 
-//    ToDo: Implement authentication time out setting
-
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var sharedPref: SharedPreferences
+    private var flagSetPin = false
+    private var setPinCounter = 0
+    private var pinFirstAttempt = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
         val authButton = findViewById<Button>(R.id.loginButton)
+        val appPin = findViewById<TextInputLayout>(R.id.appPin)
+        val pinGuide = findViewById<TextView>(R.id.pinGuide)
 
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.auth_title))
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
-            .setConfirmationRequired(false)
-            .build()
+        sharedPref = getPreferences(MODE_PRIVATE)
 
-
-        executor = ContextCompat.getMainExecutor(this)
-
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-
-                override fun onAuthenticationError(
-                    errorCode: Int,
-                    errString: CharSequence
-                ) {
-                    super.onAuthenticationError(errorCode, errString)
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult
-                ) {
-                    super.onAuthenticationSucceeded(result)
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    finish()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(
-                        applicationContext, getString(R.string.auth_fail),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
-
-        authButton.setOnClickListener {
-            biometricPrompt.authenticate(promptInfo)
+        if (!sharedPref.getBoolean(Constants.PIN_SETUP_COMPLETE, true)) {
+            flagSetPin = true
         }
 
-        // launch automatically on start up
-        biometricPrompt.authenticate(promptInfo)
+        if (flagSetPin) {
+            authButton.text = getString(R.string.set_pin_continue)
+            pinGuide.text = getString(R.string.set_new_pin)
+        }
+
+        authButton.setOnClickListener {
+            if (appPin.editText?.text!!.isEmpty()) {
+                appPin.error = getString(R.string.pin_error_empty)
+
+            } else if (flagSetPin) {
+                if (pinFirstAttempt == 0) {
+                    pinFirstAttempt = Integer.parseInt(appPin.editText?.text.toString())
+                    authButton.text = getString(R.string.set_new_pin)
+                    pinGuide.text = getString(R.string.confirm_new_pin)
+                    appPin.editText?.text!!.clear()
+                } else {
+                    if (pinFirstAttempt == Integer.parseInt(appPin.editText?.text.toString())) {
+                        val prefEditor = sharedPref.edit()
+                        prefEditor.putBoolean(Constants.PIN_SETUP_COMPLETE, true)
+                        prefEditor.apply()
+                        authButton.text = getString(R.string.auth_login)
+                        pinGuide.text = getString(R.string.pin)
+                        appPin.editText?.text!!.clear()
+                        flagSetPin = false
+                    } else {
+                        authButton.text = getString(R.string.set_pin_continue)
+                        pinGuide.text = getString(R.string.pin_error_match)
+                        appPin.editText?.text!!.clear()
+                        pinFirstAttempt = 0
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    private fun setKey() {
+        val mainKey = MasterKey.Builder(applicationContext)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+    }
+
+    private fun getKey() {
 
     }
 }

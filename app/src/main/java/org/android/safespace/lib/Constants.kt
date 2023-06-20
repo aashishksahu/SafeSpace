@@ -18,6 +18,7 @@ class Constants {
         const val APP_FIRST_RUN = "FIRST_RUN"
 
         const val FILE_EXIST = "FILE_EXIST"
+        const val PIN_SETUP_COMPLETE = "PIN_SETUP_COMPLETE"
 
 
         val IMAGE_EXTENSIONS = arrayOf(
