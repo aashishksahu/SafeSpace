@@ -52,7 +52,6 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:counterEnabled="true"
         app:counterMaxLength="4"
-        app:counterMinLength="4"
         app:endIconMode="password_toggle"
         app:errorEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"

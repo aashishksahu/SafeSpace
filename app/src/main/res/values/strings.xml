@@ -63,6 +63,7 @@
     <string name="pin_error_auth">Incorrect PIN</string>
     <string name="pin_error_match">PIN Doesn\'t match, Please try again</string>
     <string name="pin_error_empty">Please Enter 4 Digit PIN</string>
+    <string name="pin_setup_confirm">4 Digit PIN Set Successfully</string>
 
 
     <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
