@@ -55,16 +55,9 @@
     <string name="items">Items</string>
     <string name="item">Item</string>
 
-    <string name="auth_login">Login</string>
-    <string name="pin">4 Digit PIN</string>
-    <string name="enter_new_pin">Enter New 4 Digit PIN</string>
-    <string name="confirm_new_pin">Confirm New PIN</string>
-    <string name="set_new_pin">Set PIN</string>
-    <string name="set_pin_continue">Continue</string>
-    <string name="pin_error_auth">Incorrect PIN</string>
-    <string name="pin_error_match">PIN Doesn\'t match, Please try again</string>
-    <string name="pin_error_empty">Please Enter 4 Digit PIN</string>
-    <string name="pin_setup_confirm">4 Digit PIN Set Successfully</string>
+    <string name="auth_success">Authentication succeeded!</string>
+    <string name="auth_fail">Authentication failed!</string>
+    <string name="auth_title">Login</string>
 
     <string name="auth_alert">No Biometric or PIN Set</string>
     <string name="auth_alert_update">Please update your phone and try again</string>
