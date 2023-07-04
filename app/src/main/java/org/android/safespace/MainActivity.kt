@@ -32,7 +32,6 @@ import org.android.safespace.lib.FolderItem
 import org.android.safespace.lib.FolderRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
 import org.android.safespace.lib.Utils
-import org.android.safespace.lib.changeTheme
 import org.android.safespace.viewmodel.AppViewModel
 
 
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         topAppBar = findViewById(R.id.topAppBar)
 
-        // initialize at first run of app
+        // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
             if (initializeApp() == 1) {
                 with(sharedPref.edit()) {
@@ -110,16 +109,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
             }
         }
-
-        val themeMenu: MenuItem = topAppBar.menu.findItem(R.id.theme_menu)
-
-        changeTheme(
-            applicationContext,
-            true,
-            getString(R.string.is_dark),
-            sharedPref,
-            themeMenu
-        )
 
         val (fileList, folderList) = viewModel.getContents(viewModel.getInternalPath())
 
@@ -270,18 +259,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                     intent.type = "*/*"
                     selectFilesActivityResult.launch(intent)
-                }
-
-                R.id.theme_menu -> {
-                    // get the stored preference for dark mode
-                    val prefName = getString(R.string.is_dark)
-                    changeTheme(applicationContext, false, prefName, sharedPref, menuItem)
-                    // restart app after theme change
-                    val i =
-                        baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)
-                    i!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(i)
-                    finish()
                 }
 
                 R.id.create_txt -> {
@@ -681,7 +658,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun exportItems() {
-        viewModel.exportItems(this.selectedItems, viewModel.getInternalPath(), null)
+        viewModel.exportItems(this.selectedItems, viewModel.getInternalPath())
     }
 
     private fun toggleFloatingButtonVisibility(isVisible: Boolean) {

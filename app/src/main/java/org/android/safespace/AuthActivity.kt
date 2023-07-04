@@ -1,192 +1,122 @@
 package org.android.safespace
 
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputLayout
-import java.io.IOException
-import java.security.InvalidAlgorithmParameterException
-import java.security.InvalidKeyException
-import java.security.KeyStore
-import java.security.KeyStoreException
-import java.security.NoSuchAlgorithmException
-import java.security.NoSuchProviderException
-import java.security.SignatureException
-import java.security.UnrecoverableEntryException
-import java.util.Base64
-import javax.crypto.BadPaddingException
-import javax.crypto.Cipher
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.KeyGenerator
-import javax.crypto.NoSuchPaddingException
-import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.concurrent.Executor
 
-
-// Credits to https://gist.github.com/JosiasSena/3bf4ca59777f7dedcaf41a495d96d984 for KeyStore Help
 class AuthActivity : AppCompatActivity() {
 
-    private lateinit var sharedPref: SharedPreferences
-    private var flagSetPin = false
-    private var pinFirstAttempt: String? = null
-    private val alias = "USER_KEY"
-    private val ivAlias = "IV"
-    private val androidKeyStore = "AndroidKeyStore"
-    private val transformation = "AES/GCM/NoPadding"
-    private var encryptedKey: String? = null
-    private lateinit var keyStore: KeyStore
+//    ToDo: Implement authentication time out setting
+
+    private var pinNotPossible = false
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        keyStore = KeyStore.getInstance(androidKeyStore).apply {
-            load(null)
-        }
-
         val authButton = findViewById<Button>(R.id.loginButton)
-        val appPin = findViewById<TextInputLayout>(R.id.appPin)
-        val pinGuide = findViewById<TextView>(R.id.pinGuide)
 
-        sharedPref = getPreferences(MODE_PRIVATE)
-        encryptedKey = sharedPref.getString(alias, null)
+        val biometricManager = BiometricManager.from(this)
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
 
-        if (encryptedKey.isNullOrEmpty()) {
-            flagSetPin = true
-        }
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                pinNotPossible = true
+            }
 
-        if (flagSetPin) {
-            authButton.text = getString(R.string.set_pin_continue)
-            pinGuide.text = getString(R.string.set_new_pin)
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                val builder = MaterialAlertDialogBuilder(authButton.context)
+                builder.setTitle(getString(R.string.auth_alert_update))
+                    .setCancelable(true)
+                    .setMessage(getString(R.string.auth_no_biometric_msg))
+                    .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+            }
+
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
+                pinNotPossible = true
+            }
+
+            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
+                pinNotPossible = true
+            }
+
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                initiateAuthentication()
+            }
         }
 
         authButton.setOnClickListener {
-            if (appPin.editText?.text!!.isEmpty()) {
-                appPin.error = getString(R.string.pin_error_empty)
+            if (pinNotPossible) {
+                val builder = MaterialAlertDialogBuilder(authButton.context)
+                builder.setTitle(getString(R.string.auth_alert))
+                    .setCancelable(true)
+                    .setMessage(getString(R.string.auth_no_biometric_msg))
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }.show()
 
             } else {
-                appPin.error = null
+                biometricPrompt.authenticate(promptInfo)
+            }
 
-                if (flagSetPin) {
-                    if (pinFirstAttempt.isNullOrEmpty() || pinFirstAttempt.isNullOrBlank()) {
-                        pinFirstAttempt = appPin.editText?.text.toString()
-                        authButton.text = getString(R.string.set_new_pin)
-                        pinGuide.text = getString(R.string.confirm_new_pin)
-                        appPin.editText?.text!!.clear()
-                    } else {
-                        if (pinFirstAttempt == appPin.editText?.text.toString()) {
+        }
 
-                            storePin(encryptUserPin(pinFirstAttempt))
+    }
 
-                            authButton.text = getString(R.string.auth_login)
-                            pinGuide.text = getString(R.string.pin)
-                            appPin.editText?.text!!.clear()
-                            flagSetPin = false
+    private fun initiateAuthentication() {
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(getString(R.string.auth_title))
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            .setConfirmationRequired(false)
+            .setSubtitle(getString(R.string.auth_stuck))
+            .build()
 
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.pin_setup_confirm),
-                                Toast.LENGTH_LONG
-                            ).show()
+        executor = ContextCompat.getMainExecutor(this)
 
-                        } else {
-                            authButton.text = getString(R.string.set_pin_continue)
-                            pinGuide.text = getString(R.string.pin_error_match)
-                            appPin.editText?.text!!.clear()
-                        }
-                        pinFirstAttempt = null
-                    }
-                } else {
-                    authenticate(appPin.editText?.text.toString())
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult
+                ) {
+                    super.onAuthenticationSucceeded(result)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
                 }
 
-            }
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    Toast.makeText(
+                        applicationContext, getString(R.string.auth_fail),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+
+        if (!pinNotPossible) {
+            // launch automatically on start up
+            biometricPrompt.authenticate(promptInfo)
         }
-
     }
-
-    private fun storePin(encryptedPin: ByteArray) {
-        val editor = sharedPref.edit()
-        editor.putString(alias, encryptedPin.toString())
-        editor.apply()
-    }
-
-    @Throws(
-        UnrecoverableEntryException::class,
-        NoSuchAlgorithmException::class,
-        KeyStoreException::class,
-        NoSuchProviderException::class,
-        NoSuchPaddingException::class,
-        InvalidKeyException::class,
-        IOException::class,
-        InvalidAlgorithmParameterException::class,
-        SignatureException::class,
-        BadPaddingException::class,
-        IllegalBlockSizeException::class
-    )
-    private fun encryptUserPin(pin: String?): ByteArray {
-        val cipher: Cipher = Cipher.getInstance(transformation)
-        cipher.init(Cipher.ENCRYPT_MODE, setKey())
-
-        val iv: ByteArray = cipher.iv
-        val editor = sharedPref.edit()
-        editor.putString(ivAlias, Base64.getEncoder().encodeToString(iv))
-        editor.apply()
-
-        return cipher.doFinal(pin.toString().toByteArray())
-    }
-
-    @Throws(
-        NoSuchAlgorithmException::class,
-        InvalidAlgorithmParameterException::class,
-        NoSuchProviderException::class,
-        IOException::class
-    )
-    private fun setKey(): SecretKey {
-        val keyGenerator =
-            KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, androidKeyStore)
-
-        keyGenerator.init(
-            KeyGenParameterSpec.Builder(
-                alias,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-            )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                .build()
-        )
-        return keyGenerator.generateKey()
-    }
-
-    private fun authenticate(pin: String): Boolean {
-
-        try {
-            val cipher = Cipher.getInstance(transformation)
-
-            val iv = Base64.getDecoder().decode(sharedPref.getString(ivAlias, ""))
-
-            val spec = GCMParameterSpec(128, iv)
-
-            cipher.init(
-                Cipher.DECRYPT_MODE,
-                (keyStore.getEntry(alias, null) as KeyStore.SecretKeyEntry).secretKey,
-                spec
-            )
-
-            if (pin == String(cipher.doFinal(pin.toByteArray()))) {
-                return true
-            }
-
-        } catch (e: Exception) {
-            return false
-        }
-        return false
-
-    }
-
 }

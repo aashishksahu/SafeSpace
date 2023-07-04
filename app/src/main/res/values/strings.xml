@@ -2,6 +2,7 @@
     <string name="app_name">Safe Space</string>
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
+    <string name="ok">OK</string>
     <string name="select_files">Select File(s)</string>
     <string name="create_folder">Create Folder</string>
     <string name="import_files">Import Files</string>
@@ -65,6 +66,10 @@
     <string name="pin_error_empty">Please Enter 4 Digit PIN</string>
     <string name="pin_setup_confirm">4 Digit PIN Set Successfully</string>
 
+    <string name="auth_alert">No Biometric or PIN Set</string>
+    <string name="auth_alert_update">Please update your phone and try again</string>
+    <string name="auth_no_biometric_msg">It is recommended to use a PIN or Password to keep your data secure</string>
+    <string name="auth_stuck">Lock and unlock your screen if you are stuck here.</string>
 
     <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
     <string name="aboutText">About (Coming Soon)</string>

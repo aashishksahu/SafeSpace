@@ -1,8 +1,11 @@
 package org.android.safespace.viewmodel
 
 import android.app.Application
+import android.content.ContentValues
 import android.net.Uri
+import android.os.Environment
 import android.os.FileUtils
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
 import org.android.safespace.lib.Constants
@@ -11,9 +14,11 @@ import org.android.safespace.lib.FolderItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+
 
 class AppViewModel(
     private val application: Application
@@ -317,30 +322,36 @@ class AppViewModel(
 
     fun exportItems(
         selectedItems: ArrayList<FileItem>,
-        selectedPath: String,
-        _filesArray: ArrayList<String>? //keep null unless called recursively
+        selectedPath: String
     ) {
 
-        var filesArray = _filesArray
-
-        if (filesArray == null) {
-            filesArray = arrayListOf()
-        }
-
         for (item in selectedItems) {
-            val filePath = joinPath(getFilesDir(), selectedPath, item.name)
-
-            if (item.isDir) {
-                filesArray = recursiveDirectoryRead(filePath, filesArray!!)
-            } else {
-                filesArray?.add(filePath)
-            }
+            // start export
+            exportFilesToDownloadsFolder(File(joinPath(getFilesDir(), selectedPath, item.name)).absolutePath, item.name)
         }
-
-        // start export
 
     }
 
+//        TODO: "Fix this"
+    private fun exportFilesToDownloadsFolder(url: String, fileName: String) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, ".*")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+        }
+        val resolver = application.contentResolver
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+        if (uri != null) {
+            URL(url).openStream().use { input ->
+                resolver.openOutputStream(uri).use { output ->
+                    input.copyTo(output!!, DEFAULT_BUFFER_SIZE)
+                }
+            }
+        }
+    }
+
+    // DO NOT REMOVE the following method
+    @Suppress("unused")
     private fun recursiveDirectoryRead(
         path: String,
         _filesArray: ArrayList<String>
