@@ -54,16 +54,21 @@
     <string name="file_folder_placeholder">Folder</string>
     <string name="items">Items</string>
     <string name="item">Item</string>
+    <string name="export_in_progress">Exporting in background, please wait… </string>
 
     <string name="auth_success">Authentication succeeded!</string>
     <string name="auth_fail">Authentication failed!</string>
-    <string name="auth_title">Login</string>
+    <string name="auth_login">Login</string>
 
     <string name="auth_alert">No Biometric or PIN Set</string>
     <string name="auth_alert_update">Please update your phone and try again</string>
     <string name="auth_no_biometric_msg">It is recommended to use a PIN or Password to keep your data secure</string>
     <string name="auth_stuck">Lock and unlock your screen if you are stuck here.</string>
 
-    <string name="uninstall_warning">DO NOT Delete the app without exporting a backup</string>
-    <string name="aboutText">About (Coming Soon)</string>
+    <string name="about_text">About (Coming Soon)</string>
+    <string name="about_title">Safe Space</string>
+    <string name="about_sub_title1">A Safe Space for all your important digital stuff</string>
+    <string name="about_sub_title2">Uses app specific storage to store files, these files are not visible to other apps and cannot be accessed when the phone is locked</string>
+    <string name="about_foss">Libraries Used:</string>
+    <string name="glide">Glide</string>
 </resources>

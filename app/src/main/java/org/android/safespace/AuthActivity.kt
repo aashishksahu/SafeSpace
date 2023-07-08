@@ -84,7 +84,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun initiateAuthentication() {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.auth_title))
+            .setTitle(getString(R.string.auth_login))
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
             .setConfirmationRequired(false)
             .setSubtitle(getString(R.string.auth_stuck))

@@ -9,13 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import org.android.safespace.R
-import org.android.safespace.viewmodel.AppViewModel
 
 
 class FilesRecyclerViewAdapter(
     private val onItemClickListener: ItemClickListener,
     private val messages: Map<String, String>,
-    private val viewModel: AppViewModel
+    private val viewModel: Operations
 ) :
     RecyclerView.Adapter<FilesRecyclerViewAdapter.ViewHolder>() {
 

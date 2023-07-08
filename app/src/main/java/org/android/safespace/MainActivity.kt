@@ -12,6 +12,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,13 +32,12 @@ import org.android.safespace.lib.FolderClickListener
 import org.android.safespace.lib.FolderItem
 import org.android.safespace.lib.FolderRecyclerViewAdapter
 import org.android.safespace.lib.ItemClickListener
+import org.android.safespace.lib.Operations
 import org.android.safespace.lib.Utils
-import org.android.safespace.viewmodel.AppViewModel
 
 
 /*
  Todo:
-  * perform file export as per this guide https://medium.com/@thuat26/how-to-save-file-to-external-storage-in-android-10-and-above-a644f9293df2
   * Implement about page
   *
   * Sort options [Low Priority]
@@ -45,7 +45,7 @@ import org.android.safespace.viewmodel.AppViewModel
 
 class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {
 
-    private lateinit var viewModel: AppViewModel
+    private lateinit var ops: Operations
 
     private lateinit var nothingHereText: TextView
     private var importList: ArrayList<Uri> = ArrayList()
@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
+    private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         // initialize things on activity start
 
-        viewModel = AppViewModel(application)
+        ops = Operations(application)
         sharedPref = getPreferences(MODE_PRIVATE)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
 
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         )
 
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
-        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, filesRVAdapterTexts, viewModel)
+        filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, filesRVAdapterTexts, ops)
 
         folderRecyclerView = findViewById(R.id.folderRecyclerView)
         folderRecyclerViewAdapter = FolderRecyclerViewAdapter(this, folderRVAdapterTexts)
@@ -110,7 +111,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         }
 
-        val (fileList, folderList) = viewModel.getContents(viewModel.getInternalPath())
+        val (fileList, folderList) = ops.getContents(ops.getInternalPath())
 
         folderRecyclerViewAdapter.setData(folderList)
         val horizontalLayoutManager =
@@ -128,9 +129,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         }
 
         clearButton.setOnClickListener {
-            toggleFloatingButtonVisibility(false)
-            this.selectedItems.clear()
-            updateRecyclerView()
+            clearSelection()
         }
 
         exportButton.setOnClickListener {
@@ -144,17 +143,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
             val fileName = fileMoveCopyName.text.toString()
 
-            viewModel.moveFileTo = viewModel.joinPath(
-                viewModel.getFilesDir(),
-                viewModel.getInternalPath(),
+            ops.moveFileTo = ops.joinPath(
+                ops.getFilesDir(),
+                ops.getInternalPath(),
                 fileName
             )
 
-            if (viewModel.moveFileFrom != null && viewModel.moveFileFrom != viewModel.moveFileTo) {
+            if (ops.moveFileFrom != null && ops.moveFileFrom != ops.moveFileTo) {
                 val status = if (fileMoveCopyButton.text == getString(R.string.move_file_title)) {
-                    viewModel.moveFile()
+                    ops.moveFile()
                 } else {
-                    viewModel.copyFile()
+                    ops.copyFile()
                 }
 
                 if (status == -1) {
@@ -179,8 +178,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         fileMoveCopyButtonCancel.setOnClickListener {
             fileMoveCopyView.visibility = View.GONE
-            viewModel.moveFileFrom = null
-            viewModel.moveFileTo = null
+            ops.moveFileFrom = null
+            ops.moveFileTo = null
         }
 
         // File picker result
@@ -216,9 +215,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     for (uri in importList) {
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            val importResult = viewModel.importFile(
+                            val importResult = ops.importFile(
                                 uri,
-                                viewModel.getInternalPath()
+                                ops.getInternalPath()
                             )
 
                             when (importResult) {
@@ -247,6 +246,35 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         // End: File picker result
 
+        // Start: Directory picker result
+        selectExportDirActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+
+                            Toast.makeText(
+                                exportButton.context,
+                                getString(R.string.export_in_progress),
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                            for (item in selectedItems) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    ops.exportItems(uri, item)
+                                }
+                            }
+                            clearSelection()
+                        }
+                    }
+                }
+
+            }
+        // End: Directory picker result
+
+
         // Top App Bar
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
@@ -266,7 +294,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
 
                 R.id.about -> {
-                    // open new intent with MIT Licence and github link and library credits
+                    val intent = Intent(this, AboutActivity::class.java)
+                    startActivity(intent)
                 }
             }
             true
@@ -283,14 +312,19 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     }
 
+    private fun clearSelection() {
+        toggleFloatingButtonVisibility(false)
+        this.selectedItems.clear()
+        updateRecyclerView()
+    }
 
     private fun initializeApp(): Int {
-        return viewModel.initRootDir()
+        return ops.initRootDir()
     }
 
     private fun updateRecyclerView() {
         // display contents of the navigated path
-        val (files, folders) = viewModel.getContents(viewModel.getInternalPath())
+        val (files, folders) = ops.getContents(ops.getInternalPath())
 
         filesRecyclerViewAdapter.setData(
             files,
@@ -316,8 +350,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
 
-                    if (viewModel.createDir(
-                            viewModel.getInternalPath(),
+                    if (ops.createDir(
+                            ops.getInternalPath(),
                             folderNameTextView.editText?.text.toString()
                         ) == 1
                     ) {
@@ -345,7 +379,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         if (!data.isDir) {
 
             val filePath =
-                viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), data.name)
+                ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), data.name)
 
             when (Utils.getFileType(data.name)) {
                 Constants.IMAGE_TYPE -> {
@@ -405,10 +439,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     // Item multi select on icon click
-    override fun onItemSelect(
-        data: FileItem,
-        selectedItems: ArrayList<FileItem>
-    ) {
+    override fun onItemSelect(data: FileItem, selectedItems: ArrayList<FileItem>) {
         this.selectedItems = selectedItems
         if (this.selectedItems.isEmpty()) {
             toggleFloatingButtonVisibility(false)
@@ -418,14 +449,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun backButtonAction() {
-        if (!viewModel.isRootDirectory()) {
-            viewModel.setGetPreviousPath()
+        if (!ops.isRootDirectory()) {
+            ops.setGetPreviousPath()
             // display contents of the navigated path
             updateRecyclerView()
         } else {
             finish()
         }
-        if (viewModel.isPreviousRootDirectory())
+        if (ops.isPreviousRootDirectory())
             topAppBar.title = getString(R.string.app_name)
     }
 
@@ -443,9 +474,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
 
                 if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
-                    val result = viewModel.renameFile(
+                    val result = ops.renameFile(
                         file,
-                        viewModel.getInternalPath(),
+                        ops.getInternalPath(),
                         folderNameTextView.editText!!.text.toString()
                     )
 
@@ -487,9 +518,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 if (this.selectedItems.isNotEmpty() && file == null) {
                     for (item in this.selectedItems) {
-                        viewModel.deleteFile(
+                        ops.deleteFile(
                             item,
-                            viewModel.getInternalPath()
+                            ops.getInternalPath()
                         )
                     }
 
@@ -499,9 +530,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     updateRecyclerView()
                 } else {
 
-                    val result = viewModel.deleteFile(
+                    val result = ops.deleteFile(
                         file!!,
-                        viewModel.getInternalPath()
+                        ops.getInternalPath()
                     )
 
                     if (result == 0) {
@@ -535,9 +566,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setPositiveButton(getString(R.string.context_menu_delete)) { _, _ ->
 
                 if (folder != null) {
-                    val result = viewModel.deleteFolder(
+                    val result = ops.deleteFolder(
                         folder,
-                        viewModel.getInternalPath()
+                        ops.getInternalPath()
                     )
                     if (result == 0) {
                         Toast.makeText(
@@ -592,8 +623,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun moveFile(file: FileItem) {
-        viewModel.moveFileFrom =
-            viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), file.name)
+        ops.moveFileFrom =
+            ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), file.name)
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
@@ -603,8 +634,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun copyFile(file: FileItem) {
-        viewModel.moveFileFrom =
-            viewModel.joinPath(viewModel.getFilesDir(), viewModel.getInternalPath(), file.name)
+        ops.moveFileFrom =
+            ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), file.name)
 
         fileMoveCopyView.visibility = View.VISIBLE
         fileMoveCopyName.text = file.name
@@ -627,7 +658,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setPositiveButton(getString(R.string.create)) { _, _ ->
 
                 if (folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
-                    val result = viewModel.createTextNote(
+                    val result = ops.createTextNote(
                         noteNameTextView.editText!!.text.toString() + "." + Constants.TXT
                     )
 
@@ -658,7 +689,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun exportItems() {
-        viewModel.exportItems(this.selectedItems, viewModel.getInternalPath())
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+        selectExportDirActivityResult.launch(intent)
     }
 
     private fun toggleFloatingButtonVisibility(isVisible: Boolean) {
@@ -678,7 +711,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         topAppBar.title = folderItem.name
 
-        viewModel.setInternalPath(folderItem.name)
+        ops.setInternalPath(folderItem.name)
         updateRecyclerView()
 
         // clear selection on directory change and hide delete button
