@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
     tools:context=".AboutActivity">
 
     <TextView
@@ -65,17 +66,10 @@
         app:strokeColor="@color/transparent"
         app:strokeWidth="0dp">
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="351dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:text="@string/about_sub_title1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/librariesRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

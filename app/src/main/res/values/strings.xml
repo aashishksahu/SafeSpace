@@ -65,10 +65,16 @@
     <string name="auth_no_biometric_msg">It is recommended to use a PIN or Password to keep your data secure</string>
     <string name="auth_stuck">Lock and unlock your screen if you are stuck here.</string>
 
-    <string name="about_text">About (Coming Soon)</string>
+    <string name="about_text">About</string>
     <string name="about_title">Safe Space</string>
-    <string name="about_sub_title1">A Safe Space for all your important digital stuff</string>
-    <string name="about_sub_title2">Uses app specific storage to store files, these files are not visible to other apps and cannot be accessed when the phone is locked</string>
+    <string name="about_sub_title1">A Safe Space for all your important digital stuff.</string>
+    <string name="about_sub_title2">Uses app specific storage to store files, these files are encrypted and are not visible to other apps and cannot be accessed when the phone is locked.</string>
     <string name="about_foss">Libraries Used:</string>
+
     <string name="glide">Glide</string>
+    <string name="androidx">Androidx</string>
+    <string name="photoview">PhotoView by Chris banes</string>
+    <string name="exo">Exo player</string>
+    <string name="pdf_lib">Android PDF Viewer by barteksc</string>
+    <string name="material">Google Material 3</string>
 </resources>

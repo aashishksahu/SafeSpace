@@ -38,7 +38,7 @@ import org.android.safespace.lib.Utils
 
 /*
  Todo:
-  * Implement about page
+  * Implement root detection
   *
   * Sort options [Low Priority]
 */
