@@ -1,5 +1,6 @@
 package org.android.safespace
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -9,6 +10,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.android.safespace.lib.RootCheck
 import java.util.concurrent.Executor
 
 class AuthActivity : AppCompatActivity() {
@@ -25,6 +27,9 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.activity_auth)
 
         val authButton = findViewById<Button>(R.id.loginButton)
+
+        // Root Check
+        isPhoneRooted(authButton.context)
 
         val biometricManager = BiometricManager.from(this)
         when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
@@ -117,6 +122,23 @@ class AuthActivity : AppCompatActivity() {
         if (!pinNotPossible) {
             // launch automatically on start up
             biometricPrompt.authenticate(promptInfo)
+        }
+    }
+
+    private fun isPhoneRooted(localContext: Context) {
+        if (RootCheck.isRooted()) {
+            val builder = MaterialAlertDialogBuilder(localContext)
+
+            builder.setTitle(getString(R.string.root_check_title))
+                .setCancelable(true)
+                .setMessage(getString(R.string.root_check_subtitle))
+                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                    finish()
+                }
+            val alert = builder.create()
+            alert.show()
         }
     }
 }

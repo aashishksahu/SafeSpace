@@ -38,7 +38,6 @@ import org.android.safespace.lib.Utils
 
 /*
  Todo:
-  * Implement root detection
   *
   * Sort options [Low Priority]
 */
@@ -70,8 +69,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // initialize things on activity start
 
+        // initialize things on activity start
         ops = Operations(application)
         sharedPref = getPreferences(MODE_PRIVATE)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
