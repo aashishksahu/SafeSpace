@@ -1,0 +1,10 @@
+Safe space is an app that creates a separate place on your android device to store valuable files. This storage location is not visible to other apps and is encrypted by the system by default. 
+
+Features:
+* Store files in a secure storage location that is not visible to other apps and is secured by device encryption and system authentication (Biometric and PIN/Pattern/Password)
+* Open Images, Audio, Video, PDF documents and plain text documents
+* Create simple text notes without leaving the app
+* Dark and light mode
+* ability to copy and move files
+* Import from and export files to external storage without storage permissions
+* Completely offline with no telemetry and data collection
