@@ -3,8 +3,6 @@
     <style name="Theme.SafeSpace" parent="Theme.Material3.DayNight.NoActionBar">
 
         <item name="android:itemBackground">@color/card_background_dark</item>
-<!--        <item name="android:textColor">@color/d_primary_500</item>-->
-<!--        <item name="android:colorForeground">@color/d_primary_500</item>-->
 
         <!--  Primary brand color.  -->
         <item name="colorPrimary">@color/primary_500</item>

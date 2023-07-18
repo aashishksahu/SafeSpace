@@ -5,17 +5,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#EBE7ED</color>
 
-    <color name="primary_500">#E0DDCF</color>
-    <color name="primary_700">#D8D4C3</color>
-    <color name="primary_900">#CBC7B2</color>
-    <color name="border_light">#FFFFFF</color>
+    <color name="primary_500">#FFFFFF</color>
+    <color name="primary_700">#E0DDCF</color>
+
     <color name="card_background_light">#FFFFFF</color>
 
     <color name="secondary_500">#242331</color>
     <color name="secondary_700">#1B1A25</color>
-    <color name="secondary_900">#0D0C13</color>
-    <color name="border_dark">#000000</color>
+
     <color name="card_background_dark">#3A3A3A</color>
 
-    <color name="mtrl_textinput_default_box_stroke_color">#303F9F</color>
+<!--    <color name="mtrl_textinput_default_box_stroke_color">#303F9F</color>-->
 </resources>

@@ -12,24 +12,10 @@
         android:theme="@style/Theme.SafeSpace"
         tools:targetApi="31">
         <activity
-            android:name=".TextDocumentView"
-		 android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".PDFView"
-		 android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".MediaView"
-		 android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".PictureView"
-		 android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-		 android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".AuthActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +23,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TextDocumentView"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".PDFView"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".MediaView"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".PictureView"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" />
     </application>
 
 </manifest>
