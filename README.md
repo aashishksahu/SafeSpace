@@ -4,7 +4,7 @@ A safe space for your digital valuables.
 
 ## Installation
 
-Download the APK from [here]()
+Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
 
 
 ## Disclaimer
