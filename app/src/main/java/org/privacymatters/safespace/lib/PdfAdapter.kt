@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.R
 
@@ -17,6 +18,7 @@ class PdfAdapter(private val renderer: PdfRenderer) :
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val pdfView: ImageView = view.findViewById(R.id.pdfView)
+        val pageNumView: TextView = view.findViewById(R.id.pageNum)
 
     }
 
@@ -28,6 +30,8 @@ class PdfAdapter(private val renderer: PdfRenderer) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.pdfView.setImageBitmap(renderer.openPage(position).renderAndClose())
+        val currentPage = (position + 1).toString() + " / " + renderer.pageCount
+        holder.pageNumView.text = currentPage
     }
 
     private fun PdfRenderer.Page.renderAndClose() = use {
