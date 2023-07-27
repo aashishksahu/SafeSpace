@@ -50,9 +50,6 @@ class AboutActivity : AppCompatActivity() {
                 getString(R.string.exo),
                 "https://github.com/google/ExoPlayer"
             ), LibrariesUsed(
-                getString(R.string.pdf_lib),
-                "https://github.com/barteksc/AndroidPdfViewer"
-            ), LibrariesUsed(
                 getString(R.string.material),
                 "https://m3.material.io/"
             ), LibrariesUsed(

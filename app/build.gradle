@@ -12,8 +12,8 @@ android {
         
         minSdk 29
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,24 +38,19 @@ dependencies {
 //  For Security
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
 
-//  For Pictures
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
-    implementation 'androidx.media3:media3-common:1.1.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-
 //  For Audio/Video
     implementation 'androidx.media3:media3-exoplayer:1.1.0'
     implementation 'androidx.media3:media3-ui:1.1.0'
     implementation 'androidx.media3:media3-common:1.1.0'
 
-//  For PDF
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+//  For Pictures
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 //  For App functionality
     implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "androidx.recyclerview:recyclerview:1.3.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+    implementation "androidx.recyclerview:recyclerview:1.3.1"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

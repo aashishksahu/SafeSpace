@@ -7,11 +7,12 @@
     android:background="#000000"
     tools:context=".PDFView">
 
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/pdfView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pdfRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#000000"
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

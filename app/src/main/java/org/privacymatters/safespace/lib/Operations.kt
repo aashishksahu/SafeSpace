@@ -183,11 +183,7 @@ class Operations(private val application: Application) {
 
             val absoluteFilePathOld = File(absolutePath + file.name)
 
-            val absoluteFilePathNew = if ("." in file.name) {
-                File(absolutePath + newFileName + "." + file.name.split(".").last())
-            } else {
-                File(absolutePath + newFileName)
-            }
+            val absoluteFilePathNew = File(absolutePath + newFileName)
 
             absoluteFilePathOld.renameTo(absoluteFilePathNew)
 
