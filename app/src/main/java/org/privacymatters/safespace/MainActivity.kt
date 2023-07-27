@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("^[a-zA-Z\\d ]*\$")
+    private val folderNamePattern = Regex("^[.a-zA-Z\\d ]*\$")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
@@ -463,6 +463,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val renameLayout = inflater.inflate(R.layout.rename_layout, null)
         val folderNameTextView =
             renameLayout.findViewById<TextInputLayout>(R.id.renameTextLayout)
+        folderNameTextView.editText?.setText(file.name)
 
         builder.setTitle(getString(R.string.context_menu_rename))
             .setCancelable(true)
