@@ -1,0 +1,2 @@
+Security fixes:
+com.github.barteksc:android-pdf-viewer has known security vulnerabilities, therefore, this dependency was removed and replaced by PdfRenderer class.
