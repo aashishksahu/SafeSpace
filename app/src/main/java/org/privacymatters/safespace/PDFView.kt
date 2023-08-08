@@ -3,16 +3,15 @@ package org.privacymatters.safespace
 import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.lib.Constants
 import org.privacymatters.safespace.lib.PdfAdapter
 import java.io.File
-import java.io.FileNotFoundException
 
 
 class PDFView : AppCompatActivity() {
@@ -37,8 +36,20 @@ class PDFView : AppCompatActivity() {
             pdfRecyclerView.layoutManager = LinearLayoutManager(this)
             pdfRecyclerView.adapter = pdfRecyclerViewAdapter
 
-        } catch (e: FileNotFoundException) {
-            Log.d("ERROR", e.message!!)
+        } catch (_: Exception) {
+            val builder = MaterialAlertDialogBuilder(pdfRecyclerView.context)
+
+            builder.setTitle(getString(R.string.pdf_exception_title))
+                .setCancelable(true)
+                .setMessage(getString(R.string.pdf_exception_subtitle))
+                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                    onStop()
+                    finish()
+                }
+            val alert = builder.create()
+            alert.show()
         }
 
     }

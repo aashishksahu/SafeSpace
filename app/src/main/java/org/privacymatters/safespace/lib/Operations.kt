@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import java.io.File
 import java.io.FileInputStream
@@ -331,7 +330,6 @@ class Operations(private val application: Application) {
 
 
         } catch (e: Exception) {
-            Log.d("exportItems()", e.message!!)
             return false
         }
         return true

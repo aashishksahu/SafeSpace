@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.privacymatters.safespace.lib.Constants
 import java.io.BufferedReader
@@ -44,9 +45,28 @@ class TextDocumentView : AppCompatActivity() {
             buffer.close()
 
         } catch (e: FileNotFoundException) {
-            Log.d("ERROR", e.message!!)
+            val builder = MaterialAlertDialogBuilder(textFileContentView.context)
+
+            builder.setTitle(getString(R.string.text_exception_title))
+                .setCancelable(true)
+                .setMessage(getString(R.string.text_exception_subtitle))
+                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
         } catch (e: IOException) {
-            Log.d("ERROR", e.message!!)
+            val builder = MaterialAlertDialogBuilder(textFileContentView.context)
+
+            builder.setTitle(getString(R.string.text_exception_IO))
+                .setCancelable(true)
+                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
         }
 
         textFileContentView.setText(content.toString())

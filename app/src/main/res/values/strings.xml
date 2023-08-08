@@ -39,6 +39,11 @@
     <string name="file_folder_placeholder">Folder</string>
     <string name="items">Items</string>
     <string name="item">Item</string>
+    <string name="pdf_exception_title">Unable to open the document</string>
+    <string name="pdf_exception_subtitle">The document has problems. If this is a password protected document, they are not yet supported.</string>
+    <string name="text_exception_title">Not found</string>
+    <string name="text_exception_subtitle">This text document does not exist. It was probably deleted.</string>
+    <string name="text_exception_IO">Unable to open the text note</string>
     <string name="export_in_progress">Exporting in background, please wait… </string>
 
     <string name="auth_fail">Authentication failed!</string>
