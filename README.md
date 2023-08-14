@@ -2,6 +2,10 @@
 
 A safe space for your digital valuables.
 
+![Release](https://img.shields.io/github/v/release/aashishksahu/SafeSpace.svg?logo=github)
+![License](https://img.shields.io/github/license/aashishksahu/SafeSpace.svg)
+![Downloads](https://img.shields.io/github/downloads/aashishksahu/SafeSpace/total?labelColor=%23102C57&color=%23F8F0E5)
+
 ## Installation
 
 Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
