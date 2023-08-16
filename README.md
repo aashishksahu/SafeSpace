@@ -10,6 +10,7 @@ A safe space for your digital valuables.
 
 Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
 
+[<img alt="alt_text" width="200px" src="https://user-content.gitlab-static.net/0cdd89e5cc347206465251782615ab91f99a542d/68747470733a2f2f6664726f69642e6769746c61622e696f2f617274776f726b2f62616467652f6765742d69742d6f6e2e706e67" />](https://f-droid.org/en/packages/org.privacymatters.safespace/)
 
 ## Disclaimer
 
