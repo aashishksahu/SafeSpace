@@ -43,14 +43,24 @@ dependencies {
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
 
 //  For Audio/Video
-    implementation 'androidx.media3:media3-exoplayer:1.1.0'
-    implementation 'androidx.media3:media3-ui:1.1.0'
-    implementation 'androidx.media3:media3-common:1.1.0'
+    implementation 'androidx.media3:media3-exoplayer:1.1.1'
+    implementation 'androidx.media3:media3-ui:1.1.1'
+    implementation 'androidx.media3:media3-common:1.1.1'
 
 //  For Pictures
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+//  For Camera
+    def camerax_version = "1.2.2"
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-video:${camerax_version}"
+
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-extensions:${camerax_version}"
 
 //  For App functionality
     implementation 'androidx.core:core-ktx:1.10.1'

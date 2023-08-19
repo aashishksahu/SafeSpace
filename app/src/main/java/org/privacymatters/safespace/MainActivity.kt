@@ -218,6 +218,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         // Top App Bar
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
+                R.id.camera -> {
+                    val intent = Intent(this, CameraActivity::class.java)
+                    startActivity(intent)
+                }
+
                 R.id.create_dir -> {
                     createDirPopup(topAppBar.context)
                 }
