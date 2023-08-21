@@ -1,13 +1,8 @@
 package org.privacymatters.safespace
 
-import android.content.ContentValues
-import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +16,6 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import org.privacymatters.safespace.lib.Operations
 import java.io.File
 import java.text.SimpleDateFormat
@@ -38,7 +32,8 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     companion object {
-        private const val TAG = "safe_space"
+        private const val TAG = "safe_space_"
+        private const val EXTENSION = ".jpg"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
@@ -75,8 +70,8 @@ class CameraActivity : AppCompatActivity() {
 
         ops = Operations(application)
 
-        val imageCaptureButton = findViewById<Button>(R.id.image_capture_button)
-        val videoCaptureButton = findViewById<Button>(R.id.video_capture_button)
+        val imageCaptureButton = findViewById<ImageButton>(R.id.image_capture_button)
+        val videoCaptureButton = findViewById<ImageButton>(R.id.video_capture_button)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -87,37 +82,31 @@ class CameraActivity : AppCompatActivity() {
 
 
         // Set up the listeners for take photo and video capture buttons
-        imageCaptureButton.setOnClickListener { takePhoto(applicationContext) }
+        imageCaptureButton.setOnClickListener { takePhoto() }
         videoCaptureButton.setOnClickListener { captureVideo() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
     }
 
-    private fun takePhoto(context: Context) {
+    private fun takePhoto() {
+
+        /*
+            Todo: Play capture sound and a transparent flash
+                : Refresh files list in back press
+        */
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
         // Create time stamped name and MediaStore entry.
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.getDefault())
-            .format(System.currentTimeMillis())
+        val name = TAG + SimpleDateFormat(FILENAME_FORMAT, Locale.getDefault())
+            .format(System.currentTimeMillis()) + EXTENSION
 
-        // Todo: Convert saveLoc to content uri
         val saveLoc = File(ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), File.separator, name))
-
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-        }
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(
-                contentResolver,
-                saveLoc,
-                contentValues
-            )
-            .build()
+            .Builder(saveLoc).build()
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
@@ -126,7 +115,7 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Log.e("srge", exc.message.toString())
+                    println(exc.message.toString())
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {}
