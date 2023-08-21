@@ -1,0 +1,1 @@
+Removed check for "test-keys" Tag as non-rooted devices with custom rom were falsely flagged as rooted
