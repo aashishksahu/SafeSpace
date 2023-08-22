@@ -391,7 +391,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     loadAV(filePath)
                 }
 
-                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.PDF -> {
+                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
                     loadDocument(filePath)
                 }
 
@@ -459,6 +459,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         }
         if (ops.isPreviousRootDirectory())
             topAppBar.title = getString(R.string.app_name)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateRecyclerView()
     }
 
     private fun renameFilePopup(file: FileItem, context: Context) {

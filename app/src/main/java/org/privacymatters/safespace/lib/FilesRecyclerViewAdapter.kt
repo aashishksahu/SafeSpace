@@ -100,6 +100,12 @@ class FilesRecyclerViewAdapter(
         } else if (Utils.getFileType(fileItem.name) == Constants.PDF) {
             holder.fileIcon.setImageResource(R.drawable.pdf_icon)
 
+        } else if (Utils.getFileType(fileItem.name) == Constants.JSON) {
+            holder.fileIcon.setImageResource(R.drawable.edit_note_black_36dp)
+
+        } else if (Utils.getFileType(fileItem.name) == Constants.XML) {
+            holder.fileIcon.setImageResource(R.drawable.edit_note_black_36dp)
+
         } else if (Utils.getFileType(fileItem.name) == Constants.TXT) {
             holder.fileIcon.setImageResource(R.drawable.edit_note_black_36dp)
 

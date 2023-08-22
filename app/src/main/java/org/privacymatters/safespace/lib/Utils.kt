@@ -29,6 +29,12 @@ class Utils {
                 Constants.TXT -> {
                     Constants.TXT
                 }
+                Constants.JSON -> {
+                    Constants.JSON
+                }
+                Constants.XML -> {
+                    Constants.XML
+                }
                 else -> Constants.OTHER_TYPE
             }
 

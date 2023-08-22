@@ -1,6 +1,8 @@
 package org.privacymatters.safespace
 
 import android.content.pm.PackageManager
+import android.media.AudioManager
+import android.media.MediaActionSound
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
@@ -23,6 +25,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+
 class CameraActivity : AppCompatActivity() {
 
     private var imageCapture: ImageCapture? = null
@@ -30,6 +33,7 @@ class CameraActivity : AppCompatActivity() {
     private var recording: Recording? = null
     private lateinit var ops: Operations
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var audioManager: AudioManager
 
     companion object {
         private const val TAG = "safe_space_"
@@ -69,6 +73,8 @@ class CameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_camera)
 
         ops = Operations(application)
+
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
 
         val imageCaptureButton = findViewById<ImageButton>(R.id.image_capture_button)
         val videoCaptureButton = findViewById<ImageButton>(R.id.video_capture_button)
@@ -114,11 +120,17 @@ class CameraActivity : AppCompatActivity() {
             outputOptions,
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    println(exc.message.toString())
-                }
+                override fun onError(exc: ImageCaptureException) {}
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {}
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+
+                    when (audioManager.ringerMode) {
+                        AudioManager.RINGER_MODE_NORMAL -> {
+                            val sound = MediaActionSound()
+                            sound.play(MediaActionSound.SHUTTER_CLICK)
+                        }
+                    }
+                }
             }
         )
     }
