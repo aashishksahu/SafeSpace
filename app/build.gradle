@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 //  For Camera
-    def camerax_version = "1.2.2"
+    def camerax_version = "1.2.3"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
@@ -68,6 +68,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
 }
 
 // https://f-droid.org/docs/Reproducible_Builds/#bug-baselineprofm-not-deterministic

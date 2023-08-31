@@ -11,13 +11,23 @@
         android:id="@+id/flash_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5sp"
+        android:layout_margin="20sp"
         android:background="?attr/selectableItemBackground"
         android:backgroundTint="@color/transparent"
-        android:contentDescription="@string/start_capture"
+        android:contentDescription="@string/flash_toggle"
         android:elevation="2dp"
         android:src="@drawable/flash_off_black_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/viewFinder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/videoTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +47,7 @@
         android:text="@string/q720p"
         android:textColor="@color/white"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
         app:layout_constraintEnd_toStartOf="@+id/fps_selector"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,79 +66,110 @@
         android:text="@string/fps30"
         android:textColor="@color/white"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/viewFinder"
+        android:id="@+id/photo_view_finder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20sp"
+        android:foregroundGravity="bottom"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/flash_button" >
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFinder">
-
-        <Button
-            android:id="@+id/photo_toggle"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/photo" />
-
-        <Button
-            android:id="@+id/video_toggle"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/video" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+    </androidx.camera.view.PreviewView>
 
     <ImageButton
         android:id="@+id/image_capture_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="50sp"
         android:background="?attr/selectableItemBackground"
         android:backgroundTint="@color/transparent"
         android:contentDescription="@string/start_capture"
         android:elevation="2dp"
         android:src="@drawable/capture_white_48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
+        app:layout_constraintTop_toBottomOf="@+id/photo_toggle" />
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/video_view_finder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20sp"
+        android:foregroundGravity="bottom"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flash_button" />
 
     <ImageButton
         android:id="@+id/video_capture_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="30sp"
         android:background="?attr/selectableItemBackground"
         android:backgroundTint="@color/transparent"
         android:contentDescription="@string/start_capture"
         android:elevation="2dp"
         android:src="@drawable/record_start_black_24dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
+        app:layout_constraintTop_toBottomOf="@+id/photo_toggle" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_centerline"
+        android:id="@+id/vertical_center_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".50" />
+
+    <Button
+        android:id="@+id/photo_toggle"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="5sp"
+        android:text="@string/photo"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_center_line"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <Button
+        android:id="@+id/video_toggle"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5sp"
+        android:layout_marginTop="20sp"
+        android:text="@string/video"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/vertical_center_line"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".90" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

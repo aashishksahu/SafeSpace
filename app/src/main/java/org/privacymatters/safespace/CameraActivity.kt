@@ -1,28 +1,34 @@
 package org.privacymatters.safespace
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.media.MediaActionSound
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.FallbackStrategy
+import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
+import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import com.google.android.material.button.MaterialButtonToggleGroup
+import androidx.core.util.Consumer
 import org.privacymatters.safespace.lib.Operations
 import java.io.File
 import java.text.SimpleDateFormat
@@ -33,6 +39,9 @@ import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
 
+    private lateinit var photoViewFinder: PreviewView
+    private lateinit var videoViewFinder: PreviewView
+
     private var imageCapture: ImageCapture? = null
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
@@ -40,9 +49,24 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var audioManager: AudioManager
 
+    private lateinit var imageCaptureButton: ImageButton
+    private lateinit var videoCaptureButton: ImageButton
+    private lateinit var flashButton: ImageButton
+
+    private lateinit var photoToggleButton: Button
+    private lateinit var videoToggleButton: Button
+
+    private lateinit var qualityButton: Button
+    private lateinit var fpsButton: Button
+
+    private lateinit var timerText: TextView
+
+    private var preview: Preview? = null
+
     companion object {
         private const val TAG = "safe_space_"
-        private const val EXTENSION = ".jpg"
+        private const val IMG_EXTENSION = ".jpg"
+        private const val VID_EXTENSION = ".mp4"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
@@ -69,7 +93,7 @@ class CameraActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                startCamera()
+                startPhotoCamera()
             }
         }
 
@@ -80,36 +104,34 @@ class CameraActivity : AppCompatActivity() {
         ops = Operations(application)
 
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+        photoViewFinder = findViewById(R.id.photo_view_finder)
+        videoViewFinder = findViewById(R.id.video_view_finder)
 
-        val imageCaptureButton = findViewById<ImageButton>(R.id.image_capture_button)
-        val videoCaptureButton = findViewById<ImageButton>(R.id.video_capture_button)
-        val flashButton = findViewById<ImageButton>(R.id.flash_button)
+        imageCaptureButton = findViewById(R.id.image_capture_button)
+        videoCaptureButton = findViewById(R.id.video_capture_button)
+        flashButton = findViewById(R.id.flash_button)
 
-        val cameraModeToggleButton = findViewById<MaterialButtonToggleGroup>(R.id.toggleButton)
-        cameraModeToggleButton.check(R.id.photo_toggle)
+        photoToggleButton = findViewById(R.id.photo_toggle)
+        videoToggleButton = findViewById(R.id.video_toggle)
 
-        val photoButton = findViewById<Button>(R.id.photo_toggle)
-        val videoButton = findViewById<Button>(R.id.video_toggle)
+        qualityButton = findViewById(R.id.quality_selector)
+        fpsButton = findViewById(R.id.fps_selector)
+        timerText = findViewById(R.id.videoTimer)
 
-        val qualityButton = findViewById<Button>(R.id.quality_selector)
-        val fpsButton = findViewById<Button>(R.id.fps_selector)
-
-        val qualitySelector = QualitySelector.fromOrderedList(
-            listOf(Quality.FHD, Quality.HD),
-            FallbackStrategy.lowerQualityOrHigherThan(Quality.HD))
+        // Select photo mode at startup
+        setToPhotoMode()
 
         // Request camera permissions
         if (allPermissionsGranted()) {
-            startCamera()
+            startPhotoCamera()
         } else {
             requestPermissions()
         }
 
-
-        // Set up the listeners for take photo and video capture buttons
+        // Set up the listeners for photo and video capture buttons
         imageCaptureButton.setOnClickListener { takePhoto() }
 
-        videoCaptureButton.setOnClickListener { captureVideo() }
+        videoCaptureButton.setOnClickListener { captureVideo(videoCaptureButton) }
 
         flashButton.setOnClickListener {
             if (imageCapture != null) {
@@ -134,22 +156,12 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
-        cameraModeToggleButton.addOnButtonCheckedListener { _, checkedId, _ ->
-            when (checkedId) {
-                R.id.photo_toggle -> setToPhotoMode(
-                    photoButton,
-                    videoButton,
-                    qualityButton,
-                    fpsButton
-                )
+        photoToggleButton.setOnClickListener {
+            setToPhotoMode()
+        }
 
-                R.id.video_toggle -> setToVideoMode(
-                    photoButton,
-                    videoButton,
-                    qualityButton,
-                    fpsButton
-                )
-            }
+        videoToggleButton.setOnClickListener {
+            setToVideoMode()
         }
 
         // Todo: Add options to choose quality and fps
@@ -160,6 +172,7 @@ class CameraActivity : AppCompatActivity() {
                     getString(R.string.q1080p) -> {
                         qualityButton.text = getString(R.string.q720p)
                     }
+
                     getString(R.string.q720p) -> {
                         qualityButton.text = getString(R.string.q1080p)
                     }
@@ -174,6 +187,7 @@ class CameraActivity : AppCompatActivity() {
                     getString(R.string.fps30) -> {
                         fpsButton.text = getString(R.string.fps60)
                     }
+
                     getString(R.string.fps60) -> {
                         fpsButton.text = getString(R.string.fps30)
                     }
@@ -192,7 +206,7 @@ class CameraActivity : AppCompatActivity() {
 
         // Create time stamped name and MediaStore entry.
         val name = TAG + SimpleDateFormat(FILENAME_FORMAT, Locale.getDefault())
-            .format(System.currentTimeMillis()) + EXTENSION
+            .format(System.currentTimeMillis()) + IMG_EXTENSION
 
         val saveLoc =
             File(ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), File.separator, name))
@@ -222,9 +236,68 @@ class CameraActivity : AppCompatActivity() {
         )
     }
 
-    private fun captureVideo() {}
+    @SuppressLint("MissingPermission")
+    private fun captureVideo(videoCaptureButton: ImageButton) {
 
-    private fun startCamera() {
+        if (recording == null) {
+
+            // Get a stable reference of the modifiable video capture use case
+            val videoCapture = videoCapture ?: return
+            val timerText = findViewById<TextView>(R.id.videoTimer)
+
+            val recordingListener = Consumer<VideoRecordEvent> { event ->
+                when (event) {
+                    is VideoRecordEvent.Start -> {
+                        videoCaptureButton.setImageResource(R.drawable.record_stop_black_24dp)
+                        disableSwitchFromVideoStart()
+                        startTimer(true)
+                    }
+
+                    is VideoRecordEvent.Finalize -> {
+                        startTimer(false)
+                        videoCaptureButton.setImageResource(R.drawable.record_start_black_24dp)
+                        enableSwitchFromVideoStart()
+
+                        recording?.close()
+
+                        if (event.hasError()) {
+                            recording = null
+                            Toast.makeText(
+                                videoCaptureButton.context,
+                                getString(R.string.video_error),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+                }
+            }
+
+            // Create time stamped name and MediaStore entry.
+            val name = TAG + SimpleDateFormat(FILENAME_FORMAT, Locale.getDefault())
+                .format(System.currentTimeMillis()) + VID_EXTENSION
+
+            val saveLoc =
+                File(ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), File.separator, name))
+
+            val fileOutputOptions = FileOutputOptions.Builder(saveLoc).build()
+
+            if (allPermissionsGranted()) {
+                recording = videoCapture.output
+                    .prepareRecording(videoCaptureButton.context, fileOutputOptions)
+                    .withAudioEnabled()
+                    .start(ContextCompat.getMainExecutor(this), recordingListener)
+
+            } else {
+                requestPermissions()
+            }
+
+        }else{
+            recording!!.stop()
+        }
+    }
+
+    private fun startPhotoCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
@@ -232,11 +305,11 @@ class CameraActivity : AppCompatActivity() {
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
             // Preview
-            val viewFinder = findViewById<PreviewView>(R.id.viewFinder)
-            val preview = Preview.Builder()
+            preview = Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build()
                 .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+                    it.setSurfaceProvider(photoViewFinder.surfaceProvider)
                 }
 
             // image capture
@@ -264,28 +337,129 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun setToPhotoMode(
-        photoButton: Button,
-        videoButton: Button,
-        qualityButton: Button,
-        fpsButton: Button
-    ) {
-        photoButton.visibility = Button.VISIBLE
-        videoButton.visibility = Button.GONE
-        qualityButton.visibility = Button.GONE
-        fpsButton.visibility = Button.GONE
+    private fun startVideoCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
+        cameraProviderFuture.addListener({
+            // Used to bind the lifecycle of cameras to the lifecycle owner
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+            // Preview
+            preview = Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                .build()
+                .also {
+                    it.setSurfaceProvider(videoViewFinder.surfaceProvider)
+                }
+
+            // video capture
+            val qualitySelector = QualitySelector.fromOrderedList(
+                listOf(Quality.FHD, Quality.HD),
+                FallbackStrategy.lowerQualityOrHigherThan(Quality.HD)
+            )
+
+            val recorder = Recorder.Builder()
+                .setQualitySelector(qualitySelector)
+                .build()
+
+            videoCapture = VideoCapture.withOutput(recorder)
+
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview
+                )
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, videoCapture
+                )
+
+            } catch (_: Exception) {
+
+            }
+
+        }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun setToVideoMode(
-        photoButton: Button,
-        videoButton: Button,
-        qualityButton: Button,
-        fpsButton: Button
-    ) {
-        photoButton.visibility = Button.GONE
-        videoButton.visibility = Button.VISIBLE
+    private fun setToPhotoMode() {
+        imageCaptureButton.visibility = Button.VISIBLE
+        videoCaptureButton.visibility = Button.GONE
+        qualityButton.visibility = Button.GONE
+        fpsButton.visibility = Button.GONE
+        timerText.visibility = TextView.GONE
+
+        photoToggleButton.setBackgroundColor(
+            ContextCompat.getColor(
+                photoToggleButton.context,
+                R.color.card_background_dark
+            )
+        )
+
+        videoToggleButton.setBackgroundColor(
+            ContextCompat.getColor(
+                photoToggleButton.context,
+                R.color.translucent
+            )
+        )
+
+        photoViewFinder.visibility = View.VISIBLE
+        videoViewFinder.visibility = View.GONE
+
+        startPhotoCamera()
+    }
+
+    private fun setToVideoMode() {
+        imageCaptureButton.visibility = Button.GONE
+        videoCaptureButton.visibility = Button.VISIBLE
         qualityButton.visibility = Button.VISIBLE
         fpsButton.visibility = Button.VISIBLE
+        timerText.visibility = TextView.VISIBLE
+
+        photoToggleButton.setBackgroundColor(
+            ContextCompat.getColor(
+                photoToggleButton.context,
+                R.color.translucent
+            )
+        )
+
+        videoToggleButton.setBackgroundColor(
+            ContextCompat.getColor(
+                photoToggleButton.context,
+                R.color.card_background_dark
+            )
+        )
+
+        photoViewFinder.visibility = View.GONE
+        videoViewFinder.visibility = View.VISIBLE
+
+        startVideoCamera()
+    }
+
+    private fun disableSwitchFromVideoStart() {
+        photoToggleButton.isClickable = false
+        videoToggleButton.isClickable = false
+        fpsButton.isClickable = false
+        qualityButton.isClickable = false
+    }
+
+    private fun enableSwitchFromVideoStart() {
+        photoToggleButton.isClickable = true
+        videoToggleButton.isClickable = true
+        fpsButton.isClickable = true
+        qualityButton.isClickable = true
+    }
+
+    private fun startTimer(start: Boolean) {
+//        when(start){
+//            true -> cameraTimer.start()
+//            false -> cameraTimer.reset()
+//        }
+
     }
 
     private fun requestPermissions() {
@@ -301,3 +475,4 @@ class CameraActivity : AppCompatActivity() {
         cameraExecutor.shutdown()
     }
 }
+
