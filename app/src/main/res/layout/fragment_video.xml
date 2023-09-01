@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".cameraUtils.VideoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/flash_button_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:contentDescription="@string/flash_toggle"
+            android:elevation="2dp"
+            android:padding="15sp"
+            android:src="@drawable/flash_off_black_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/videoTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="15sp"
+            android:text="@string/video_timer"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/quality_selector"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="5sp"
+            android:background="?attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:contentDescription="@string/video_quality"
+            android:includeFontPadding="false"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="15sp"
+            android:text="@string/q720p"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
+            app:layout_constraintEnd_toStartOf="@+id/fps_selector"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/fps_selector"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="5sp"
+            android:background="?attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:contentDescription="@string/video_fps"
+            android:elevation="2dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="15sp"
+            android:text="@string/fps30"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/video_view_finder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/shutter_button_v"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="60sp"
+            android:background="?attr/selectableItemBackground"
+            android:backgroundTint="@color/primary_500"
+            android:contentDescription="@string/start_capture"
+            android:elevation="2dp"
+            android:src="@drawable/capture_white_48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_toggle_v" />
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/video_view_finder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="9:16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/videoTimer">
+
+        </androidx.camera.view.PreviewView>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_center_line_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <Button
+            android:id="@+id/photo_toggle_v"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5sp"
+            android:backgroundTint="@color/translucent"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/photo"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_center_line_v"
+            app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+        <Button
+            android:id="@+id/video_toggle_v"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5sp"
+            android:backgroundTint="@color/card_background_dark"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/video"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/vertical_center_line_v"
+            app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".75" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

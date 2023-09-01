@@ -10,6 +10,9 @@ class Constants {
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
 
+        const val PHOTO = "PHOTO"
+        const val VIDEO = "VIDEO"
+
         const val PDF = "pdf"
         const val TXT = "txt"
         const val JSON = "json"
