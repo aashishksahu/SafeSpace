@@ -2,8 +2,10 @@ package org.privacymatters.safespace.cameraUtils
 
 import android.content.pm.PackageManager
 import android.media.AudioManager
+import android.media.ExifInterface
 import android.media.MediaActionSound
 import android.os.Bundle
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +14,10 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -27,6 +29,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.ceil
+
 
 class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
@@ -43,6 +47,8 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
     private lateinit var videoToggleButton: Button
 
     private var preview: Preview? = null
+
+    private var rotationDegrees = 0
 
     companion object {
         private const val TAG = "safe_space_"
@@ -146,9 +152,12 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
+            val viewPortHeightScaled = ceil(photoViewFinder.height * 1.2).toInt()
+            val viewPortWidthScaled = ceil(photoViewFinder.width * 1.2).toInt()
+
             // Preview
             preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
                 .build()
                 .also {
                     it.setSurfaceProvider(photoViewFinder.surfaceProvider)
@@ -156,7 +165,7 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
             // image capture
             imageCapture = ImageCapture.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
                 .build()
 
             try {
@@ -196,12 +205,43 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageCapturedCallback() {
+
+                override fun onCaptureSuccess(imageProxy: ImageProxy) {
+                    rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                    imageProxy.close()
+                }
+            })
+
+        imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {}
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+
+//                    val savedImage = File(outputFileResults.savedUri.toString())
+                    val exifData = ExifInterface(outputFileResults.savedUri?.path!!)
+                    when (rotationDegrees) {
+                        in 91..180 -> {
+                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_ROTATE_90.toString()
+                            )
+                        }
+                        in 181..270 -> {
+                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_ROTATE_180.toString()
+                            )
+                        }
+                        in 271..360 -> {
+                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_ROTATE_270.toString()
+                            )
+                        }
+                    }
+                    exifData.saveAttributes()
 
                     when (audioManager.ringerMode) {
                         AudioManager.RINGER_MODE_NORMAL -> {

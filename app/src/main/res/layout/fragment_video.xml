@@ -84,7 +84,7 @@
             android:id="@+id/shutter_button_v"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginBottom="60sp"
+            android:layout_marginBottom="50sp"
             android:background="?attr/selectableItemBackground"
             android:backgroundTint="@color/primary_500"
             android:contentDescription="@string/start_capture"
@@ -92,16 +92,15 @@
             android:src="@drawable/capture_white_48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/photo_toggle_v" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.camera.view.PreviewView
             android:id="@+id/video_view_finder"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="5sp"
+            android:layout_marginBottom="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="9:16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/videoTimer">
@@ -121,13 +120,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5sp"
+            android:layout_marginBottom="20sp"
             android:backgroundTint="@color/translucent"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="@string/photo"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/vertical_center_line_v"
-            app:layout_constraintTop_toTopOf="@+id/guideline3" />
+            app:layout_constraintBottom_toTopOf="@+id/shutter_button_v"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_center_line_v" />
 
         <Button
             android:id="@+id/video_toggle_v"
@@ -135,20 +135,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
+            android:layout_marginBottom="20sp"
             android:backgroundTint="@color/card_background_dark"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="@string/video"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/vertical_center_line_v"
-            app:layout_constraintTop_toTopOf="@+id/guideline3" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".75" />
+            app:layout_constraintBottom_toTopOf="@+id/shutter_button_v"
+            app:layout_constraintStart_toStartOf="@+id/vertical_center_line_v" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

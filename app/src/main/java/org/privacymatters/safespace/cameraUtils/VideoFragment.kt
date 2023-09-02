@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.ceil
 
 class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
@@ -194,9 +195,12 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
+            val viewPortHeightScaled = ceil(photoViewFinder.height * 1.2).toInt()
+            val viewPortWidthScaled = ceil(photoViewFinder.width * 1.2).toInt()
+
             // Preview
             preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
                 .build()
                 .also {
                     it.setSurfaceProvider(photoViewFinder.surfaceProvider)
