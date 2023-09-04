@@ -1,7 +1,9 @@
 package org.privacymatters.safespace
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import org.privacymatters.safespace.cameraUtils.CameraSwitch
 import org.privacymatters.safespace.cameraUtils.CameraViewModel
@@ -12,7 +14,9 @@ import org.privacymatters.safespace.lib.Constants
 
 class CameraActivity : AppCompatActivity(), CameraSwitch {
 
-
+    private lateinit var photoToggleButton: Button
+    private lateinit var videoToggleButton: Button
+    private var cameraMode = Constants.PHOTO
 
     private lateinit var photoFragment: PhotoFragment
     private lateinit var videoFragment: VideoFragment
@@ -23,10 +27,51 @@ class CameraActivity : AppCompatActivity(), CameraSwitch {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        cameraViewModel = CameraViewModel(application, this)
+        cameraViewModel = CameraViewModel(application)
         photoFragment = PhotoFragment(cameraViewModel)
         videoFragment = VideoFragment(cameraViewModel)
 
+        photoToggleButton = findViewById(R.id.photo_toggle)
+        videoToggleButton = findViewById(R.id.video_toggle)
+
+
+        videoToggleButton.setOnClickListener {
+            if (cameraMode == Constants.PHOTO) {
+                cameraMode = Constants.VIDEO
+                videoToggleButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        videoToggleButton.context,
+                        R.color.card_background_dark
+                    )
+                )
+                photoToggleButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        photoToggleButton.context,
+                        R.color.translucent
+                    )
+                )
+                switchMode()
+            }
+        }
+
+        photoToggleButton.setOnClickListener {
+            if (cameraMode == Constants.VIDEO) {
+                cameraMode = Constants.PHOTO
+                photoToggleButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        photoToggleButton.context,
+                        R.color.card_background_dark
+                    )
+                )
+                videoToggleButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        videoToggleButton.context,
+                        R.color.translucent
+                    )
+                )
+                switchMode()
+            }
+        }
 
         // default fragment
         if (savedInstanceState == null) {
@@ -38,27 +83,21 @@ class CameraActivity : AppCompatActivity(), CameraSwitch {
 
     }
 
-    override fun switchMode(mode: String){
+    private fun switchMode() {
 
-        when(mode){
-            Constants.PHOTO -> {
-                supportFragmentManager.commit {
-                    // no subsFragmentFirstCall check for expenses fragment as
-                    // it is already set as default on activity start
-                    setReorderingAllowed(true)
-                    attach(photoFragment)
-                }
-            }
-            Constants.VIDEO -> {
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    if (videoFragmentFirstCall) {
-                        add(R.id.fragmentContainer, videoFragment)
-                        videoFragmentFirstCall = false
-                    } else {
-                        attach(videoFragment)
-                    }
-                }
+        val fragment = when (cameraMode) {
+            Constants.PHOTO -> photoFragment
+            Constants.VIDEO -> videoFragment
+            else -> photoFragment
+        }
+
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            if (videoFragmentFirstCall) {
+                add(R.id.fragmentContainer, videoFragment)
+                videoFragmentFirstCall = false
+            } else {
+                replace(R.id.fragmentContainer, fragment)
             }
         }
 

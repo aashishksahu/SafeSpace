@@ -7,14 +7,57 @@
     android:background="@color/black"
     tools:context=".CameraActivity">
 
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="10sp"
         android:textColor="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/photo_toggle"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="80sp"
+        android:backgroundTint="@color/card_background_dark"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/photo"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fragmentContainer"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_center_line" />
+
+
+    <Button
+        android:id="@+id/video_toggle"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="80sp"
+        android:backgroundTint="@color/translucent"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/video"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fragmentContainer"
+        app:layout_constraintStart_toStartOf="@+id/vertical_center_line" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_center_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5sp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

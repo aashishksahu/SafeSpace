@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -32,12 +32,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.ceil
 
 class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
@@ -47,9 +45,6 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
     private lateinit var shutterButton: ImageButton
     private lateinit var flashButton: ImageButton
-
-    private lateinit var photoToggleButton: Button
-    private lateinit var videoToggleButton: Button
 
     private var imageCapture: ImageCapture? = null
     private var videoCapture: VideoCapture<Recorder>? = null
@@ -108,9 +103,6 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
         shutterButton = view.findViewById(R.id.shutter_button_v)
         flashButton = view.findViewById(R.id.flash_button_v)
 
-        photoToggleButton = view.findViewById(R.id.photo_toggle_v)
-        videoToggleButton = view.findViewById(R.id.video_toggle_v)
-
         qualityButton = view.findViewById(R.id.quality_selector)
         fpsButton = view.findViewById(R.id.fps_selector)
         timerText = view.findViewById(R.id.videoTimer)
@@ -124,10 +116,6 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
         // Set up the listeners for photo and video capture buttons
         shutterButton.setOnClickListener { captureVideo(shutterButton) }
-
-        photoToggleButton.setOnClickListener {
-            viewModel.setCameraMode(Constants.PHOTO)
-        }
 
         // Todo: Add options to choose quality and fps
         qualityButton.setOnClickListener {
@@ -195,12 +183,9 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val viewPortHeightScaled = ceil(photoViewFinder.height * 1.2).toInt()
-            val viewPortWidthScaled = ceil(photoViewFinder.width * 1.2).toInt()
-
             // Preview
             preview = Preview.Builder()
-                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build()
                 .also {
                     it.setSurfaceProvider(photoViewFinder.surfaceProvider)
@@ -298,15 +283,11 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
     }
 
     private fun disableSwitchFromVideoStart() {
-        photoToggleButton.isClickable = false
-        videoToggleButton.isClickable = false
         fpsButton.isClickable = false
         qualityButton.isClickable = false
     }
 
     private fun enableSwitchFromVideoStart() {
-        photoToggleButton.isClickable = true
-        videoToggleButton.isClickable = true
         fpsButton.isClickable = true
         qualityButton.isClickable = true
     }
@@ -331,4 +312,5 @@ class VideoFragment(private val viewModel: CameraViewModel) : Fragment() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
+    
 }

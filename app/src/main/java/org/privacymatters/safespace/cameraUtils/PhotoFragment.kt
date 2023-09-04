@@ -2,18 +2,16 @@ package org.privacymatters.safespace.cameraUtils
 
 import android.content.pm.PackageManager
 import android.media.AudioManager
-import android.media.ExifInterface
 import android.media.MediaActionSound
 import android.os.Bundle
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -22,14 +20,13 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.ceil
 
 
 class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
@@ -39,12 +36,9 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var audioManager: AudioManager
-
     private lateinit var shutterButton: ImageButton
-    private lateinit var flashButton: ImageButton
 
-    private lateinit var photoToggleButton: Button
-    private lateinit var videoToggleButton: Button
+    private lateinit var flashButton: ImageButton
 
     private var preview: Preview? = null
 
@@ -94,11 +88,8 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
             requireContext().getSystemService(AppCompatActivity.AUDIO_SERVICE) as AudioManager
         photoViewFinder = view.findViewById(R.id.photo_view_finder)
 
-        shutterButton = view.findViewById(R.id.shutter_button)
         flashButton = view.findViewById(R.id.flash_button)
-
-        photoToggleButton = view.findViewById(R.id.photo_toggle)
-        videoToggleButton = view.findViewById(R.id.video_toggle)
+        shutterButton = view.findViewById(R.id.shutter_button)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -109,10 +100,6 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
         // Set up the listeners for photo and video capture buttons
         shutterButton.setOnClickListener { takePhoto() }
-
-        videoToggleButton.setOnClickListener {
-            viewModel.setCameraMode(Constants.VIDEO)
-        }
 
         flashButton.setOnClickListener {
 
@@ -152,12 +139,9 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val viewPortHeightScaled = ceil(photoViewFinder.height * 1.2).toInt()
-            val viewPortWidthScaled = ceil(photoViewFinder.width * 1.2).toInt()
-
             // Preview
             preview = Preview.Builder()
-                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
                 .also {
                     it.setSurfaceProvider(photoViewFinder.surfaceProvider)
@@ -165,7 +149,7 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
 
             // image capture
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(viewPortWidthScaled, viewPortHeightScaled))
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
 
             try {
@@ -226,17 +210,20 @@ class PhotoFragment(private val viewModel: CameraViewModel) : Fragment() {
                     val exifData = ExifInterface(outputFileResults.savedUri?.path!!)
                     when (rotationDegrees) {
                         in 91..180 -> {
-                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                            exifData.setAttribute(
+                                ExifInterface.TAG_ORIENTATION,
                                 ExifInterface.ORIENTATION_ROTATE_90.toString()
                             )
                         }
                         in 181..270 -> {
-                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                            exifData.setAttribute(
+                                ExifInterface.TAG_ORIENTATION,
                                 ExifInterface.ORIENTATION_ROTATE_180.toString()
                             )
                         }
                         in 271..360 -> {
-                            exifData.setAttribute(ExifInterface.TAG_ORIENTATION,
+                            exifData.setAttribute(
+                                ExifInterface.TAG_ORIENTATION,
                                 ExifInterface.ORIENTATION_ROTATE_270.toString()
                             )
                         }
