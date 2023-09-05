@@ -7,18 +7,66 @@
     android:background="@color/black"
     tools:context=".CameraActivity">
 
+    <ImageButton
+        android:id="@+id/flash_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:background="?attr/selectableItemBackground"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/flash_toggle"
+        android:elevation="2dp"
+        android:padding="15sp"
+        android:src="@drawable/flash_off_black_24dp"
+        app:layout_constraintStart_toStartOf="@+id/view_finder"
+        app:layout_constraintTop_toTopOf="@+id/view_finder" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10sp"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/videoTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:elevation="2dp"
+        android:text="@string/video_timer"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/quality_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/view_finder" />
 
+    <Button
+        android:id="@+id/quality_selector"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_marginEnd="5sp"
+        android:background="?attr/selectableItemBackground"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/video_quality"
+        android:elevation="2dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="15sp"
+        android:text="@string/q480p"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/view_finder"
+        app:layout_constraintTop_toTopOf="@+id/view_finder" />
+
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/view_finder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.camera.view.PreviewView>
 
     <Button
         android:id="@+id/photo_toggle"
@@ -26,13 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="80sp"
-        android:backgroundTint="@color/card_background_dark"
+        android:layout_marginBottom="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="@string/photo"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fragmentContainer"
+        app:layout_constraintBottom_toTopOf="@+id/shutter_button"
         app:layout_constraintEnd_toStartOf="@+id/vertical_center_line" />
 
 
@@ -42,14 +89,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginBottom="80sp"
-        android:backgroundTint="@color/translucent"
+        android:layout_marginBottom="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="@string/video"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fragmentContainer"
+        app:layout_constraintBottom_toTopOf="@+id/shutter_button"
         app:layout_constraintStart_toStartOf="@+id/vertical_center_line" />
+
+    <ImageButton
+        android:id="@+id/shutter_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="15sp"
+        android:background="?attr/selectableItemBackground"
+        android:backgroundTint="@color/primary_500"
+        android:contentDescription="@string/start_capture"
+        android:elevation="2dp"
+        android:src="@drawable/capture_64"
+        app:layout_constraintBottom_toBottomOf="@+id/view_finder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/switch_camera"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="10sp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="78dp"
+        android:background="?attr/selectableItemBackground"
+        android:backgroundTint="@color/primary_500"
+        android:contentDescription="@string/switch_camera"
+        android:elevation="2dp"
+        android:src="@drawable/cached_white_48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view_finder"
+        app:layout_constraintEnd_toEndOf="@+id/view_finder"
+        app:layout_constraintStart_toStartOf="@+id/vertical_center_line"
+        app:layout_constraintTop_toBottomOf="@+id/video_toggle" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_center_line"
@@ -58,6 +135,5 @@
         android:layout_margin="5sp"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

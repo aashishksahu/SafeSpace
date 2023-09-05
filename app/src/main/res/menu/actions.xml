@@ -3,15 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/import_files"
-        android:icon="@drawable/baseline_file_upload_24"
-        android:title="@string/import_files"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction"/>
-    <item
         android:id="@+id/camera"
         android:icon="@drawable/photo_camera_black_24dp"
         android:title="@string/open_camera"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction"/>
+    <item
+        android:id="@+id/import_files"
+        android:icon="@drawable/baseline_file_upload_24"
+        android:title="@string/import_files"
         app:showAsAction="always" />
     <item
         android:id="@+id/create_dir"
