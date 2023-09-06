@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-class CameraViewModel(application: Application, private val initialTimerText: String) : AndroidViewModel(application) {
+class CameraViewModel(application: Application, private val initialTimerText: String) :
+    AndroidViewModel(application) {
 
     private var timer: Timer? = null
     private var timerCounter = 0u
@@ -26,8 +27,10 @@ class CameraViewModel(application: Application, private val initialTimerText: St
 
             timer?.scheduleAtFixedRate(timerTask {
                 timerCounter += 1u
-                timerCounterText.postValue((timerCounter / 60u).toString()
-                    .padStart(2, '0') + ":" + (timerCounter % 60u).toString().padStart(2, '0'))
+                timerCounterText.postValue(
+                    (timerCounter / 60u).toString()
+                        .padStart(2, '0') + ":" + (timerCounter % 60u).toString().padStart(2, '0')
+                )
             }, 1000, 1000)
         }
     }
@@ -37,7 +40,9 @@ class CameraViewModel(application: Application, private val initialTimerText: St
             timer?.cancel()
             timer?.purge()
             timerCounterText.postValue(initialTimerText)
+            timerCounter = 0u
         }
     }
+
 
 }

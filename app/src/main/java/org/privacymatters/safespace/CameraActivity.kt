@@ -48,7 +48,7 @@ class CameraActivity : AppCompatActivity() {
 
     private lateinit var photoToggleButton: Button
     private lateinit var videoToggleButton: Button
-    private var cameraMode = Constants.PHOTO
+    private var cameraMode: String? = null
 
     private lateinit var cameraViewModel: CameraViewModel
 
@@ -113,6 +113,9 @@ class CameraActivity : AppCompatActivity() {
 
         ops = Operations(application)
 
+        val cameraSelectorText = intent.getStringExtra(Constants.CAMERA_SELECTOR)
+        cameraMode = intent.getStringExtra(Constants.CAMERA_MODE)
+
         cameraViewModel = CameraViewModel(application, getString(R.string.video_timer))
 
         photoToggleButton = findViewById(R.id.photo_toggle)
@@ -129,8 +132,18 @@ class CameraActivity : AppCompatActivity() {
         qualityButton = findViewById(R.id.quality_selector)
         timerText = findViewById(R.id.videoTimer)
 
-        // set to photo mode initially
-        switchMode(Constants.PHOTO)
+        cameraSelector = if (cameraSelectorText == Constants.DEFAULT_BACK_CAMERA ||
+            cameraSelectorText.isNullOrEmpty()
+        ) {
+            CameraSelector.DEFAULT_BACK_CAMERA
+        } else {
+            CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+
+        if (cameraMode.isNullOrEmpty()){
+            cameraMode = Constants.PHOTO
+        }
+        switchMode()
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -150,12 +163,16 @@ class CameraActivity : AppCompatActivity() {
         }
 
         switchCameraButton.setOnClickListener {
-            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                CameraSelector.DEFAULT_FRONT_CAMERA
+
+            val cameraSelectorName = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                Constants.DEFAULT_FRONT_CAMERA
             } else {
-                CameraSelector.DEFAULT_BACK_CAMERA
+                Constants.DEFAULT_BACK_CAMERA
             }
-            startCamera()
+
+            intent.putExtra(Constants.CAMERA_SELECTOR, cameraSelectorName)
+            intent.putExtra(Constants.CAMERA_MODE, cameraMode)
+            recreate()
         }
 
         flashButton.setOnClickListener {
@@ -201,14 +218,14 @@ class CameraActivity : AppCompatActivity() {
         videoToggleButton.setOnClickListener {
             if (cameraMode == Constants.PHOTO) {
                 cameraMode = Constants.VIDEO
-                switchMode(Constants.VIDEO)
+                switchMode()
             }
         }
 
         photoToggleButton.setOnClickListener {
             if (cameraMode == Constants.VIDEO) {
                 cameraMode = Constants.PHOTO
-                switchMode(Constants.PHOTO)
+                switchMode()
             }
         }
 
@@ -259,9 +276,9 @@ class CameraActivity : AppCompatActivity() {
 
     }
 
-    private fun switchMode(mode: String) {
+    private fun switchMode() {
 
-        if (mode == Constants.PHOTO) {
+        if (cameraMode == Constants.PHOTO) {
             photoToggleButton.setBackgroundColor(
                 ContextCompat.getColor(
                     photoToggleButton.context,
@@ -279,7 +296,7 @@ class CameraActivity : AppCompatActivity() {
             timerText.visibility = View.GONE
             shutterButton.setImageResource(R.drawable.capture_64)
 
-        } else if (mode == Constants.VIDEO) {
+        } else if (cameraMode == Constants.VIDEO) {
             videoToggleButton.setBackgroundColor(
                 ContextCompat.getColor(
                     videoToggleButton.context,
