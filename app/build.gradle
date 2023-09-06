@@ -69,6 +69,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.fragment:fragment-ktx:1.6.1"
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }
 
 // https://f-droid.org/docs/Reproducible_Builds/#bug-baselineprofm-not-deterministic

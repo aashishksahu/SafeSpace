@@ -41,7 +41,6 @@ import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
 
-    private var isTimerStarted: Boolean = false
     private var recorder: Recorder? = null
     private var videoFlashOn: Boolean = false
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -114,7 +113,7 @@ class CameraActivity : AppCompatActivity() {
 
         ops = Operations(application)
 
-        cameraViewModel = CameraViewModel(application)
+        cameraViewModel = CameraViewModel(application, getString(R.string.video_timer))
 
         photoToggleButton = findViewById(R.id.photo_toggle)
         videoToggleButton = findViewById(R.id.video_toggle)
@@ -331,6 +330,10 @@ class CameraActivity : AppCompatActivity() {
 
             videoCapture = VideoCapture.withOutput(recorder!!)
 
+            cameraViewModel.timerCounterText.observe(this) { timeCount ->
+                timerText.text = timeCount
+            }
+
             // image capture
             imageCapture = ImageCapture.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_16_9)
@@ -379,7 +382,8 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(applicationContext),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    println(exc.message)
+                    TODO("front camera not working")
+                    exc.printStackTrace()
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -415,8 +419,7 @@ class CameraActivity : AppCompatActivity() {
                                 sound.play(MediaActionSound.START_VIDEO_RECORDING)
                             }
                         }
-                        isTimerStarted = true
-                        cameraViewModel.startTimer(timerText)
+                        cameraViewModel.startTimer()
                     }
 
                     is VideoRecordEvent.Finalize -> {
@@ -441,7 +444,7 @@ class CameraActivity : AppCompatActivity() {
 
                         recording?.close()
                         recording = null
-                        cameraViewModel.stopTimer(timerText)
+                        cameraViewModel.stopTimer()
                     }
                 }
             }
@@ -477,7 +480,6 @@ class CameraActivity : AppCompatActivity() {
     private fun enableSwitchFromVideoStart() {
         qualityButton.isClickable = true
     }
-
 
 
     private fun requestPermissions() {

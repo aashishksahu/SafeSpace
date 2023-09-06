@@ -28,6 +28,7 @@
         android:layout_marginTop="10sp"
         android:elevation="2dp"
         android:text="@string/video_timer"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/white"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/quality_selector"
