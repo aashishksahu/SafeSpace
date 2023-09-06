@@ -399,8 +399,7 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(applicationContext),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    TODO("front camera not working")
-                    exc.printStackTrace()
+//                    exc.printStackTrace()
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
