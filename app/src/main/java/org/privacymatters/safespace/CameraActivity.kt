@@ -74,7 +74,7 @@ class CameraActivity : AppCompatActivity() {
         private const val TAG = "safe_space_"
         private const val IMG_EXTENSION = ".jpg"
         private const val VID_EXTENSION = ".mp4"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
                 android.Manifest.permission.CAMERA,
@@ -140,7 +140,7 @@ class CameraActivity : AppCompatActivity() {
             CameraSelector.DEFAULT_FRONT_CAMERA
         }
 
-        if (cameraMode.isNullOrEmpty()){
+        if (cameraMode.isNullOrEmpty()) {
             cameraMode = Constants.PHOTO
         }
         switchMode()
@@ -316,6 +316,12 @@ class CameraActivity : AppCompatActivity() {
 
         }
 
+        if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+            flashButton.visibility = View.GONE
+        } else {
+            flashButton.visibility = View.VISIBLE
+        }
+
     }
 
     private fun startCamera() {
@@ -353,6 +359,7 @@ class CameraActivity : AppCompatActivity() {
 
             // image capture
             imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
 
@@ -491,10 +498,14 @@ class CameraActivity : AppCompatActivity() {
 
     private fun disableSwitchFromVideoStart() {
         qualityButton.isClickable = false
+        flashButton.isClickable = false
+        switchCameraButton.isClickable = false
     }
 
     private fun enableSwitchFromVideoStart() {
         qualityButton.isClickable = true
+        flashButton.isClickable = true
+        switchCameraButton.isClickable = true
     }
 
 
