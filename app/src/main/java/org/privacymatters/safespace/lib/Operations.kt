@@ -5,17 +5,28 @@ import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 
+@Suppress("unused")
 class Operations(private val application: Application) {
 
-    private var internalPath: ArrayList<String> = ArrayList()
+    companion object {
+        private var internalPath: ArrayList<String> = ArrayList()
+    }
+
     private var filesList: ArrayList<FileItem> = ArrayList()
     private var folderList: ArrayList<FolderItem> = ArrayList()
 
@@ -37,10 +48,15 @@ class Operations(private val application: Application) {
         }
     }
 
-    fun setGetPreviousPath(): String {
+    fun setGetPreviousAndCurrentPath(): Pair<String, String> {
         val lastPath = internalPath.last()
-        if (internalPath.isNotEmpty()) internalPath.removeLast()
-        return lastPath
+        var currentPath = ""
+
+        if (internalPath.isNotEmpty()) {
+            internalPath.removeLast()
+            currentPath = if (internalPath.size > 0) internalPath.last() else ""
+        }
+        return Pair(lastPath, currentPath)
     }
 
     fun isRootDirectory(): Boolean {
@@ -336,15 +352,91 @@ class Operations(private val application: Application) {
     }
 
     fun isPreviousRootDirectory(): Boolean {
-        if (this.internalPath.size == 1) {
+        if (internalPath.size == 0) {
             return true
         }
         return false
     }
 
+    fun exportBackup(exportUri: Uri) {
 
-    // DO NOT REMOVE the following method
-    @Suppress("unused")
+        try {
+            val backupName =
+                "SafeSpace-" + SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                    .format(System.currentTimeMillis()) + ".zip"
+
+            val directory = DocumentFile.fromTreeUri(application, exportUri)
+            val file = directory!!.createFile("application/zip", backupName)
+            val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
+
+            val inputDirectory = File(getFilesDir())
+
+            ZipOutputStream(BufferedOutputStream(FileOutputStream(pfd!!.fileDescriptor))).use { zos ->
+
+                inputDirectory.walkTopDown().forEach { file ->
+                    val zipFileName =
+                        file.absolutePath.removePrefix(inputDirectory.absolutePath)
+                            .removePrefix("/")
+                    val entry = ZipEntry("$zipFileName${(if (file.isDirectory) "/" else "")}")
+
+                    zos.putNextEntry(entry)
+
+                    if (file.isFile) {
+                        file.inputStream().use { fis -> fis.copyTo(zos) }
+                    }
+                }
+
+            }
+            pfd.close()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun importBackup(backupUri: Uri) {
+
+        // byte array of source file
+        val sourceFileStream = application.contentResolver.openInputStream(backupUri)
+
+        val buffer = ByteArray(1024)
+        val zis = ZipInputStream(sourceFileStream)
+
+        var zipEntry = zis.nextEntry
+
+        while (zipEntry != null) {
+            val newFile = File(getFilesDir(), zipEntry.name)
+            if (zipEntry.isDirectory) {
+                if (!newFile.isDirectory && !newFile.mkdirs()) {
+                    throw IOException("Failed to create directory $newFile")
+                }
+            } else {
+                // fix for Windows-created archives
+                val parent = newFile.parentFile
+                if (parent != null) {
+                    if (!parent.isDirectory && !parent.mkdirs()) {
+                        throw IOException("Failed to create directory $parent")
+                    }
+                }
+
+                // write file content
+                val fos = FileOutputStream(newFile)
+                var len: Int
+                while (zis.read(buffer).also { len = it } > 0) {
+                    fos.write(buffer, 0, len)
+                }
+                fos.close()
+            }
+            zipEntry = zis.nextEntry
+        }
+
+        zis.closeEntry()
+        zis.close()
+        sourceFileStream?.close()
+    }
+
+
+    @Suppress("Unused")
     private fun recursiveDirectoryRead(
         path: String,
         _filesArray: ArrayList<String>

@@ -27,6 +27,29 @@
             app:popupTheme="@style/dialogThemeMenu"
             app:title="@string/app_name" />
 
+        <LinearLayout
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/progressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:visibility="visible" />
+        </LinearLayout>
+
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
@@ -53,7 +76,7 @@
         android:textColor="@color/design_default_color_error"
         android:visibility="gone"
         app:icon="@drawable/delete_white_36dp"
-        app:iconTint = "@color/design_default_color_error"
+        app:iconTint="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

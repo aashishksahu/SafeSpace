@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -63,6 +65,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
+    private lateinit var progressLayout: LinearLayout
+    private lateinit var progressText: TextView
+    private lateinit var progressBar: ProgressBar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +104,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         topAppBar = findViewById(R.id.topAppBar)
+
+        progressLayout = findViewById(R.id.progressLayout)
+        progressText = findViewById(R.id.progressText)
+        progressBar = findViewById(R.id.progressBar)
+
 
         // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
@@ -188,7 +198,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
             }
 
-        // Start: Directory picker result
+        // Directory picker result
         selectExportDirActivityResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
@@ -209,6 +219,55 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                                 }
                             }
                             clearSelection()
+                        }
+                    }
+                }
+            }
+
+        // Export Backup
+        val backupExportDirActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                ops.exportBackup(uri)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    updateRecyclerView()
+                                }
+                            }
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.export_backup_msg),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
+            }
+
+        // Import Backup
+        val importBackupActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                ops.importBackup(uri)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    updateRecyclerView()
+                                }
+                            }
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.import_backup_msg),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -236,6 +295,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 R.id.create_txt -> {
                     createTextNote(topAppBar.context)
+                }
+
+                R.id.export_backup -> {
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                    backupExportDirActivityResult.launch(intent)
+                }
+
+                R.id.import_backup -> {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "application/zip"
+                    importBackupActivityResult.launch(intent)
                 }
 
                 R.id.about -> {
@@ -450,8 +520,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun backButtonAction() {
+
+        var currentPath = ""
+
         if (!ops.isRootDirectory()) {
-            ops.setGetPreviousPath()
+            val (_, currentPathTemp) = ops.setGetPreviousAndCurrentPath()
+            currentPath = currentPathTemp
             // display contents of the navigated path
             updateRecyclerView()
         } else {
@@ -459,6 +533,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         }
         if (ops.isPreviousRootDirectory())
             topAppBar.title = getString(R.string.app_name)
+        else
+            topAppBar.title = currentPath
     }
 
     override fun onResume() {
@@ -719,7 +795,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         topAppBar.title = folderItem.name
 
         ops.setInternalPath(folderItem.name)
-        updateRecyclerView()
 
         // clear selection on directory change and hide delete button
         toggleFloatingButtonVisibility(false)
