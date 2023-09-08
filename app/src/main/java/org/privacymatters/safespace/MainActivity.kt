@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.import_files_progress),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
                     for (uri in importList) {
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                                         Toast.makeText(
                                             applicationContext,
                                             getString(R.string.import_files_error),
-                                            Toast.LENGTH_LONG
+                                            Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                 }
@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                             Toast.makeText(
                                 exportButton.context,
                                 getString(R.string.export_in_progress),
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_SHORT
                             ).show()
 
                             for (item in selectedItems) {
@@ -233,9 +233,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         val uri = intent?.data
                         if (uri != null) {
                             CoroutineScope(Dispatchers.IO).launch {
-                                ops.exportBackup(uri)
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    updateRecyclerView()
+                                when (ops.exportBackup(uri)) {
+                                    0 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            updateRecyclerView()
+                                        }
+                                    }
+
+                                    4 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(4)
+                                        }
+                                    }
                                 }
                             }
                             Toast.makeText(
@@ -258,9 +267,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         val uri = intent?.data
                         if (uri != null) {
                             CoroutineScope(Dispatchers.IO).launch {
-                                ops.importBackup(uri)
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    updateRecyclerView()
+                                when (ops.importBackup(uri)) {
+                                    0 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            updateRecyclerView()
+                                        }
+                                    }
+
+                                    4 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(4)
+                                        }
+                                    }
                                 }
                             }
                             Toast.makeText(
@@ -351,13 +369,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.move_copy_file_failure),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.move_copy_file_success),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
                     updateRecyclerView()
@@ -381,6 +399,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         })
         //End: back button - system navigation
 
+    }
+
+    private fun backupError(errorCode: Int) {
+        val msg = when (errorCode) {
+            4 -> getString(R.string.backup_err_space)
+            1 -> getString(R.string.backup_err_other)
+            else -> getString(R.string.backup_err_other)
+        }
+        
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+        
     }
 
     private fun clearSelection() {
@@ -433,7 +462,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         context,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -469,7 +498,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.unsupported_format),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -567,7 +596,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -576,7 +605,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         context,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -622,7 +651,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -657,7 +686,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -749,7 +778,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             viewContext,
                             getString(R.string.file_exists_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         loadDocument(result)
@@ -759,7 +788,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         viewContext,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }

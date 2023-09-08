@@ -358,7 +358,7 @@ class Operations(private val application: Application) {
         return false
     }
 
-    fun exportBackup(exportUri: Uri) {
+    fun exportBackup(exportUri: Uri): Int {
 
         try {
             val backupName =
@@ -389,50 +389,64 @@ class Operations(private val application: Application) {
             }
             pfd.close()
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: IOException) {
+//            e.printStackTrace()
+            return if (e.message.toString().lowercase().contains("no space left")) {
+                4
+            } else {
+                1
+            }
         }
+        return 0
     }
 
-    fun importBackup(backupUri: Uri) {
+    fun importBackup(backupUri: Uri): Int {
 
-        // byte array of source file
-        val sourceFileStream = application.contentResolver.openInputStream(backupUri)
+        try {
 
-        val buffer = ByteArray(1024)
-        val zis = ZipInputStream(sourceFileStream)
+            // byte array of source file
+            val sourceFileStream = application.contentResolver.openInputStream(backupUri)
 
-        var zipEntry = zis.nextEntry
+            val zis = ZipInputStream(sourceFileStream)
 
-        while (zipEntry != null) {
-            val newFile = File(getFilesDir(), zipEntry.name)
-            if (zipEntry.isDirectory) {
-                if (!newFile.isDirectory && !newFile.mkdirs()) {
-                    throw IOException("Failed to create directory $newFile")
-                }
-            } else {
-                // fix for Windows-created archives
-                val parent = newFile.parentFile
-                if (parent != null) {
-                    if (!parent.isDirectory && !parent.mkdirs()) {
-                        throw IOException("Failed to create directory $parent")
+            var zipEntry = zis.nextEntry
+
+            while (zipEntry != null) {
+                val newFile = File(getFilesDir(), zipEntry.name)
+                if (zipEntry.isDirectory) {
+                    if (!newFile.isDirectory && !newFile.mkdirs()) {
+                        throw IOException("Failed to create directory $newFile")
                     }
-                }
+                } else {
+                    // fix for Windows-created archives
+                    val parent = newFile.parentFile
+                    if (parent != null) {
+                        if (!parent.isDirectory && !parent.mkdirs()) {
+                            throw IOException("Failed to create directory $parent")
+                        }
+                    }
 
-                // write file content
-                val fos = FileOutputStream(newFile)
-                var len: Int
-                while (zis.read(buffer).also { len = it } > 0) {
-                    fos.write(buffer, 0, len)
+                    // write file content
+                    val fos = FileOutputStream(newFile)
+
+                    zis.copyTo(fos)
+
+                    fos.close()
                 }
-                fos.close()
+                zipEntry = zis.nextEntry
             }
-            zipEntry = zis.nextEntry
-        }
 
-        zis.closeEntry()
-        zis.close()
-        sourceFileStream?.close()
+            zis.closeEntry()
+            zis.close()
+            sourceFileStream?.close()
+        } catch (exc: IOException) {
+            return if (exc.message.toString().lowercase().contains("no space left")) {
+                4
+            } else {
+                1
+            }
+        }
+        return 0
     }
 
 

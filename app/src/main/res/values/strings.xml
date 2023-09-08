@@ -8,7 +8,9 @@
     <string name="import_files">Import Files</string>
     <string name="export_backup">Export Zip Backup</string>
     <string name="export_backup_msg">Exporting Zip Archive in Background</string>
+    <string name="backup_err_space">Not Enough Storage Available</string>
     <string name="import_backup">Import Zip Backup</string>
+    <string name="backup_err_other">Unexpected Error</string>
     <string name="import_backup_msg">Importing Zip Archive in Background</string>
     <string name="open_camera">Open Camera</string>
     <string name="photo">Photo</string>
