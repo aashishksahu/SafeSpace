@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.PopupMenu
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -65,9 +63,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var fileMoveCopyButton: MaterialButton
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
-    private lateinit var progressLayout: LinearLayout
-    private lateinit var progressText: TextView
-    private lateinit var progressBar: ProgressBar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,14 +100,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         topAppBar = findViewById(R.id.topAppBar)
 
-        progressLayout = findViewById(R.id.progressLayout)
-        progressText = findViewById(R.id.progressText)
-        progressBar = findViewById(R.id.progressBar)
-
 
         // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
-            if (initializeApp() == 1) {
+            if (ops.initRootDir() == 1) {
                 with(sharedPref.edit()) {
                     putBoolean(Constants.APP_FIRST_RUN, true)
                     apply()
@@ -407,19 +398,15 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             1 -> getString(R.string.backup_err_other)
             else -> getString(R.string.backup_err_other)
         }
-        
+
         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
-        
+
     }
 
     private fun clearSelection() {
         toggleFloatingButtonVisibility(false)
         this.selectedItems.clear()
         updateRecyclerView()
-    }
-
-    private fun initializeApp(): Int {
-        return ops.initRootDir()
     }
 
     private fun updateRecyclerView() {

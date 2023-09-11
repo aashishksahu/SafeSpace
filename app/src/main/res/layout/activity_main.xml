@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
@@ -26,28 +25,6 @@
             app:menu="@menu/actions"
             app:popupTheme="@style/dialogThemeMenu"
             app:title="@string/app_name" />
-
-        <LinearLayout
-            android:id="@+id/progressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/progressText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="100"
-                android:visibility="visible" />
-        </LinearLayout>
 
 
     </com.google.android.material.appbar.AppBarLayout>
