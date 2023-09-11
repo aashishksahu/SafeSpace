@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
@@ -26,6 +25,7 @@
             app:menu="@menu/actions"
             app:popupTheme="@style/dialogThemeMenu"
             app:title="@string/app_name" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,7 +53,7 @@
         android:textColor="@color/design_default_color_error"
         android:visibility="gone"
         app:icon="@drawable/delete_white_36dp"
-        app:iconTint = "@color/design_default_color_error"
+        app:iconTint="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

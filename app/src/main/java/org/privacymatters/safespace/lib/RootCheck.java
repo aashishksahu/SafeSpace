@@ -7,12 +7,6 @@ import java.io.File;
 public class RootCheck {
     public static boolean isRooted() {
 
-        // get from build info
-        String buildTags = android.os.Build.TAGS;
-        if (buildTags != null && buildTags.contains("test-keys")) {
-            return true;
-        }
-
         // check if /system/app/Superuser.apk is present
         try {
             File file = new File("/system/app/Superuser.apk");

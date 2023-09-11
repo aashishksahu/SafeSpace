@@ -5,6 +5,25 @@
     <string name="ok">OK</string>
     <string name="create_folder">Create Folder</string>
     <string name="import_files">Import Files</string>
+    <string name="export_backup">Export Zip Backup</string>
+    <string name="export_backup_msg">Exporting zip archive in background, large files will take time..</string>
+    <string name="backup_err_space">Not Enough Storage Available</string>
+    <string name="import_backup">Import Zip Backup</string>
+    <string name="backup_err_other">Unexpected Error</string>
+    <string name="import_backup_msg">Importing zip archive in background, large files will take time..</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
+    <string name="q1080p">1080p</string>
+    <string name="q720p">720p</string>
+    <string name="q480p">480p</string>
+    <string name="video_quality">Video Quality</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="flash_toggle">Flash</string>
+    <string name="start_capture">Start Capture</string>
+    <string name="video_error">Internal Error, could not save video</string>
+    <string name="video_timer">00:00</string>
+    <string name="permission_denied">Permission request denied</string>
     <string name="import_files_error">Some files were not imported, please try again</string>
     <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
     <string name="file_icon_description">File or folder icon</string>
@@ -69,4 +88,6 @@
 
     <string name="root_check_title">Root Check</string>
     <string name="root_check_subtitle">It is not recommended to use this app on a rooted phone. The app will now close.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

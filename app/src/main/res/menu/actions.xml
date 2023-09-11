@@ -3,21 +3,36 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/create_dir"
-        android:icon="@drawable/baseline_create_new_folder_24"
-        android:title="@string/create_folder"
+        android:id="@+id/camera"
+        android:icon="@drawable/photo_camera_black_24dp"
+        android:title="@string/open_camera"
         app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-
+        tools:ignore="AlwaysShowAction"/>
     <item
         android:id="@+id/import_files"
         android:icon="@drawable/baseline_file_upload_24"
         android:title="@string/import_files"
         app:showAsAction="always" />
     <item
+        android:id="@+id/create_dir"
+        android:icon="@drawable/baseline_create_new_folder_24"
+        android:title="@string/create_folder"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/create_txt"
         android:title="@string/create_txt_menu"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/export_backup"
+        android:title="@string/export_backup"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/import_backup"
+        android:title="@string/import_backup"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/about"

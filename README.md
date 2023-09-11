@@ -31,15 +31,13 @@ Whatever happens on your phone stays on your phone (for Safe space app).
 Safe space is an app that creates a separate place on your android device to store valuable files. This storage location is not visible to other apps and is encrypted by the system by default. 
 
 Features:
-* Store files in a secure storage location that is not visible to other apps and is secured by device encryption and system authentication (Biometric and PIN/Pattern/Password)
+* Store files in a secure storage location that is not visible to other apps and is secured by device encryption and system authentication (Biometric and PIN/Pattern/Password). [More info here](https://developer.android.com/training/data-storage/app-specific)
 * Open Images, Audio, Video, PDF documents and plain text documents
 * Create simple text notes without leaving the app
 * Dark and light mode
 * ability to copy and move files
 * Import from and export files to external storage without storage permissions
 * Completely offline with no telemetry and data collection
-
-[More info here](https://developer.android.com/training/data-storage/app-specific)
 
 #### Who is this app for?
 This app is for anyone who wants to store important files on their android phone and are not an active target of high-profile adversaries such as the government or organized crime syndicates and similar adversaries.
@@ -52,6 +50,11 @@ In simple terms, most apps have file access permissions that are often not requi
 #### Has there ever been a security audit?
 There hasn't been a security audit yet but the app doesn't use any non-standard ways of security, this app uses device encryption and uses system authentication (biometrics or screen lock) as security measures.
 If you are a security researcher, it would be great if you can provide insights on my app.
+
+#### Why should I use this app, XYZ app is better?
+I respect your choice.
+
+Still... maybe take a look at [this.](https://github.com/aashishksahu/SafeSpace/issues/8)
 
 #### Who am I and why should you trust me?
 I am a full-time SAP technical consultant from India and developing this app was a hobby project which came into existence mostly because there's no good and reliable way of storing files on android devices. Also, you don't have to trust me, the code is open source, so you can take a look and I would be very happy if you choose to contribute. Besides that this app doesn't have internet permissions and does not use any google play services or firebase or 3rd-party analytics and telemetry services. Again don't trust me, just check the code :)
