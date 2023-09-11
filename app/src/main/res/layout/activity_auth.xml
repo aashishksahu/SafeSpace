@@ -8,7 +8,6 @@
     tools:context=".AuthActivity">
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/app_name"

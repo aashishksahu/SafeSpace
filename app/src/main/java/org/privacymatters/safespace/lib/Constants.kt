@@ -10,6 +10,10 @@ class Constants {
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
 
+        const val CAMERA_MODE = "CAMERA_MODE"
+        const val PHOTO = "PHOTO"
+        const val VIDEO = "VIDEO"
+
         const val PDF = "pdf"
         const val TXT = "txt"
         const val JSON = "json"
@@ -18,6 +22,10 @@ class Constants {
         const val APP_FIRST_RUN = "FIRST_RUN"
 
         const val FILE_EXIST = "FILE_EXIST"
+
+        const val CAMERA_SELECTOR = "CAMERA_SELECTOR"
+        const val DEFAULT_FRONT_CAMERA = "DEFAULT_FRONT_CAMERA"
+        const val DEFAULT_BACK_CAMERA = "DEFAULT_BACK_CAMERA"
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",

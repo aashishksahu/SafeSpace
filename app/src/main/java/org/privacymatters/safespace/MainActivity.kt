@@ -100,9 +100,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         topAppBar = findViewById(R.id.topAppBar)
 
+
         // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
-            if (initializeApp() == 1) {
+            if (ops.initRootDir() == 1) {
                 with(sharedPref.edit()) {
                     putBoolean(Constants.APP_FIRST_RUN, true)
                     apply()
@@ -152,7 +153,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.import_files_progress),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
                     for (uri in importList) {
@@ -176,7 +177,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                                         Toast.makeText(
                                             applicationContext,
                                             getString(R.string.import_files_error),
-                                            Toast.LENGTH_LONG
+                                            Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                 }
@@ -188,7 +189,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
             }
 
-        // Start: Directory picker result
+        // Directory picker result
         selectExportDirActivityResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
@@ -200,7 +201,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                             Toast.makeText(
                                 exportButton.context,
                                 getString(R.string.export_in_progress),
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_SHORT
                             ).show()
 
                             for (item in selectedItems) {
@@ -212,12 +213,84 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         }
                     }
                 }
+            }
+
+        // Export Backup
+        val backupExportDirActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                when (ops.exportBackup(uri)) {
+                                    0 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            updateRecyclerView()
+                                        }
+                                    }
+
+                                    4 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(4)
+                                        }
+                                    }
+                                }
+                            }
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.export_backup_msg),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
+            }
+
+        // Import Backup
+        val importBackupActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                when (ops.importBackup(uri)) {
+                                    0 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            updateRecyclerView()
+                                        }
+                                    }
+
+                                    4 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(4)
+                                        }
+                                    }
+                                }
+                            }
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.import_backup_msg),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
 
             }
 
         // Top App Bar
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
+                R.id.camera -> {
+                    val intent = Intent(this, CameraActivity::class.java)
+                    startActivity(intent)
+                }
+
                 R.id.create_dir -> {
                     createDirPopup(topAppBar.context)
                 }
@@ -231,6 +304,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 R.id.create_txt -> {
                     createTextNote(topAppBar.context)
+                }
+
+                R.id.export_backup -> {
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                    backupExportDirActivityResult.launch(intent)
+                }
+
+                R.id.import_backup -> {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "application/zip"
+                    importBackupActivityResult.launch(intent)
                 }
 
                 R.id.about -> {
@@ -276,13 +360,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.move_copy_file_failure),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.move_copy_file_success),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
                     updateRecyclerView()
@@ -308,14 +392,21 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     }
 
+    private fun backupError(errorCode: Int) {
+        val msg = when (errorCode) {
+            4 -> getString(R.string.backup_err_space)
+            1 -> getString(R.string.backup_err_other)
+            else -> getString(R.string.backup_err_other)
+        }
+
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+
+    }
+
     private fun clearSelection() {
         toggleFloatingButtonVisibility(false)
         this.selectedItems.clear()
         updateRecyclerView()
-    }
-
-    private fun initializeApp(): Int {
-        return ops.initRootDir()
     }
 
     private fun updateRecyclerView() {
@@ -358,7 +449,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         context,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -386,7 +477,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     loadAV(filePath)
                 }
 
-                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.PDF -> {
+                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
                     loadDocument(filePath)
                 }
 
@@ -394,7 +485,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.unsupported_format),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -445,8 +536,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     private fun backButtonAction() {
+
+        var currentPath = ""
+
         if (!ops.isRootDirectory()) {
-            ops.setGetPreviousPath()
+            val (_, currentPathTemp) = ops.setGetPreviousAndCurrentPath()
+            currentPath = currentPathTemp
             // display contents of the navigated path
             updateRecyclerView()
         } else {
@@ -454,6 +549,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         }
         if (ops.isPreviousRootDirectory())
             topAppBar.title = getString(R.string.app_name)
+        else
+            topAppBar.title = currentPath
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateRecyclerView()
     }
 
     private fun renameFilePopup(file: FileItem, context: Context) {
@@ -481,7 +583,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -490,7 +592,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         context,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -536,7 +638,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -571,7 +673,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             context,
                             getString(R.string.generic_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         updateRecyclerView()
@@ -663,7 +765,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         Toast.makeText(
                             viewContext,
                             getString(R.string.file_exists_error),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         loadDocument(result)
@@ -673,7 +775,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     Toast.makeText(
                         viewContext,
                         getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -709,7 +811,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         topAppBar.title = folderItem.name
 
         ops.setInternalPath(folderItem.name)
-        updateRecyclerView()
 
         // clear selection on directory change and hide delete button
         toggleFloatingButtonVisibility(false)
