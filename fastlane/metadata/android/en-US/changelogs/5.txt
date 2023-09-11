@@ -1,1 +1,3 @@
 Removed check for "test-keys" Tag as non-rooted devices with custom rom were falsely flagged as rooted
+Added built-in camera functionality
+added option to export and import zip archive to application root directory
