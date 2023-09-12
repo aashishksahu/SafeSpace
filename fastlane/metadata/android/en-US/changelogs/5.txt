@@ -1,3 +1,5 @@
 Removed check for "test-keys" Tag as non-rooted devices with custom rom were falsely flagged as rooted
 Added built-in camera functionality
 added option to export and import zip archive to application root directory
+
+Note: This release is using a different apk signing key, therefore, some people might not be able to update the app directly but will be able to reinstall the app. Apologies for the inconvenience. PLEASE take a backup of your app data before reinstalling. Thanks.
