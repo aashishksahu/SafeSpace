@@ -413,25 +413,32 @@ class Operations(private val application: Application) {
 
             while (zipEntry != null) {
                 val newFile = File(getFilesDir(), zipEntry.name)
-                if (zipEntry.isDirectory) {
-                    if (!newFile.isDirectory && !newFile.mkdirs()) {
-                        throw IOException("Failed to create directory $newFile")
-                    }
-                } else {
-                    // fix for Windows-created archives
-                    val parent = newFile.parentFile
-                    if (parent != null) {
-                        if (!parent.isDirectory && !parent.mkdirs()) {
-                            throw IOException("Failed to create directory $parent")
+
+                // To prevent path traversal attack: https://support.google.com/faqs/answer/9294009
+                val canonicalPath = newFile.canonicalPath
+
+                if (canonicalPath.startsWith(getFilesDir())) {
+
+                    if (zipEntry.isDirectory) {
+                        if (!newFile.isDirectory && !newFile.mkdirs()) {
+                            throw IOException("Failed to create directory $newFile")
                         }
+                    } else {
+                        // fix for Windows-created archives
+                        val parent = newFile.parentFile
+                        if (parent != null) {
+                            if (!parent.isDirectory && !parent.mkdirs()) {
+                                throw IOException("Failed to create directory $parent")
+                            }
+                        }
+
+                        // write file content
+                        val fos = FileOutputStream(newFile)
+
+                        zis.copyTo(fos)
+
+                        fos.close()
                     }
-
-                    // write file content
-                    val fos = FileOutputStream(newFile)
-
-                    zis.copyTo(fos)
-
-                    fos.close()
                 }
                 zipEntry = zis.nextEntry
             }
