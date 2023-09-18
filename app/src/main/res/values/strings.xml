@@ -7,9 +7,10 @@
     <string name="import_files">Import Files</string>
     <string name="export_backup">Export Zip Backup</string>
     <string name="export_backup_msg">Exporting zip archive in background, large files will take time..</string>
+    <string name="export_backup_success">Export Complete</string>
     <string name="backup_err_space">Not Enough Storage Available</string>
     <string name="import_backup">Import Zip Backup</string>
-    <string name="backup_err_other">Unexpected Error</string>
+    <string name="backup_err_other">Unexpected Error, Please try again</string>
     <string name="import_backup_msg">Importing zip archive in background, large files will take time..</string>
     <string name="open_camera">Open Camera</string>
     <string name="photo">Photo</string>
@@ -88,6 +89,5 @@
 
     <string name="root_check_title">Root Check</string>
     <string name="root_check_subtitle">It is not recommended to use this app on a rooted phone. The app will now close.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>
