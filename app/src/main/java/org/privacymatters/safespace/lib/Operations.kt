@@ -35,7 +35,7 @@ class Operations(private val application: Application) {
 
     fun getFilesDir(): String {
         // root folder inside app files directory will be the first folder
-        return application.filesDir.absolutePath.toString() + File.separator + Constants.ROOT
+        return application.filesDir.canonicalPath.toString() + File.separator + Constants.ROOT
     }
 
     fun getInternalPath(): String {
@@ -400,6 +400,7 @@ class Operations(private val application: Application) {
         return 0
     }
 
+    @Throws(SecurityException::class)
     fun importBackup(backupUri: Uri): Int {
 
         try {
@@ -413,25 +414,33 @@ class Operations(private val application: Application) {
 
             while (zipEntry != null) {
                 val newFile = File(getFilesDir(), zipEntry.name)
-                if (zipEntry.isDirectory) {
-                    if (!newFile.isDirectory && !newFile.mkdirs()) {
-                        throw IOException("Failed to create directory $newFile")
-                    }
+
+                // https://support.google.com/faqs/answer/9294009
+                val canonicalPath = newFile.canonicalPath
+
+                if (!canonicalPath.startsWith(getFilesDir())) {
+                    throw SecurityException()
                 } else {
-                    // fix for Windows-created archives
-                    val parent = newFile.parentFile
-                    if (parent != null) {
-                        if (!parent.isDirectory && !parent.mkdirs()) {
-                            throw IOException("Failed to create directory $parent")
+                    if (zipEntry.isDirectory) {
+                        if (!newFile.isDirectory && !newFile.mkdirs()) {
+                            throw IOException("Failed to create directory $newFile")
                         }
+                    } else {
+                        // fix for Windows-created archives
+                        val parent = newFile.parentFile
+                        if (parent != null) {
+                            if (!parent.isDirectory && !parent.mkdirs()) {
+                                throw IOException("Failed to create directory $parent")
+                            }
+                        }
+
+                        // write file content
+                        val fos = FileOutputStream(newFile)
+
+                        zis.copyTo(fos)
+
+                        fos.close()
                     }
-
-                    // write file content
-                    val fos = FileOutputStream(newFile)
-
-                    zis.copyTo(fos)
-
-                    fos.close()
                 }
                 zipEntry = zis.nextEntry
             }
@@ -445,6 +454,9 @@ class Operations(private val application: Application) {
             } else {
                 1
             }
+        } catch (sec: SecurityException) {
+//            sec.printStackTrace()
+            return 1
         }
         return 0
     }
@@ -453,10 +465,10 @@ class Operations(private val application: Application) {
     @Suppress("Unused")
     private fun recursiveDirectoryRead(
         path: String,
-        _filesArray: ArrayList<String>
+        pFilesArray: ArrayList<String>
     ): ArrayList<String> {
 
-        var filesArray = _filesArray
+        var filesArray = pFilesArray
 
         val directoryContents = File(path).listFiles()
 

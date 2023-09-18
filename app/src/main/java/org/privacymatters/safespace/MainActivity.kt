@@ -227,13 +227,23 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                                 when (ops.exportBackup(uri)) {
                                     0 -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            updateRecyclerView()
+                                            Toast.makeText(
+                                                baseContext,
+                                                getString(R.string.export_backup_success),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
 
                                     4 -> {
                                         CoroutineScope(Dispatchers.Main).launch {
                                             backupError(4)
+                                        }
+                                    }
+
+                                    1 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(1)
                                         }
                                     }
                                 }
@@ -268,6 +278,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                                     4 -> {
                                         CoroutineScope(Dispatchers.Main).launch {
                                             backupError(4)
+                                        }
+                                    }
+
+                                    1 -> {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            backupError(1)
                                         }
                                     }
                                 }
