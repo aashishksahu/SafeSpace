@@ -1,0 +1,1 @@
+fixed zip traversal vulnerability as per https://support.google.com/faqs/answer/9294009
