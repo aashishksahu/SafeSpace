@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -16,9 +17,12 @@
         android:theme="@style/Theme.SafeSpace"
         tools:targetApi="31">
         <activity
+            android:name=".ImagesMediaActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
-            android:screenOrientation="portrait"
             android:exported="false"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".AboutActivity"

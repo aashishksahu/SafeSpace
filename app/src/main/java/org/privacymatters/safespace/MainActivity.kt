@@ -485,12 +485,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), data.name)
 
             when (Utils.getFileType(data.name)) {
-                Constants.IMAGE_TYPE -> {
-                    loadImage(filePath)
-                }
-
-                Constants.VIDEO_TYPE, Constants.AUDIO_TYPE -> {
-                    loadAV(filePath)
+                Constants.IMAGE_TYPE,
+                Constants.VIDEO_TYPE,
+                Constants.AUDIO_TYPE -> {
+                    loadMedia(filePath)
                 }
 
                 Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
@@ -704,19 +702,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         alert.show()
     }
 
-    private fun loadImage(filePath: String) {
-        val imageViewIntent = Intent(this, PictureView::class.java)
-        imageViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
-        startActivity(imageViewIntent)
-    }
+    private fun loadMedia(filePath: String) {
+        toggleFloatingButtonVisibility(false)
 
-    private fun loadAV(filePath: String) {
-        val mediaViewIntent = Intent(this, MediaView::class.java)
+        val mediaViewIntent = Intent(this, ImagesMediaActivity::class.java)
         mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(mediaViewIntent)
     }
 
     private fun loadDocument(filePath: String) {
+
+        toggleFloatingButtonVisibility(false)
 
         var documentViewIntent: Intent? = null
 

@@ -44,6 +44,9 @@ class AboutActivity : AppCompatActivity() {
                 getString(R.string.androidx),
                 "https://developer.android.com/jetpack/androidx"
             ), LibrariesUsed(
+                getString(R.string.camerax),
+                "https://developer.android.com/training/camerax"
+            ), LibrariesUsed(
                 getString(R.string.photoview),
                 "https://github.com/Baseflow/PhotoView"
             ), LibrariesUsed(

@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.cameraUtils
+package org.privacymatters.safespace.lib
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
