@@ -11,7 +11,8 @@ A safe space for your digital valuables.
 Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
 
 [<img alt="alt_text" width="200px" src="https://user-content.gitlab-static.net/0cdd89e5cc347206465251782615ab91f99a542d/68747470733a2f2f6664726f69642e6769746c61622e696f2f617274776f726b2f62616467652f6765742d69742d6f6e2e706e67" />](https://f-droid.org/en/packages/org.privacymatters.safespace/)
-[<img alt="alt_text" width="200px" src="https://play.google.com/store/apps/details?id=org.privacymatters.safespace&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" />](https://play.google.com/store/apps/details?id=org.privacymatters.safespace)
+
+[<img alt="alt_text" width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/be3c70a58220e21d643151e44699e9931d845d77/assets/google-play-badge.png" />](https://play.google.com/store/apps/details?id=org.privacymatters.safespace&pcampaignid=web_share)
 ## Disclaimer
 
 This app uses the app-specific internal storage to store files, this location is already encrypted by the android system and isn't available to other apps. Safe space app is provided "as is", without any warranty of any kind. It shouldn't be considered as an absolute safe way to store files. The purpose of this app is to create a separate space for valuable and important files for an average user and must not be considered safe if you are a high-profile target for hackers, crime syndicates, government agencies and other such organizations. I recommend investing in a lightweight laptop with more reliable methods of information protection such as Tails OS and VeraCrypt (This is not an endorsement, just a suggestion). It is your sole responsibility what you store in this app.
