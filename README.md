@@ -59,6 +59,11 @@ Still... maybe take a look at [this.](https://github.com/aashishksahu/SafeSpace/
 
 #### Who am I and why should you trust me?
 I am a full-time SAP technical consultant from India and developing this app was a hobby project which came into existence mostly because there's no good and reliable way of storing files on android devices. Also, you don't have to trust me, the code is open source, so you can take a look and I would be very happy if you choose to contribute. Besides that this app doesn't have internet permissions and does not use any google play services or firebase or 3rd-party analytics and telemetry services. Again don't trust me, just check the code :)
+
+## Contact Me
+
+app.aashishksahu@gmail.com
+
 ## License
 
 [GNU General Public License v3.0](https://github.com/aashishksahu/SafeSpace/blob/master/LICENSE.md)
