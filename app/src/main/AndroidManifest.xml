@@ -17,7 +17,8 @@
         android:theme="@style/Theme.SafeSpace"
         tools:targetApi="31">
         <activity
-            android:name=".ImagesMediaActivity"
+            android:name=".MediaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
             android:name=".CameraActivity"
@@ -42,14 +43,6 @@
             android:exported="false" />
         <activity
             android:name=".PDFView"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".MediaView"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".PictureView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity

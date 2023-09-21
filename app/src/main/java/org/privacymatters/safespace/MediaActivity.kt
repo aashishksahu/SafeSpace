@@ -2,6 +2,7 @@ package org.privacymatters.safespace
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -15,7 +16,7 @@ import org.privacymatters.safespace.lib.Operations
 import org.privacymatters.safespace.lib.Utils
 import kotlin.math.abs
 
-class ImagesMediaActivity : FragmentActivity() {
+class MediaActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private var mediaList: ArrayList<String> = ArrayList()
@@ -25,15 +26,18 @@ class ImagesMediaActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_images_media)
+        setContentView(R.layout.activity_media)
 
         // hide navigation and status bar
-        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
-        windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            // Hide the status bar
+            hide(WindowInsetsCompat.Type.statusBars())
+            // Allow showing the status bar with swiping from top to bottom
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
 
         ops = Operations(application)
 

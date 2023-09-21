@@ -705,7 +705,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private fun loadMedia(filePath: String) {
         toggleFloatingButtonVisibility(false)
 
-        val mediaViewIntent = Intent(this, ImagesMediaActivity::class.java)
+        val mediaViewIntent = Intent(this, MediaActivity::class.java)
         mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(mediaViewIntent)
     }
