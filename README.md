@@ -1,6 +1,6 @@
 # Safe Space
 
-A safe space for your digital valuables.
+<img alt="alt_text" height="200px" src="https://github.com/aashishksahu/SafeSpace/blob/4511ec54ace1fbd07739cb9a521916d8773e150b/fastlane/metadata/android/en-US/images/featureGraphic.png" />
 
 ![Release](https://img.shields.io/github/v/release/aashishksahu/SafeSpace.svg?logo=github)
 ![License](https://img.shields.io/github/license/aashishksahu/SafeSpace.svg)
