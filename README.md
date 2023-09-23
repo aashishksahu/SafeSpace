@@ -1,6 +1,6 @@
 # Safe Space
 
-<img alt="alt_text" height="200px" src="fastlane/metadata/android/en-US/images/featureGraphic.png" />
+<img alt="alt_text" height="200px" src="https://github.com/aashishksahu/SafeSpace/blob/8431affcc3a5c5a5ac65f072638aef6f390a79b3/fastlane/metadata/android/en-US/images/featureGraphic.png" />
 
 ![Release](https://img.shields.io/github/v/release/aashishksahu/SafeSpace.svg?logo=github)
 ![License](https://img.shields.io/github/license/aashishksahu/SafeSpace.svg)
