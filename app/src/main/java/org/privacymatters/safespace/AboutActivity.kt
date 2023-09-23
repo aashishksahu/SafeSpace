@@ -55,10 +55,6 @@ class AboutActivity : AppCompatActivity() {
             ), LibrariesUsed(
                 getString(R.string.material),
                 "https://m3.material.io/"
-            ), LibrariesUsed(
-                getString(R.string.icons),
-                "https://www.flaticon.com/free-icon/vault_362925?term=vault&page=1&position=6&origin=search&related_id=362925"
-
             )
         )
 

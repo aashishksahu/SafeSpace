@@ -86,7 +86,6 @@
     <string name="photoview">PhotoView by Chris banes</string>
     <string name="exo">Exo player</string>
     <string name="material">Google Material 3</string>
-    <string name="icons">App Icon by Nikita Golubev on flaticon.com</string>
 
     <string name="root_check_title">Root Check</string>
     <string name="root_check_subtitle">It is not recommended to use this app on a rooted phone. The app will now close.</string>
