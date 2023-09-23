@@ -10,7 +10,7 @@
         tools:ignore="AlwaysShowAction"/>
     <item
         android:id="@+id/import_files"
-        android:icon="@drawable/baseline_file_upload_24"
+        android:icon="@drawable/add_fill0_wght400_grad0_opsz24"
         android:title="@string/import_files"
         app:showAsAction="always" />
     <item

@@ -1,2 +1,3 @@
 * added ability to swipe left and right between media items
 * minor fixes for stability
+* Updates to branding
