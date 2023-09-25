@@ -15,8 +15,6 @@ import java.util.concurrent.Executor
 
 class AuthActivity : AppCompatActivity() {
 
-//    ToDo: Implement authentication time out setting
-
     private var pinNotPossible = false
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt

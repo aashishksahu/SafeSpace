@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -300,6 +301,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
 
         // Top App Bar
+        topAppBar.setNavigationOnClickListener {
+            backButtonAction()
+        }
+
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.camera -> {
@@ -561,10 +566,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         } else {
             finish()
         }
-        if (ops.isPreviousRootDirectory())
+        if (ops.isPreviousRootDirectory()) {
             topAppBar.title = getString(R.string.app_name)
-        else
+            topAppBar.navigationIcon = null
+        } else {
             topAppBar.title = currentPath
+        }
     }
 
     override fun onResume() {
@@ -821,6 +828,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     override fun onFolderSelect(folderItem: FolderItem) {
 
         topAppBar.title = folderItem.name
+        topAppBar.navigationIcon = AppCompatResources.getDrawable(
+            baseContext,
+            R.drawable.arrow_back_fill0_wght400_grad0_opsz24
+        )
 
         ops.setInternalPath(folderItem.name)
 
