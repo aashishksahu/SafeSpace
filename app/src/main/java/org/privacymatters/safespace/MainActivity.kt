@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -300,6 +301,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
 
         // Top App Bar
+        topAppBar.setNavigationOnClickListener {
+            backButtonAction()
+        }
+
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.camera -> {
@@ -485,12 +490,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), data.name)
 
             when (Utils.getFileType(data.name)) {
-                Constants.IMAGE_TYPE -> {
-                    loadImage(filePath)
-                }
-
-                Constants.VIDEO_TYPE, Constants.AUDIO_TYPE -> {
-                    loadAV(filePath)
+                Constants.IMAGE_TYPE,
+                Constants.VIDEO_TYPE,
+                Constants.AUDIO_TYPE -> {
+                    loadMedia(filePath)
                 }
 
                 Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
@@ -563,10 +566,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         } else {
             finish()
         }
-        if (ops.isPreviousRootDirectory())
+        if (ops.isPreviousRootDirectory()) {
             topAppBar.title = getString(R.string.app_name)
-        else
+            topAppBar.navigationIcon = null
+        } else {
             topAppBar.title = currentPath
+        }
     }
 
     override fun onResume() {
@@ -704,19 +709,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         alert.show()
     }
 
-    private fun loadImage(filePath: String) {
-        val imageViewIntent = Intent(this, PictureView::class.java)
-        imageViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
-        startActivity(imageViewIntent)
-    }
+    private fun loadMedia(filePath: String) {
+        toggleFloatingButtonVisibility(false)
 
-    private fun loadAV(filePath: String) {
-        val mediaViewIntent = Intent(this, MediaView::class.java)
+        val mediaViewIntent = Intent(this, MediaActivity::class.java)
         mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
         startActivity(mediaViewIntent)
     }
 
     private fun loadDocument(filePath: String) {
+
+        toggleFloatingButtonVisibility(false)
 
         var documentViewIntent: Intent? = null
 
@@ -825,6 +828,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     override fun onFolderSelect(folderItem: FolderItem) {
 
         topAppBar.title = folderItem.name
+        topAppBar.navigationIcon = AppCompatResources.getDrawable(
+            baseContext,
+            R.drawable.arrow_back_fill0_wght400_grad0_opsz24
+        )
 
         ops.setInternalPath(folderItem.name)
 

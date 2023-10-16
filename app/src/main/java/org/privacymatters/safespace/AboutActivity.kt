@@ -44,6 +44,9 @@ class AboutActivity : AppCompatActivity() {
                 getString(R.string.androidx),
                 "https://developer.android.com/jetpack/androidx"
             ), LibrariesUsed(
+                getString(R.string.camerax),
+                "https://developer.android.com/training/camerax"
+            ), LibrariesUsed(
                 getString(R.string.photoview),
                 "https://github.com/Baseflow/PhotoView"
             ), LibrariesUsed(
@@ -52,10 +55,6 @@ class AboutActivity : AppCompatActivity() {
             ), LibrariesUsed(
                 getString(R.string.material),
                 "https://m3.material.io/"
-            ), LibrariesUsed(
-                getString(R.string.icons),
-                "https://www.flaticon.com/free-icon/vault_362925?term=vault&page=1&position=6&origin=search&related_id=362925"
-
             )
         )
 

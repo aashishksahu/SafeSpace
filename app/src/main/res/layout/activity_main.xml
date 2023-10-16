@@ -24,6 +24,7 @@
             android:textColor="?attr/colorPrimary"
             app:menu="@menu/actions"
             app:popupTheme="@style/dialogThemeMenu"
+            app:navigationIconTint="?attr/colorPrimary"
             app:title="@string/app_name" />
 
 

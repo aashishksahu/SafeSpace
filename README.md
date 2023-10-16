@@ -1,6 +1,6 @@
 # Safe Space
 
-A safe space for your digital valuables.
+<img alt="alt_text" height="200px" src="https://github.com/aashishksahu/SafeSpace/blob/8431affcc3a5c5a5ac65f072638aef6f390a79b3/fastlane/metadata/android/en-US/images/featureGraphic.png" />
 
 ![Release](https://img.shields.io/github/v/release/aashishksahu/SafeSpace.svg?logo=github)
 ![License](https://img.shields.io/github/license/aashishksahu/SafeSpace.svg)
@@ -11,7 +11,7 @@ A safe space for your digital valuables.
 Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
 
 [<img alt="alt_text" width="200px" src="https://user-content.gitlab-static.net/0cdd89e5cc347206465251782615ab91f99a542d/68747470733a2f2f6664726f69642e6769746c61622e696f2f617274776f726b2f62616467652f6765742d69742d6f6e2e706e67" />](https://f-droid.org/en/packages/org.privacymatters.safespace/)
-
+[<img alt="alt_text" width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/be3c70a58220e21d643151e44699e9931d845d77/assets/google-play-badge.png" />](https://play.google.com/store/apps/details?id=org.privacymatters.safespace&pcampaignid=web_share)
 ## Disclaimer
 
 This app uses the app-specific internal storage to store files, this location is already encrypted by the android system and isn't available to other apps. Safe space app is provided "as is", without any warranty of any kind. It shouldn't be considered as an absolute safe way to store files. The purpose of this app is to create a separate space for valuable and important files for an average user and must not be considered safe if you are a high-profile target for hackers, crime syndicates, government agencies and other such organizations. I recommend investing in a lightweight laptop with more reliable methods of information protection such as Tails OS and VeraCrypt (This is not an endorsement, just a suggestion). It is your sole responsibility what you store in this app.
@@ -32,6 +32,7 @@ Safe space is an app that creates a separate place on your android device to sto
 
 Features:
 * Store files in a secure storage location that is not visible to other apps and is secured by device encryption and system authentication (Biometric and PIN/Pattern/Password). [More info here](https://developer.android.com/training/data-storage/app-specific)
+* Click Pictures and shoot videos within the app
 * Open Images, Audio, Video, PDF documents and plain text documents
 * Create simple text notes without leaving the app
 * Dark and light mode
@@ -58,6 +59,11 @@ Still... maybe take a look at [this.](https://github.com/aashishksahu/SafeSpace/
 
 #### Who am I and why should you trust me?
 I am a full-time SAP technical consultant from India and developing this app was a hobby project which came into existence mostly because there's no good and reliable way of storing files on android devices. Also, you don't have to trust me, the code is open source, so you can take a look and I would be very happy if you choose to contribute. Besides that this app doesn't have internet permissions and does not use any google play services or firebase or 3rd-party analytics and telemetry services. Again don't trust me, just check the code :)
+
+## Contact Me
+
+app.aashishksahu@gmail.com
+
 ## License
 
 [GNU General Public License v3.0](https://github.com/aashishksahu/SafeSpace/blob/master/LICENSE.md)
