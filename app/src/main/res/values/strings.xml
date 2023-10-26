@@ -6,6 +6,11 @@
     <string name="create_folder">Create Folder</string>
     <string name="import_files">Import Files</string>
     <string name="export_backup">Export Zip Backup</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="dark_theme_text">Dark</string>
+    <string name="light_theme_text">Light</string>
+    <string name="amoled_theme_text">Amoled Dark</string>
+    <string name="pride_theme_text">Pride</string>
     <string name="export_backup_msg">Exporting zip archive in background, large files will take time..</string>
     <string name="export_backup_success">Export Complete</string>
     <string name="backup_err_space">Not Enough Storage Available</string>

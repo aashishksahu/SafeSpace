@@ -27,6 +27,8 @@ class Constants {
         const val DEFAULT_FRONT_CAMERA = "DEFAULT_FRONT_CAMERA"
         const val DEFAULT_BACK_CAMERA = "DEFAULT_BACK_CAMERA"
 
+        const val THEME = "theme"
+
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
             "png",

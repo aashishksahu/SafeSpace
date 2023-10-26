@@ -34,6 +34,7 @@ import org.privacymatters.safespace.lib.FolderItem
 import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
+import org.privacymatters.safespace.lib.ThemeManager
 import org.privacymatters.safespace.lib.Utils
 
 
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
+    private lateinit var themeManager: ThemeManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +113,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
             }
         }
+
+        // initialize theme
+        themeManager = ThemeManager(applicationContext, sharedPref)
 
         val (fileList, folderList) = ops.getContents(ops.getInternalPath())
 
@@ -327,6 +332,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     createTextNote(topAppBar.context)
                 }
 
+                R.id.change_theme -> {
+                    themeSelector(topAppBar.context)
+                }
+
                 R.id.export_backup -> {
                     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
                     backupExportDirActivityResult.launch(intent)
@@ -411,6 +420,33 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         })
         //End: back button - system navigation
 
+    }
+
+    private fun themeSelector(context: Context) {
+        val builder = MaterialAlertDialogBuilder(context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val themeSelectorLayout = inflater.inflate(R.layout.theme_selector_layout, null)
+        val themeSelectorDropDown = findViewById<TextInputLayout>(R.id.theme_dropdown)
+
+        themeSelectorDropDown.setOnClickListener { item ->
+            themeManager.changeTheme(item.id)
+        }
+
+        builder.setTitle(getString(R.string.create_folder))
+            .setCancelable(true)
+            .setView(themeSelectorLayout)
+//            .setPositiveButton(context.getString(R.string.create)) { _, _ ->
+//
+//
+//            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun backupError(errorCode: Int) {
