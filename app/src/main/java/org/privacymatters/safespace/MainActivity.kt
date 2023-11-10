@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -422,7 +423,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         val inflater: LayoutInflater = layoutInflater
         val changeThemeLayout = inflater.inflate(R.layout.change_theme, null)
-        val folderNameTextView =
+        val changeThemeTextView =
             changeThemeLayout.findViewById<TextInputLayout>(R.id.changeThemeTextLayout)
 
         builder.setTitle(getString(R.string.change_theme))
@@ -430,23 +431,38 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(changeThemeLayout)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                when (changeThemeTextView.editText?.text.toString()) {
 
-                    if (ops.createDir(
-                            ops.getInternalPath(),
-                            folderNameTextView.editText?.text.toString()
-                        ) == 1
-                    ) {
-                        updateRecyclerView()
+                    getString(R.string.System) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                        delegate.applyDayNight()
                     }
-                } else {
 
-                    Toast.makeText(
-                        context,
-                        getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    getString(R.string.Light) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        delegate.applyDayNight()
+                    }
+
+                    getString(R.string.Dark) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        delegate.applyDayNight()
+                    }
+
+                    getString(R.string.Amoled) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+                        setTheme(R.style.midnightDark)
+                        delegate.applyDayNight()
+                    }
+
                 }
+
+                sharedPref.edit()
+                    .putString(
+                        getString(R.string.change_theme),
+                        changeThemeTextView.editText?.text.toString()
+                    )
+                    .apply()
+
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog

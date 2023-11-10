@@ -15,7 +15,6 @@
     <string name="export_backup_success">Export Complete</string>
     <string name="backup_err_space">Not Enough Storage Available</string>
     <string name="import_backup">Import Zip Backup</string>
-    <string name="change_theme">Change Theme</string>
     <string name="backup_err_other">Unexpected Error, Please try again</string>
     <string name="import_backup_msg">Importing zip archive in background, large files will take time..</string>
     <string name="open_camera">Open Camera</string>
@@ -95,5 +94,11 @@
 
     <string name="root_check_title">Root Check</string>
     <string name="root_check_subtitle">It is not recommended to use this app on a rooted phone. The app will now close.</string>
+
+    <string name="System">System</string>
+    <string name="Light">Light</string>
+    <string name="Dark">Dark</string>
+    <string name="Amoled">Midnight(Amoled)</string>
+
 
 </resources>

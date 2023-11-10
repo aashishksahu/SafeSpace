@@ -17,10 +17,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_max="400dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/changeThemeAutoComplete"
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:inputType="none"
+            android:labelFor="@id/changeThemeTextLayout"
             android:layout_height="wrap_content"
             app:simpleItems="@array/theme_items"/>
 

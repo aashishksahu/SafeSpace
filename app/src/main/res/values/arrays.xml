@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="theme_items" >
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Amoled</item>
+        <item>@string/System</item>
+        <item>@string/Light</item>
+        <item>@string/Dark</item>
+        <item>@string/Amoled</item>
     </string-array>
 </resources>

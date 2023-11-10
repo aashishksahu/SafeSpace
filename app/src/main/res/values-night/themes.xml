@@ -18,39 +18,4 @@
         <item name="android:statusBarColor">?attr/backgroundColor</item>
     </style>
 
-    <style name="Theme.SafeSpace.AMOLED" parent="Theme.Material3.DayNight.NoActionBar">
-
-        <item name="android:itemBackground">@color/card_background_dark</item>
-
-        <!--  Primary brand color.  -->
-        <item name="colorPrimary">@color/primary_500</item>
-        <item name="colorOnPrimary">@color/secondary_500</item>
-        <item name="colorPrimaryVariant">@color/primary_700</item>
-        <item name="iconTint">@color/primary_500</item>
-        <item name="cardBackgroundColor">@color/card_background_dark</item>
-        <!--  Secondary brand color.  -->
-        <item name="colorSecondary">@color/secondary_500</item>
-        <item name="colorOnSecondary">@color/primary_500</item>
-        <item name="backgroundColor">@color/black</item>
-        <!--  Status bar color.  -->
-        <item name="android:statusBarColor">?attr/backgroundColor</item>
-    </style>
-
-    <style name="Theme.SafeSpace.Pride" parent="Theme.Material3.DayNight.NoActionBar">
-
-        <item name="android:itemBackground">@color/card_background_dark</item>
-
-        <!--  Primary brand color.  -->
-        <item name="colorPrimary">@color/primary_500</item>
-        <item name="colorOnPrimary">@color/secondary_500</item>
-        <item name="colorPrimaryVariant">@color/primary_700</item>
-        <item name="iconTint">@color/primary_500</item>
-        <item name="cardBackgroundColor">@color/card_background_dark</item>
-        <!--  Secondary brand color.  -->
-        <item name="colorSecondary">@color/secondary_500</item>
-        <item name="colorOnSecondary">@color/primary_500</item>
-        <item name="backgroundColor">@color/black</item>
-        <!--  Status bar color.  -->
-        <item name="android:statusBarColor">?attr/backgroundColor</item>
-    </style>
 </resources>
