@@ -5,7 +5,16 @@
         <item name="android:background">?attr/cardBackgroundColor</item>
     </style>
 
-    <style name="midnightDark" parent="Theme.SafeSpace">
-        <item name="backgroundColor">#000000</item>
+    <style name="midnight" parent="Theme.SafeSpace">
+        <item name="backgroundColor">@color/black</item>
     </style>
+
+    <style name="light" parent="Theme.SafeSpace">
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
+    <style name="dark" parent="Theme.SafeSpace">
+        <item name="backgroundColor">@color/dark_background</item>
+    </style>
+
 </resources>

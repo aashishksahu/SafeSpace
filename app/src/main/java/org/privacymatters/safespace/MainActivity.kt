@@ -3,6 +3,7 @@ package org.privacymatters.safespace
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources.Theme
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
+    private var themeBackground: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -434,24 +436,29 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 when (changeThemeTextView.editText?.text.toString()) {
 
                     getString(R.string.System) -> {
+                        themeBackground = getString(R.string.System)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                         delegate.applyDayNight()
                     }
 
                     getString(R.string.Light) -> {
+                        themeBackground = getString(R.string.Light)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                         delegate.applyDayNight()
                     }
 
                     getString(R.string.Dark) -> {
+                        themeBackground = getString(R.string.Dark)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                         delegate.applyDayNight()
                     }
 
                     getString(R.string.Amoled) -> {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
-                        setTheme(R.style.midnightDark)
+                        themeBackground = getString(R.string.Amoled)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                         delegate.applyDayNight()
+
+                        theme
                     }
 
                 }
@@ -463,6 +470,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     )
                     .apply()
 
+
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog
@@ -470,6 +478,18 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    override fun getTheme(): Theme {
+        val theme: Theme = super.getTheme()
+
+        when (themeBackground) {
+            getString(R.string.Light) -> theme.applyStyle(R.style.light, true)
+            getString(R.string.Dark) -> theme.applyStyle(R.style.dark, true)
+            getString(R.string.Amoled) -> theme.applyStyle(R.style.midnight, true)
+        }
+
+        return theme
     }
 
     private fun backupError(errorCode: Int) {
