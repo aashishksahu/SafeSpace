@@ -15,7 +15,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +34,7 @@ import org.privacymatters.safespace.lib.FolderItem
 import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
+import org.privacymatters.safespace.lib.SetTheme
 import org.privacymatters.safespace.lib.Utils
 
 
@@ -68,14 +68,22 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // set theme on app launch
+        sharedPref = getPreferences(MODE_PRIVATE)
+
+        SetTheme.setTheme(
+            delegate,
+            baseContext,
+            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // initialize things on activity start
         ops = Operations(application)
-        sharedPref = getPreferences(MODE_PRIVATE)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
+
 
         val filesRVAdapterTexts = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
@@ -431,23 +439,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(changeThemeLayout)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                when (changeThemeTextView.editText?.text.toString()) {
-                    getString(R.string.System) -> {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                        delegate.applyDayNight()
-                    }
-
-                    getString(R.string.Light) -> {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        delegate.applyDayNight()
-                    }
-
-                    getString(R.string.Dark) -> {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        delegate.applyDayNight()
-                    }
-
-                }
+                SetTheme.setTheme(
+                    delegate,
+                    baseContext,
+                    changeThemeTextView.editText?.text.toString()
+                )
 
                 sharedPref.edit()
                     .putString(

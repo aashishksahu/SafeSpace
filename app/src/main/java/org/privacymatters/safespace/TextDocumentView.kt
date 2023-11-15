@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.privacymatters.safespace.lib.Constants
+import org.privacymatters.safespace.lib.SetTheme
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
@@ -21,6 +22,15 @@ class TextDocumentView : AppCompatActivity() {
     private lateinit var file: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val sharedPref = getPreferences(MODE_PRIVATE)
+
+        SetTheme.setTheme(
+            delegate,
+            baseContext,
+            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
 

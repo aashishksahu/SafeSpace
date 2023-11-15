@@ -11,6 +11,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.lib.RootCheck
+import org.privacymatters.safespace.lib.SetTheme
 import java.util.concurrent.Executor
 
 class AuthActivity : AppCompatActivity() {
@@ -21,6 +22,15 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val sharedPref = getPreferences(MODE_PRIVATE)
+
+        SetTheme.setTheme(
+            delegate,
+            baseContext,
+            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
