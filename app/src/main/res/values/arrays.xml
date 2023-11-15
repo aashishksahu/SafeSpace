@@ -4,6 +4,5 @@
         <item>@string/System</item>
         <item>@string/Light</item>
         <item>@string/Dark</item>
-        <item>@string/Amoled</item>
     </string-array>
 </resources>
