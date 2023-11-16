@@ -69,11 +69,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
-        sharedPref = getPreferences(MODE_PRIVATE)
+        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         SetTheme.setTheme(
             delegate,
-            baseContext,
+            applicationContext,
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
@@ -441,7 +441,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 SetTheme.setTheme(
                     delegate,
-                    baseContext,
+                    applicationContext,
                     changeThemeTextView.editText?.text.toString()
                 )
 
@@ -451,8 +451,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         changeThemeTextView.editText?.text.toString()
                     )
                     .apply()
-
-
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog

@@ -3,6 +3,8 @@ package org.privacymatters.safespace.lib
 class Constants {
     companion object {
 
+        const val SHARED_PREF_FILE = "org.privacymatters.safespace_preferences"
+
         const val DOCUMENT_TYPE = "document"
         const val AUDIO_TYPE = "audio"
         const val VIDEO_TYPE = "video"
@@ -26,8 +28,6 @@ class Constants {
         const val CAMERA_SELECTOR = "CAMERA_SELECTOR"
         const val DEFAULT_FRONT_CAMERA = "DEFAULT_FRONT_CAMERA"
         const val DEFAULT_BACK_CAMERA = "DEFAULT_BACK_CAMERA"
-
-        const val THEME = "theme"
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",

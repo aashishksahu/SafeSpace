@@ -1,5 +1,6 @@
 package org.privacymatters.safespace
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -23,11 +24,11 @@ class TextDocumentView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val sharedPref = getPreferences(MODE_PRIVATE)
+        val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         SetTheme.setTheme(
             delegate,
-            baseContext,
+            applicationContext,
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
