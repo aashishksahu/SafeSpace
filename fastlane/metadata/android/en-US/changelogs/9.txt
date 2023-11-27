@@ -1,0 +1,1 @@
+Added option to switch between system, dark and light themes.

@@ -34,6 +34,7 @@ import org.privacymatters.safespace.lib.FolderItem
 import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
+import org.privacymatters.safespace.lib.SetTheme
 import org.privacymatters.safespace.lib.Utils
 
 
@@ -67,14 +68,22 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // set theme on app launch
+        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+
+        SetTheme.setTheme(
+            delegate,
+            applicationContext,
+            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // initialize things on activity start
         ops = Operations(application)
-        sharedPref = getPreferences(MODE_PRIVATE)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
+
 
         val filesRVAdapterTexts = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
@@ -338,6 +347,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     importBackupActivityResult.launch(intent)
                 }
 
+                R.id.change_theme -> {
+                    changeTheme(topAppBar.context)
+                }
+
                 R.id.about -> {
                     val intent = Intent(this, AboutActivity::class.java)
                     startActivity(intent)
@@ -411,6 +424,40 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         })
         //End: back button - system navigation
 
+    }
+
+    private fun changeTheme(context: Context) {
+        val builder = MaterialAlertDialogBuilder(context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val changeThemeLayout = inflater.inflate(R.layout.change_theme, null)
+        val changeThemeTextView =
+            changeThemeLayout.findViewById<TextInputLayout>(R.id.changeThemeTextLayout)
+
+        builder.setTitle(getString(R.string.change_theme))
+            .setCancelable(true)
+            .setView(changeThemeLayout)
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+
+                SetTheme.setTheme(
+                    delegate,
+                    applicationContext,
+                    changeThemeTextView.editText?.text.toString()
+                )
+
+                sharedPref.edit()
+                    .putString(
+                        getString(R.string.change_theme),
+                        changeThemeTextView.editText?.text.toString()
+                    )
+                    .apply()
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun backupError(errorCode: Int) {

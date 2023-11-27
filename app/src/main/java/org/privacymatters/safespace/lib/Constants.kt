@@ -3,6 +3,8 @@ package org.privacymatters.safespace.lib
 class Constants {
     companion object {
 
+        const val SHARED_PREF_FILE = "org.privacymatters.safespace_preferences"
+
         const val DOCUMENT_TYPE = "document"
         const val AUDIO_TYPE = "audio"
         const val VIDEO_TYPE = "video"

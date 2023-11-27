@@ -13,8 +13,9 @@
         <!--  Secondary brand color.  -->
         <item name="colorSecondary">@color/secondary_500</item>
         <item name="colorOnSecondary">@color/primary_500</item>
-        <item name="backgroundColor">@color/black</item>
+        <item name="backgroundColor">@color/dark_background</item>
         <!--  Status bar color.  -->
         <item name="android:statusBarColor">?attr/backgroundColor</item>
     </style>
+
 </resources>
