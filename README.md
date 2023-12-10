@@ -26,6 +26,12 @@ to discuss what you would like to change. This app is new and bound to have a fe
 This app doesn't collect or send any telemetry data to any server, the documents and text files you store stay on your device and cannot be recovered by me in case the device is reset, or the app is uninstalled.
 Whatever happens on your phone stays on your phone (for Safe space app).
 
+## Donations and matters of the green paper 🤑🤑🤑
+I've been getting emails from Paypal sending me money, since I have never used Paypal (not very popular in my country), I thought it was a scam. It is only recently (Dec 2023) that I realised that users of my app were sending me money (Thank you for that btw!!).
+Currently I am not accepting any monetary contributions as this app is not incuring any expenses apart from a weekend or two of coding. Also, this app is my tiny  contribution towards combating the reign of big tech and their malicious ways of business and I want everyone to use the full version of it without any paywalls.
+
+If you'd like to show some love then please contribute by sharing it with your people and also with your friends who code so that the app can be maintained for long term and improvements and features keep coming. Thank you very much for using my app :)
+
 ## FAQ
 #### What is Safe Space?
 Safe space is an app that creates a separate place on your android device to store valuable files. This storage location is not visible to other apps and is encrypted by the system by default. 
