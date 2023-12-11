@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Safe Space</string>
+    <string name="app_name" translatable="false">Safe Space</string>
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
     <string name="ok">OK</string>
@@ -20,15 +20,15 @@
     <string name="open_camera">Open Camera</string>
     <string name="photo">Photo</string>
     <string name="video">Video</string>
-    <string name="q1080p">1080p</string>
-    <string name="q720p">720p</string>
-    <string name="q480p">480p</string>
+    <string name="q1080p" translatable="false">1080p</string>
+    <string name="q720p" translatable="false">720p</string>
+    <string name="q480p" translatable="false">480p</string>
     <string name="video_quality">Video Quality</string>
     <string name="switch_camera">Switch Camera</string>
     <string name="flash_toggle">Flash</string>
     <string name="start_capture">Start Capture</string>
     <string name="video_error">Internal Error, could not save video</string>
-    <string name="video_timer">00:00</string>
+    <string name="video_timer" translatable="false">00:00</string>
     <string name="permission_denied">Permission request denied</string>
     <string name="import_files_error">Some files were not imported, please try again</string>
     <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
@@ -80,17 +80,17 @@
     <string name="auth_stuck">Lock and unlock your screen if you are stuck here.</string>
 
     <string name="about_text">About</string>
-    <string name="about_title">Safe Space</string>
+    <string name="about_title" translatable="false">Safe Space</string>
     <string name="about_sub_title1">A Safe Space for all your important digital stuff.</string>
     <string name="about_sub_title2">Uses app specific storage to store files, these files are encrypted and are not visible to other apps and cannot be accessed when the phone is locked.</string>
     <string name="about_foss">Libraries and assets Used:</string>
 
-    <string name="glide">Glide</string>
-    <string name="androidx">AndroidX</string>
-    <string name="camerax">CameraX</string>
-    <string name="photoview">PhotoView by Chris banes</string>
-    <string name="exo">Exo player</string>
-    <string name="material">Google Material 3</string>
+    <string name="glide" translatable="false">Glide</string>
+    <string name="androidx" translatable="false">AndroidX</string>
+    <string name="camerax" translatable="false">CameraX</string>
+    <string name="photoview" translatable="false">PhotoView by Chris banes</string>
+    <string name="exo" translatable="false">Exo player</string>
+    <string name="material" translatable="false">Google Material 3</string>
 
     <string name="root_check_title">Root Check</string>
     <string name="root_check_subtitle">It is not recommended to use this app on a rooted phone. The app will now close.</string>
