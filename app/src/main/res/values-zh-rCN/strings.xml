@@ -80,4 +80,5 @@
     <string name="System">随系统设定</string>
     <string name="Light">浅色</string>
     <string name="Dark">暗色</string>
+    <string name="sort">整理</string>
 </resources>

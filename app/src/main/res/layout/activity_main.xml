@@ -23,8 +23,8 @@
             android:layout_height="?attr/actionBarSize"
             android:textColor="?attr/colorPrimary"
             app:menu="@menu/actions"
-            app:popupTheme="@style/dialogThemeMenu"
             app:navigationIconTint="?attr/colorPrimary"
+            app:popupTheme="@style/dialogThemeMenu"
             app:title="@string/app_name" />
 
 
@@ -34,11 +34,11 @@
         android:id="@+id/nothingHere"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/transparent"
         android:gravity="center"
         android:text="@string/nothing_here"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:visibility="gone"
-        android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +94,7 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/sortButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filesRecyclerView"
@@ -191,5 +191,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/sortButton"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+
+        android:text="@string/sort"
+        android:textColor="?attr/colorPrimary"
+        app:icon="@drawable/sort_black_36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
