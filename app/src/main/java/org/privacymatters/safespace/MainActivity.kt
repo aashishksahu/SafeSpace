@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -35,6 +36,7 @@ import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
 import org.privacymatters.safespace.lib.SetTheme
+import org.privacymatters.safespace.lib.Sort
 import org.privacymatters.safespace.lib.Utils
 
 
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
+    private val sortinator = Sort
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
@@ -416,14 +419,42 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             ops.moveFileTo = null
         }
 
+        // initialize sorting
+        val sortButton = findViewById<Button>(R.id.sortButton)
+        sortButton.setOnClickListener {
+            showSortDialog(sortButton)
+        }
+
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                // ToDo: Debug
                 backButtonAction()
             }
         })
         //End: back button - system navigation
 
+    }
+
+    private fun showSortDialog(sortButton: View) {
+        val builder = MaterialAlertDialogBuilder(sortButton.context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val sortLayout = inflater.inflate(R.layout.sort_dialog, null)
+        sortinator.init(sharedPref, sortButton, ops)
+
+        builder.setTitle(getString(R.string.sort))
+            .setCancelable(true)
+            .setView(sortLayout)
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                updateRecyclerView()
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun changeTheme(context: Context) {
@@ -479,7 +510,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     private fun updateRecyclerView() {
         // display contents of the navigated path
-        val (files, folders) = ops.getContents(ops.getInternalPath())
+        var (files, folders) = ops.getContents(ops.getInternalPath())
+
+        files = sortinator.sortFiles(files)
+        folders = sortinator.sortFolders(folders)
 
         filesRecyclerViewAdapter.setData(
             files,

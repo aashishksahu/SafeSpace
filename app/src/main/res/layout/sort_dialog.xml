@@ -1,38 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:text="@string/sort_by_title_folder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RadioGroup
-        android:id="@+id/sortGroup"
+        android:id="@+id/sortFoldersBy"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:id="@+id/sort_1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="10sp">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_1"/>
-        <RadioButton
-            android:id="@+id/radio_button_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_2"/>
-        <RadioButton
-            android:id="@+id/radio_button_3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_3"/>
-        <RadioButton
-            android:id="@+id/radio_button_4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_4"/>
-        <RadioButton
-            android:id="@+id/radio_button_5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:text="@string/label_5"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RadioButton
+                android:id="@+id/sortFolderAsc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/asc" />
+
+            <RadioButton
+                android:id="@+id/sortFolderDesc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/desc" />
+
+        </LinearLayout>
+
     </RadioGroup>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:text="@string/sort_by_title_file"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/sortGroupBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="10sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RadioButton
+                android:id="@+id/sortByName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.33"
+                android:text="@string/name" />
+
+            <RadioButton
+                android:id="@+id/sortByDate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.33"
+                android:text="@string/date" />
+
+            <RadioButton
+                android:id="@+id/sortBySize"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.33"
+                android:text="@string/size" />
+
+        </LinearLayout>
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:layout_marginEnd="10sp"
+        android:text="@string/sort_by_order"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/sortGroupOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="10sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RadioButton
+                android:id="@+id/sortAsc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/asc" />
+
+            <RadioButton
+                android:id="@+id/sortDesc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/desc" />
+
+        </LinearLayout>
+
+    </RadioGroup>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+</LinearLayout>

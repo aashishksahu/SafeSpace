@@ -87,4 +87,7 @@
     <string name="asc">升序</string>
     <string name="desc">降序</string>
     <string name="name">书</string>
+    <string name="sort_by_order">顺序</string>
+    <string name="sort_by_title_file">文件顺序</string>
+    <string name="sort_by_title_folder">按名称排序文件夹</string>
 </resources>
