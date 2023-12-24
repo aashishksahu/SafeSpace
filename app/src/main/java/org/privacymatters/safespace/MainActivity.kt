@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>.?/<,\\[\\]\\{\\}]")
+    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>.?/<,\\[\\]{}]")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
