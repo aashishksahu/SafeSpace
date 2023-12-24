@@ -35,8 +35,8 @@ class Constants {
         const val ASC = "asc"
         const val DESC = "desc"
         const val FOLDER_SORT = "folder_sort"
-        const val SORT_TYPE = "sort_type"
-        const val SORT_ORDER = "sort_order"
+        const val FILE_SORT_BY = "file_sort_by"
+        const val FILE_SORT_ORDER = "file_sort_order"
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",

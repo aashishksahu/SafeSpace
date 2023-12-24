@@ -36,7 +36,7 @@ import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
 import org.privacymatters.safespace.lib.SetTheme
-import org.privacymatters.safespace.lib.Sort
+import org.privacymatters.safespace.lib.Sortinator
 import org.privacymatters.safespace.lib.Utils
 
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
-    private val sortinator = Sort
+    private lateinit var sortinator: Sortinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
@@ -87,6 +87,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         ops = Operations(application)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
 
+        // initialize sortinator, listeners will be registered later during dialog creation
+        sortinator = Sortinator(sharedPref, ops)
 
         val filesRVAdapterTexts = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
@@ -126,15 +128,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         val (fileList, folderList) = ops.getContents(ops.getInternalPath())
 
-        folderRecyclerViewAdapter.setData(folderList)
         val horizontalLayoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         folderRecyclerView.layoutManager = horizontalLayoutManager
         folderRecyclerView.adapter = folderRecyclerViewAdapter
 
-        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
+
+        folderRecyclerViewAdapter.setData(folderList)
+        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
 
         fileMoveCopyView.visibility = View.GONE
         fileMoveCopyName.isSelected = true
@@ -428,7 +431,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // ToDo: Debug
                 backButtonAction()
             }
         })
@@ -441,7 +443,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         val inflater: LayoutInflater = layoutInflater
         val sortLayout = inflater.inflate(R.layout.sort_dialog, null)
-        sortinator.init(sharedPref, sortButton, ops)
+        sortinator.registerListeners(sortLayout)
 
         builder.setTitle(getString(R.string.sort))
             .setCancelable(true)
@@ -455,6 +457,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         val alert = builder.create()
         alert.show()
+
     }
 
     private fun changeTheme(context: Context) {
