@@ -105,6 +105,9 @@
     <string name="date">Date</string>
     <string name="asc">Ascending</string>
     <string name="desc">Descending</string>
+    <string name="sort_by_title_file">Sort Files By</string>
+    <string name="sort_by_title_folder">Sort Folders By Name</string>
+    <string name="sort_by_order">Order</string>
 
 
 </resources>

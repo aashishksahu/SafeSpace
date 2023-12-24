@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Safe Space</string>
     <string name="cancel">रद्द करें</string>
     <string name="create">बनाएं</string>
     <string name="ok">ठीक</string>
@@ -88,4 +87,7 @@
     <string name="date">तारीख</string>
     <string name="asc">चढ़ता हुआ</string>
     <string name="desc">उतरता हुआ</string>
+    <string name="sort_by_order">क्रम शैली</string>
+    <string name="sort_by_title_file">फाइलों का क्रम</string>
+    <string name="sort_by_title_folder">फ़ोल्डरों के नाम से क्रम</string>
 </resources>
