@@ -5,6 +5,5 @@
         <item>@string/dark_theme_text</item>
         <item>@string/light_theme_text</item>
         <item>@string/amoled_theme_text</item>
-        <item>@string/pride_theme_text</item>
     </string-array>
 </resources>

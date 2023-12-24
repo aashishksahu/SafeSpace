@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("^[.a-zA-Z\\d ]*\$")
+    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>.?/<,\\[\\]\\{\\}]")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
@@ -503,7 +503,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(createFolderLayout)
             .setPositiveButton(getString(R.string.create)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
 
                     if (ops.createDir(
                             ops.getInternalPath(),
@@ -640,7 +640,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(renameLayout)
             .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
                     val result = ops.renameFile(
                         file,
                         ops.getInternalPath(),
@@ -822,7 +822,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(textNoteNameLayout)
             .setPositiveButton(getString(R.string.create)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
                     val result = ops.createTextNote(
                         noteNameTextView.editText!!.text.toString() + "." + Constants.TXT
                     )
