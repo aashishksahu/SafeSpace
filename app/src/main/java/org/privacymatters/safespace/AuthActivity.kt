@@ -21,6 +21,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private var pinNotPossibleReason: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,15 +42,37 @@ class AuthActivity : AppCompatActivity() {
         if (!isPhoneRooted(authButton.context)) {
 
             val biometricManager = BiometricManager.from(this)
-            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
+            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL) or
+                    biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
 
-                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                    pinNotPossibleReason = "BIOMETRIC_ERROR_NO_HARDWARE"
+                    pinNotPossible = true
+                }
+
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                    pinNotPossibleReason = "BIOMETRIC_ERROR_HW_UNAVAILABLE"
+                    pinNotPossible = true
+                }
+
                 BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    pinNotPossibleReason = "BIOMETRIC_ERROR_NONE_ENROLLED"
+                    pinNotPossible = true
+                }
+
+                BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
+                    pinNotPossibleReason = "BIOMETRIC_ERROR_UNSUPPORTED"
+                    pinNotPossible = true
+                }
+
+                BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
+                    pinNotPossibleReason = "BIOMETRIC_STATUS_UNKNOWN"
                     pinNotPossible = true
                 }
 
                 BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                    pinNotPossibleReason = "BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED"
+
                     val builder = MaterialAlertDialogBuilder(authButton.context)
                     builder.setTitle(getString(R.string.auth_alert_update))
                         .setCancelable(true)
@@ -59,14 +82,6 @@ class AuthActivity : AppCompatActivity() {
                         }
                 }
 
-                BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
-                    pinNotPossible = true
-                }
-
-                BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
-                    pinNotPossible = true
-                }
-
                 BiometricManager.BIOMETRIC_SUCCESS -> {
                     initiateAuthentication()
                 }
@@ -74,10 +89,12 @@ class AuthActivity : AppCompatActivity() {
 
             authButton.setOnClickListener {
                 if (pinNotPossible) {
+                    val errorMsg =
+                        getString(R.string.auth_no_biometric_msg) + "\n" + pinNotPossibleReason
                     val builder = MaterialAlertDialogBuilder(authButton.context)
                     builder.setTitle(getString(R.string.auth_alert))
                         .setCancelable(true)
-                        .setMessage(getString(R.string.auth_no_biometric_msg))
+                        .setMessage(errorMsg)
                         .setPositiveButton(getString(R.string.ok)) { _, _ ->
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
