@@ -40,12 +40,6 @@ import org.privacymatters.safespace.lib.Sortinator
 import org.privacymatters.safespace.lib.Utils
 
 
-/*
- Todo:
-  *
-  * Sort options [Low Priority]
-*/
-
 class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {
 
     private lateinit var ops: Operations
@@ -60,7 +54,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>.?/<,\\[\\]{}]")
+    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
@@ -516,7 +510,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         var (files, folders) = ops.getContents(ops.getInternalPath())
 
         files = sortinator.sortFiles(files)
-        folders = sortinator.sortFolders(folders)
+//        folders = sortinator.sortFolders(folders)
 
         filesRecyclerViewAdapter.setData(
             files,

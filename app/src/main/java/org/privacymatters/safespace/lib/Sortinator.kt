@@ -7,11 +7,9 @@ import org.privacymatters.safespace.R
 
 class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
 
-    private var folderSort: String? = null
     private var fileSortBy: String? = null
     private var fileSortOrder: String? = null
     private var ops: Operations? = null
-    private var sortFolderGroup: RadioGroup? = null
     private var sortByGroup: RadioGroup? = null
     private var sortOrderGroup: RadioGroup? = null
     private var sharedPref: SharedPreferences
@@ -21,8 +19,6 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
         this.ops = ops
         this.sharedPref = sharedPref
 
-        folderSort =
-            sharedPref.getString(Constants.FOLDER_SORT, "") // Folder - Ascending or Descending
         fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, "") // Name, Date or Size
         fileSortOrder =
             sharedPref.getString(Constants.FILE_SORT_ORDER, "") // Ascending or Descending
@@ -30,28 +26,16 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
     }
 
     fun registerListeners(sortLayout: View) {
-        sortFolderGroup = sortLayout.findViewById(R.id.sortFoldersBy)
+        //used in selector methods to get the checked options
         sortByGroup = sortLayout.findViewById(R.id.sortGroupBy)
         sortOrderGroup = sortLayout.findViewById(R.id.sortGroupOrder)
-
-        sortByGroup?.setOnCheckedChangeListener { _, checkedId ->
-            fileSortBySelector(checkedId)
-        }
-
-        sortOrderGroup?.setOnCheckedChangeListener { _, checkedId ->
-            fileSortOrderSelector(checkedId)
-        }
-
-        sortFolderGroup?.setOnCheckedChangeListener { _, checkedId ->
-            folderSortSelector(checkedId)
-        }
     }
 
     fun sortFiles(files: List<FileItem>): List<FileItem> {
 
         // get selected radio buttons if the user doesn't change selection
-        fileSortBySelector(sortOrderGroup?.checkedRadioButtonId)
-        fileSortOrderSelector(sortByGroup?.checkedRadioButtonId)
+        fileSortBySelector(sortByGroup?.checkedRadioButtonId)
+        fileSortOrderSelector(sortOrderGroup?.checkedRadioButtonId)
 
         // Ascending or descending
         when (fileSortOrder) {
@@ -78,20 +62,6 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
 
 
         return files
-    }
-
-    fun sortFolders(folders: List<FolderItem>): List<FolderItem> {
-
-        // get selected radio buttons if the user doesn't change selection
-        folderSortSelector(sortFolderGroup?.checkedRadioButtonId)
-
-        // Ascending or descending
-        return when (folderSort) {
-            Constants.ASC -> folders.sortedBy { it.name }
-            Constants.DESC -> folders.sortedByDescending { it.name }
-            else -> folders.sortedBy { it.name }
-        }
-
     }
 
     private fun fileSortBySelector(checkedId: Int?) {
@@ -123,18 +93,4 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
         }
     }
 
-    private fun folderSortSelector(checkedId: Int?) {
-        if (checkedId != null) {
-            folderSort = when (checkedId) {
-                R.id.sortFolderAsc -> Constants.ASC
-                R.id.sortFolderDesc -> Constants.DESC
-                else -> Constants.ASC
-            }
-
-            val editor = sharedPref.edit()
-            editor?.putString(Constants.FOLDER_SORT, folderSort)
-            editor?.apply()
-        }
-    }
 }
-//Todo: debug sorting, check the flow and correct it
