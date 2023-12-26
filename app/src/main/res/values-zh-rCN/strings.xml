@@ -38,6 +38,7 @@
     <string name="generic_error">出现错误，请重试</string>
     <string name="delete_confirmation">确认删除</string>
     <string name="directory_indicator">文件夹</string>
+    <string name="file_indicator">文件</string>
     <string name="import_files_progress">正在后台导入，请稍等…</string>
     <string name="media_view_desc">媒体视图</string>
     <string name="textAreaHint">写点什么吧</string>
@@ -80,4 +81,13 @@
     <string name="System">随系统设定</string>
     <string name="Light">浅色</string>
     <string name="Dark">暗色</string>
+    <string name="sort">整理</string>
+    <string name="size">尺寸</string>
+    <string name="date">日戳</string>
+    <string name="asc">升序</string>
+    <string name="desc">降序</string>
+    <string name="name">书</string>
+    <string name="sort_by_order">顺序</string>
+    <string name="sort_by_title_file">文件顺序</string>
+    <string name="sort_by_title_folder">按名称排序文件夹</string>
 </resources>

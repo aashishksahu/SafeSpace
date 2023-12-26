@@ -1,0 +1,3 @@
+* Added option to sort files based on name, date and size
+* Hindi language available
+* Authentication error message now visible, this will help in identifying authentication problems

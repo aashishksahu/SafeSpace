@@ -10,7 +10,6 @@
     <string name="dark_theme_text">Dark</string>
     <string name="light_theme_text">Light</string>
     <string name="amoled_theme_text">Amoled Dark</string>
-    <string name="pride_theme_text">Pride</string>
     <string name="export_backup_msg">Exporting zip archive in background, large files will take time..</string>
     <string name="export_backup_success">Export Complete</string>
     <string name="backup_err_space">Not Enough Storage Available</string>
@@ -43,6 +42,7 @@
     <string name="generic_error">Something went wrong. Please try again</string>
     <string name="delete_confirmation">Are you sure you want to delete this?</string>
     <string name="directory_indicator">Folder</string>
+    <string name="file_indicator">File</string>
     <string name="import_files_progress">Importing in background, please wait…</string>
     <string name="media_view_desc">Media View</string>
     <string name="textAreaHint">Write Something</string>
@@ -98,6 +98,16 @@
     <string name="System">System</string>
     <string name="Light">Light</string>
     <string name="Dark">Dark</string>
+    <string name="sort">Sort</string>
+
+    <string name="name">Name</string>
+    <string name="size">Size</string>
+    <string name="date">Date</string>
+    <string name="asc">Ascending</string>
+    <string name="desc">Descending</string>
+    <string name="sort_by_title_file">Sort Files By</string>
+    <string name="sort_by_title_folder">Sort Folders By Name</string>
+    <string name="sort_by_order">Order</string>
 
 
 </resources>

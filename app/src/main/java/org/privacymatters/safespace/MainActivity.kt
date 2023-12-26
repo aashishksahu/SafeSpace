@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -35,14 +36,9 @@ import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.ItemClickListener
 import org.privacymatters.safespace.lib.Operations
 import org.privacymatters.safespace.lib.SetTheme
+import org.privacymatters.safespace.lib.Sortinator
 import org.privacymatters.safespace.lib.Utils
 
-
-/*
- Todo:
-  *
-  * Sort options [Low Priority]
-*/
 
 class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {
 
@@ -58,7 +54,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var clearButton: MaterialButton
     private lateinit var exportButton: MaterialButton
     private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("^[.a-zA-Z\\d ]*\$")
+    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private lateinit var fileMoveCopyView: ConstraintLayout
     private lateinit var fileMoveCopyName: TextView
     private lateinit var fileMoveCopyOperation: TextView
@@ -66,6 +62,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var sharedPref: SharedPreferences
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
+    private lateinit var sortinator: Sortinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
@@ -84,6 +81,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         ops = Operations(application)
         nothingHereText = findViewById(R.id.nothingHere) // show this when recycler view is empty
 
+        // initialize sortinator, listeners will be registered later during dialog creation
+        sortinator = Sortinator(sharedPref, ops)
 
         val filesRVAdapterTexts = mapOf(
             "directory_indicator" to getString(R.string.directory_indicator)
@@ -123,15 +122,16 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         val (fileList, folderList) = ops.getContents(ops.getInternalPath())
 
-        folderRecyclerViewAdapter.setData(folderList)
         val horizontalLayoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         folderRecyclerView.layoutManager = horizontalLayoutManager
         folderRecyclerView.adapter = folderRecyclerViewAdapter
 
-        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
         filesRecyclerView.layoutManager = LinearLayoutManager(this)
         filesRecyclerView.adapter = filesRecyclerViewAdapter
+
+        folderRecyclerViewAdapter.setData(folderList)
+        filesRecyclerViewAdapter.setData(fileList, nothingHereText)
 
         fileMoveCopyView.visibility = View.GONE
         fileMoveCopyName.isSelected = true
@@ -416,6 +416,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             ops.moveFileTo = null
         }
 
+        // initialize sorting
+        val sortButton = findViewById<Button>(R.id.sortButton)
+        sortButton.setOnClickListener {
+            showSortDialog(sortButton)
+        }
+
         // back button - system navigation
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -423,6 +429,28 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         })
         //End: back button - system navigation
+
+    }
+
+    private fun showSortDialog(sortButton: View) {
+        val builder = MaterialAlertDialogBuilder(sortButton.context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val sortLayout = inflater.inflate(R.layout.sort_dialog, null)
+        sortinator.registerListeners(sortLayout)
+
+        builder.setTitle(getString(R.string.sort))
+            .setCancelable(true)
+            .setView(sortLayout)
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                updateRecyclerView()
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
 
     }
 
@@ -479,7 +507,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     private fun updateRecyclerView() {
         // display contents of the navigated path
-        val (files, folders) = ops.getContents(ops.getInternalPath())
+        var (files, folders) = ops.getContents(ops.getInternalPath())
+
+        files = sortinator.sortFiles(files)
+//        folders = sortinator.sortFolders(folders)
 
         filesRecyclerViewAdapter.setData(
             files,
@@ -503,7 +534,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(createFolderLayout)
             .setPositiveButton(getString(R.string.create)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
 
                     if (ops.createDir(
                             ops.getInternalPath(),
@@ -640,7 +671,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(renameLayout)
             .setPositiveButton(getString(R.string.context_menu_rename)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
                     val result = ops.renameFile(
                         file,
                         ops.getInternalPath(),
@@ -822,7 +853,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(textNoteNameLayout)
             .setPositiveButton(getString(R.string.create)) { _, _ ->
 
-                if (folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
+                if (!folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
                     val result = ops.createTextNote(
                         noteNameTextView.editText!!.text.toString() + "." + Constants.TXT
                     )

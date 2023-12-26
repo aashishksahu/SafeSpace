@@ -29,6 +29,15 @@ class Constants {
         const val DEFAULT_FRONT_CAMERA = "DEFAULT_FRONT_CAMERA"
         const val DEFAULT_BACK_CAMERA = "DEFAULT_BACK_CAMERA"
 
+        const val NAME = "name"
+        const val SIZE = "size"
+        const val DATE = "date"
+        const val ASC = "asc"
+        const val DESC = "desc"
+        const val FOLDER_SORT = "folder_sort"
+        const val FILE_SORT_BY = "file_sort_by"
+        const val FILE_SORT_ORDER = "file_sort_order"
+
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
             "png",
@@ -55,7 +64,7 @@ class Constants {
             "wma"
         )
 
-//       commented formats are not internally supported
+        //       commented formats are not internally supported
         val DOCUMENT_EXTENSIONS = arrayOf(
             "csv",
             "dat",
