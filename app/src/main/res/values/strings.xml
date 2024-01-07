@@ -108,6 +108,14 @@
     <string name="sort_by_title_file">Sort Files By</string>
     <string name="sort_by_title_folder">Sort Folders By Name</string>
     <string name="sort_by_order">Order</string>
+    <string name="pin_text_box">Enter Pin</string>
+    <string name="set_pin_text">Set PIN</string>
+    <string name="confirm_pin_text">Confirm PIN</string>
+    <string name="pin_error">PIN cannot be empty</string>
+    <string name="pin_error2">PIN must be at least 4 digits</string>
+    <string name="pin_error3">PIN must be digits only</string>
+    <string name="pin_error4">PIN does not match</string>
+    <string name="pin_error5">Incorrect PIN</string>
 
 
 </resources>

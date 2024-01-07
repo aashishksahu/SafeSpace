@@ -90,4 +90,12 @@
     <string name="sort_by_order">顺序</string>
     <string name="sort_by_title_file">文件顺序</string>
     <string name="sort_by_title_folder">按名称排序文件夹</string>
+    <string name="pin_text_box">输入PIN</string>
+    <string name="set_pin_text">-</string>
+    <string name="confirm_pin_text">q</string>
+    <string name="pin_error">g</string>
+    <string name="pin_error2">u</string>
+    <string name="pin_error3">PIN must be digits only</string>
+    <string name="pin_error4">PIN does not match</string>
+    <string name="pin_error5">Incorrect PIN</string>
 </resources>
