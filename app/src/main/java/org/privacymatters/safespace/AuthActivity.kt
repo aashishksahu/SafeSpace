@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -20,15 +20,26 @@ import org.privacymatters.safespace.lib.RootCheck
 import org.privacymatters.safespace.lib.SetTheme
 import java.util.concurrent.Executor
 
+/*
+
+Possible authentication scenarios
+
+* fingerprint false, hard pin false -> set up hard pin  +
+* fingerprint false, hard pin true  -> use hard pin     +
+* fingerprint true,  hard pin false -> use fingerprint
+* fingerprint true,  hard pin true  -> use fingerprint
+
+ */
+
 class AuthActivity : AppCompatActivity() {
 
-    private var biometricNotPossible = false
+    private var biometricPossible = true
     private lateinit var executor: Executor
-    private var passwdField: EditText? = null
-    private lateinit var authButton: Button
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private var biometricNotPossibleReason: String = ""
+    private lateinit var authButton: Button
+    private lateinit var authTouch: ImageButton
+    private lateinit var pinField: EditText
     private var confirmCounter = 0
     private var confirmPIN = -1
     private lateinit var encPref: SharedPreferences
@@ -45,6 +56,7 @@ class AuthActivity : AppCompatActivity() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
+        // load theme from preferences
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         SetTheme.setTheme(
@@ -55,149 +67,111 @@ class AuthActivity : AppCompatActivity() {
 
         // check if app pin is set
         val isHardPinSet = encPref.getBoolean(Constants.HARD_PIN_SET, false)
-        val isHardPinNeeded = encPref.getBoolean(Constants.HARD_PIN_NEEDED, false)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        //login button
         authButton = findViewById(R.id.loginButton)
+        authTouch = findViewById(R.id.fingerprint)
+        pinField = findViewById(R.id.editTextNumberPassword)
 
         // Root Check
         if (!isPhoneRooted(authButton.context)) {
 
-            if (isHardPinNeeded) {
-                initHardPin(firstUse = false)
-            } else {
-                val biometricManager = BiometricManager.from(this)
-                when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL) or
-                        biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+            // initialize biometric manager and check if biometrics can be used
+            val biometricManager = BiometricManager.from(this)
+            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL) or
+                    biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
 
-                    BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                        biometricNotPossibleReason = "Reason: Biometric Hardware not supported"
-                        biometricNotPossible = true
-                    }
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
+                BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED,
+                BiometricManager.BIOMETRIC_STATUS_UNKNOWN,
+                BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                    biometricPossible = false
+                }
 
-                    BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                        biometricNotPossibleReason = "Reason: Biometric Hardware unavailable"
-                        biometricNotPossible = true
-                    }
-
-                    BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                        biometricNotPossibleReason = "Reason: Biometric not set up"
-                        biometricNotPossible = true
-                    }
-
-                    BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
-                        biometricNotPossibleReason = "Reason: Biometric not supported"
-                        biometricNotPossible = true
-                    }
-
-                    BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
-                        biometricNotPossibleReason = "Reason: Biometric status unknown"
-                        biometricNotPossible = true
-                    }
-
-                    BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
-                        biometricNotPossibleReason = "Reason: System update required"
-                        biometricNotPossible = true
-                    }
-
-                    BiometricManager.BIOMETRIC_SUCCESS -> {
-                        initiateAuthentication()
-                    }
+                BiometricManager.BIOMETRIC_SUCCESS -> {
+                    if (isHardPinSet) initiateBiometricAuthentication()
                 }
             }
 
             authButton.setOnClickListener {
-                if (biometricNotPossible && !isHardPinSet) {
 
-                    if (confirmCounter == 1) {
-                        if (confirmPIN.toString() != passwdField?.text.toString()) {
-                            passwdField?.error = getString(R.string.pin_error4)
-                            passwdField?.setText("")
-                            authButton.text = getString(R.string.set_pin_text)
-                        } else {
-                            encPref.edit()
-                                .putInt(Constants.HARD_PIN, confirmPIN)
-                                .putBoolean(Constants.HARD_PIN_SET, true)
-                                .putBoolean(Constants.HARD_PIN_NEEDED, true)
-                                .apply()
-
-                            finish()
-                            startActivity(intent)
-
-                        }
-                        confirmCounter = 0
-                        confirmPIN = -1
-                    } else if (confirmCounter == 0 && passwdField != null) {
-                        if (passwdField?.text?.isEmpty() == true) {
-                            passwdField?.error = getString(R.string.pin_error)
-                        } else if (passwdField?.text?.length!! < 4) {
-                            passwdField?.error = getString(R.string.pin_error2)
-                        } else {
-                            if (passwdField?.text.toString().isDigitsOnly()) {
-                                confirmCounter += 1
-                                authButton.text = getString(R.string.confirm_pin_text)
-                                confirmPIN = Integer.parseInt(passwdField?.text.toString())
-                                passwdField?.error = null
-                                passwdField?.setText("")
-                            } else {
-                                passwdField?.error = getString(R.string.pin_error3)
-                            }
-                        }
-                    } else if (passwdField == null) {
-
-                        val errorMsg =
-                            getString(R.string.auth_no_biometric_msg) + "\n" + biometricNotPossibleReason
-
-                        val builder = MaterialAlertDialogBuilder(authButton.context)
-
-                        builder.setTitle(getString(R.string.auth_alert))
-                            .setCancelable(true)
-                            .setMessage(errorMsg)
-                            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-
-                                initHardPin(firstUse = true)
-                            }
-                            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                                dialog.dismiss()
-                            }.show()
-                    }
-
-                } else if (isHardPinNeeded) {
-                    if (authenticateUsingHardPin(passwdField?.text.toString())) {
-                        val intent = Intent(applicationContext, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        passwdField?.error = getString(R.string.pin_error5)
-                        passwdField?.setText("")
-                    }
+                if (!isHardPinSet) {
+                    setUpHardPin()
                 } else {
-                    biometricPrompt.authenticate(promptInfo)
+                    authenticateUsingHardPin()
+                }
+            }
+
+            authTouch.setOnClickListener {
+                if (biometricPossible) biometricPrompt.authenticate(promptInfo)
+            }
+
+        }
+    }
+
+    private fun authenticateUsingHardPin() {
+
+        if (pinField.text.toString().isDigitsOnly() &&
+            Integer.parseInt(pinField.text.toString()) == encPref.getInt(Constants.HARD_PIN, -1)
+        ) {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+        } else {
+            pinField.error = getString(R.string.pin_error5)
+            pinField.setText("")
+        }
+    }
+
+    private fun setUpHardPin() {
+
+        authButton.text = getString(R.string.set_pin_text)
+
+        if (pinField.text?.isEmpty() == true) {
+            pinField.error = getString(R.string.pin_error)
+        } else if (pinField.text?.length!! < 4) {
+            pinField.error = getString(R.string.pin_error2)
+        } else {
+
+            if (confirmCounter == 0) {
+                if (pinField.text.toString().isDigitsOnly()) {
+                    confirmCounter += 1
+                    authButton.text = getString(R.string.confirm_pin_text)
+                    confirmPIN = Integer.parseInt(pinField.text.toString())
+                    pinField.error = null
+                    pinField.setText("")
+                } else {
+                    pinField.error = getString(R.string.pin_error3)
                 }
 
+            } else if (confirmCounter == 1) {
+                if (confirmPIN.toString() != pinField.text.toString()) {
+                    pinField.error = getString(R.string.pin_error4)
+                    pinField.setText("")
+                    authButton.text = getString(R.string.set_pin_text)
+                } else {
+                    encPref.edit()
+                        .putInt(Constants.HARD_PIN, confirmPIN)
+                        .putBoolean(Constants.HARD_PIN_SET, true)
+                        .apply()
+
+                    finish()
+                    startActivity(intent)
+
+                }
+                confirmCounter = 0
+                confirmPIN = -1
             }
         }
     }
 
-    private fun authenticateUsingHardPin(passwd: String): Boolean {
-
-        return passwd.isDigitsOnly() &&
-                Integer.parseInt(passwd) == encPref.getInt(Constants.HARD_PIN, -1)
-    }
-
-    private fun initHardPin(firstUse: Boolean) {
-        if (firstUse) {
-            authButton.text = getString(R.string.set_pin_text)
-        }
-        passwdField = findViewById(R.id.editTextNumberPassword)
-        passwdField?.visibility = View.VISIBLE
-
-    }
-
-    private fun initiateAuthentication() {
+    private fun initiateBiometricAuthentication() {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.auth_login))
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
@@ -222,7 +196,9 @@ class AuthActivity : AppCompatActivity() {
 
             })
 
-        if (!biometricNotPossible) {
+        authTouch.isClickable = true
+
+        if (biometricPossible) {
             // launch automatically on start up
             biometricPrompt.authenticate(promptInfo)
         }
