@@ -39,7 +39,7 @@
     <string name="delete_confirmation">क्या आप वाकई इसे हटाना चाहते हैं?</string>
     <string name="directory_indicator">फ़ोल्डर</string>
     <string name="file_indicator">फ़ाइल</string>
-    <string name="import_files_progress">आयात किया जा रहा है, कृपया प्रतीक्षा करें...</string>
+    <string name="import_files_progress">आयात किया जा रहा है, कृपया प्रतीक्षा करें…</string>
     <string name="media_view_desc">मीडिया</string>
     <string name="textAreaHint">कुछ लिखें</string>
     <string name="save">सहेजें</string>
@@ -65,7 +65,7 @@
     <string name="text_exception_title">नहीं मिला</string>
     <string name="text_exception_subtitle">यह दस्तावेज़ मौजूद नहीं है. संभवतः इसे हटा दिया गया था.</string>
     <string name="text_exception_IO">टिप्पणी नोट खोलने में असमर्थ</string>
-    <string name="export_in_progress">निर्यात हो रहा है, कृपया प्रतीक्षा करें...</string>
+    <string name="export_in_progress">निर्यात हो रहा है, कृपया प्रतीक्षा करें…</string>
     <string name="auth_fail">प्रमाणीकरण विफल रहा!</string>
     <string name="auth_login">लॉग इन करें</string>
     <string name="auth_alert">कोई बायोमेट्रिक या पिन सेट नहीं</string>
@@ -91,11 +91,13 @@
     <string name="sort_by_title_file">फाइलों का क्रम</string>
     <string name="sort_by_title_folder">फ़ोल्डरों के नाम से क्रम</string>
     <string name="pin_text_box">पिन दर्ज करें</string>
-    <string name="set_pin_text">-</string>
-    <string name="confirm_pin_text">q</string>
-    <string name="pin_error">g</string>
-    <string name="pin_error2">u</string>
-    <string name="pin_error3">PIN must be digits only</string>
-    <string name="pin_error4">PIN does not match</string>
-    <string name="pin_error5">Incorrect PIN</string>
+    <string name="set_pin_text">पिन सेट करें</string>
+    <string name="confirm_pin_text">पिन की पुष्टि करें</string>
+    <string name="pin_error">पिन खाली नहीं हो सकती</string>
+    <string name="pin_error2">पिन कम से कम 4 अंकों की होनी चाहिए</string>
+    <string name="pin_error3">पिन में केवल अंक होने चाहिए</string>
+    <string name="pin_error4">पिन मेल नहीं खाती</string>
+    <string name="pin_error5">गलत पिन</string>
+    <string name="multi_move">चयनित फ़ाइलें मूव करें</string>
+    <string name="multi_copy">चयनित फ़ाइलें कॉपी करें</string>
 </resources>

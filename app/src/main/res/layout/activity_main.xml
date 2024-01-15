@@ -38,52 +38,76 @@
         android:gravity="center"
         android:text="@string/nothing_here"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-    <Button
+    <ImageButton
         android:id="@+id/deleteButton"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
+        android:backgroundTint="@color/transparent"
         android:contentDescription="@string/context_menu_delete"
-        android:text="@string/context_menu_delete"
         android:textColor="@color/design_default_color_error"
         android:visibility="gone"
-        app:icon="@drawable/delete_white_36dp"
         app:iconTint="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/delete_white_36dp" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/moveBulkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/context_menu_delete"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/copyBulkButton"
+        app:layout_constraintStart_toEndOf="@+id/deleteButton"
+        app:srcCompat="@drawable/drive_file_move_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/copyBulkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/context_menu_delete"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/file_copy_black_24dp" />
+
+    <ImageButton
         android:id="@+id/clearButton"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
+        android:backgroundTint="@color/transparent"
         android:contentDescription="@string/multi_clear"
-        android:text="@string/multi_clear"
         android:visibility="gone"
-        app:icon="@drawable/clear_all_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/deleteButton" />
+        app:layout_constraintEnd_toStartOf="@+id/exportButton"
+        app:layout_constraintStart_toEndOf="@+id/copyBulkButton"
+        app:srcCompat="@drawable/clear_all_black_24dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/exportButton"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
+        android:backgroundTint="@color/transparent"
         android:contentDescription="@string/multi_export"
-        android:text="@string/multi_export"
         android:visibility="gone"
-        app:icon="@drawable/file_download_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/clearButton" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/file_download_black_24dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/folderRecyclerView"
