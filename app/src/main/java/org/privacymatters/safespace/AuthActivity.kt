@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Button
+import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +24,10 @@ import java.util.concurrent.Executor
 
 Possible authentication scenarios
 
-* fingerprint false, hard pin false -> set up hard pin  +
-* fingerprint false, hard pin true  -> use hard pin     +
-* fingerprint true,  hard pin false -> use fingerprint
-* fingerprint true,  hard pin true  -> use fingerprint
+* hard pin false, fingerprint false -> set up hard pin  +
+* hard pin false, fingerprint true  -> set up hard pin  +
+* hard pin true, fingerprint false  -> use hard pin     +
+* hard pin true, fingerprint true   -> use fingerprint  +
 
  */
 
@@ -37,11 +37,11 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private lateinit var authButton: Button
     private lateinit var authTouch: ImageButton
     private lateinit var pinField: EditText
     private var confirmCounter = 0
     private var confirmPIN = -1
+    private var isHardPinSet = false
     private lateinit var encPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,23 +66,24 @@ class AuthActivity : AppCompatActivity() {
         )
 
         // check if app pin is set
-        val isHardPinSet = encPref.getBoolean(Constants.HARD_PIN_SET, false)
+        isHardPinSet = encPref.getBoolean(Constants.HARD_PIN_SET, false)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        //login button
-        authButton = findViewById(R.id.loginButton)
         authTouch = findViewById(R.id.fingerprint)
         pinField = findViewById(R.id.editTextNumberPassword)
 
         // Root Check
-        if (!isPhoneRooted(authButton.context)) {
+        if (!isPhoneRooted(pinField.context)) {
+
+            if (isHardPinSet) {
+                pinField.hint = getString(R.string.pin_text_box)
+            }
 
             // initialize biometric manager and check if biometrics can be used
             val biometricManager = BiometricManager.from(this)
-            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL) or
-                    biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+            when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
 
                 BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
                 BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
@@ -98,19 +99,27 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
 
-            authButton.setOnClickListener {
+            authTouch.setOnClickListener {
+                if (biometricPossible && isHardPinSet) biometricPrompt.authenticate(promptInfo)
+            }
 
+        }
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+
+        return when (keyCode) {
+            KeyEvent.KEYCODE_ENTER,
+            KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 if (!isHardPinSet) {
                     setUpHardPin()
                 } else {
                     authenticateUsingHardPin()
                 }
+                true
             }
 
-            authTouch.setOnClickListener {
-                if (biometricPossible) biometricPrompt.authenticate(promptInfo)
-            }
-
+            else -> super.onKeyUp(keyCode, event)
         }
     }
 
@@ -131,7 +140,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun setUpHardPin() {
 
-        authButton.text = getString(R.string.set_pin_text)
+        pinField.hint = getString(R.string.set_pin_text)
 
         if (pinField.text?.isEmpty() == true) {
             pinField.error = getString(R.string.pin_error)
@@ -142,7 +151,7 @@ class AuthActivity : AppCompatActivity() {
             if (confirmCounter == 0) {
                 if (pinField.text.toString().isDigitsOnly()) {
                     confirmCounter += 1
-                    authButton.text = getString(R.string.confirm_pin_text)
+                    pinField.hint = getString(R.string.confirm_pin_text)
                     confirmPIN = Integer.parseInt(pinField.text.toString())
                     pinField.error = null
                     pinField.setText("")
@@ -154,7 +163,7 @@ class AuthActivity : AppCompatActivity() {
                 if (confirmPIN.toString() != pinField.text.toString()) {
                     pinField.error = getString(R.string.pin_error4)
                     pinField.setText("")
-                    authButton.text = getString(R.string.set_pin_text)
+                    pinField.hint = getString(R.string.set_pin_text)
                 } else {
                     encPref.edit()
                         .putInt(Constants.HARD_PIN, confirmPIN)
@@ -174,8 +183,9 @@ class AuthActivity : AppCompatActivity() {
     private fun initiateBiometricAuthentication() {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.auth_login))
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .setConfirmationRequired(false)
+            .setNegativeButtonText(getString(R.string.cancel))
             .setSubtitle(getString(R.string.auth_stuck))
             .build()
 
