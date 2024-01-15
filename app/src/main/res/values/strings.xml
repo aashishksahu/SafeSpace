@@ -51,7 +51,7 @@
     <string name="save_error">Error while saving file!</string>
     <string name="move_file_title">Move Here</string>
     <string name="move_copy_file_failure">Action failed</string>
-    <string name="move_copy_file_success">File moved/copied successfully</string>
+    <string name="move_copy_file_success">File(s) moved/copied successfully</string>
     <string name="copy_file_title">Copy Here</string>
     <string name="copy_title">Copy</string>
     <string name="move_title">Move</string>
@@ -108,6 +108,16 @@
     <string name="sort_by_title_file">Sort Files By</string>
     <string name="sort_by_title_folder">Sort Folders By Name</string>
     <string name="sort_by_order">Order</string>
+    <string name="pin_text_box">Enter Pin</string>
+    <string name="set_pin_text">Set PIN</string>
+    <string name="confirm_pin_text">Confirm PIN</string>
+    <string name="pin_error">PIN cannot be empty</string>
+    <string name="pin_error2">PIN must be at least 4 digits</string>
+    <string name="pin_error3">PIN must be digits only</string>
+    <string name="pin_error4">PIN does not match</string>
+    <string name="pin_error5">Incorrect PIN</string>
+    <string name="multi_move">Move selected files</string>
+    <string name="multi_copy">Copy selected files</string>
 
 
 </resources>

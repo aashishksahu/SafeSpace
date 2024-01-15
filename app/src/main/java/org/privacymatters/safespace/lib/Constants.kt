@@ -38,6 +38,10 @@ class Constants {
         const val FILE_SORT_BY = "file_sort_by"
         const val FILE_SORT_ORDER = "file_sort_order"
 
+        const val HARD_PIN_SET = "HARD_PIN_SET"
+        const val HARD_PIN_NEEDED = "HARD_PIN_NEEDED"
+        const val HARD_PIN = "HARD_PIN"
+
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
             "png",

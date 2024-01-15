@@ -1,0 +1,3 @@
+* New and improved authentication
+* Ability to move or copy multiple files across folders
+* translations updated (some translations were done using ChatGPT, please reach out if they are incorrect)

@@ -8,6 +8,7 @@
         <exclude domain= "file"  path="string"/>
         <exclude domain= "database" path="string"/>
         <exclude domain= "sharedpref" path="string"/>
+        <exclude domain= "sharedpref" path="string"/>
         <exclude domain= "external" path="string"/>
         <exclude domain= "root" path="string"/>
     </cloud-backup>

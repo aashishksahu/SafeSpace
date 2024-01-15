@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -50,9 +51,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var folderRecyclerView: RecyclerView
     private lateinit var folderRecyclerViewAdapter: FolderRecyclerViewAdapter
-    private lateinit var deleteButton: MaterialButton
-    private lateinit var clearButton: MaterialButton
-    private lateinit var exportButton: MaterialButton
+    private lateinit var deleteButton: ImageButton
+    private lateinit var clearButton: ImageButton
+    private lateinit var exportButton: ImageButton
+    private lateinit var moveBulkButton: ImageButton
+    private lateinit var copyBulkButton: ImageButton
+    private var moveCopyBulkFrom = ""
     private var selectedItems = ArrayList<FileItem>()
     private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private lateinit var fileMoveCopyView: ConstraintLayout
@@ -102,6 +106,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         deleteButton = findViewById(R.id.deleteButton)
         clearButton = findViewById(R.id.clearButton)
         exportButton = findViewById(R.id.exportButton)
+        moveBulkButton = findViewById(R.id.moveBulkButton)
+        copyBulkButton = findViewById(R.id.copyBulkButton)
         fileMoveCopyView = findViewById(R.id.moveCopyFileView)
         fileMoveCopyName = findViewById(R.id.moveCopyFileName)
         fileMoveCopyOperation = findViewById(R.id.moveCopyFileOperation)
@@ -373,39 +379,87 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             exportItems()
         }
 
+        moveBulkButton.setOnClickListener {
+            moveFileBulk()
+        }
+
+        copyBulkButton.setOnClickListener {
+            copyFileBulk()
+        }
+
         fileMoveCopyButton.setOnClickListener {
+            var status = 0
 
-            val fileName = fileMoveCopyName.text.toString()
+            if (this.selectedItems.isNotEmpty()) {
 
-            ops.moveFileTo = ops.joinPath(
-                ops.getFilesDir(),
-                ops.getInternalPath(),
-                fileName
-            )
+                for (file in this.selectedItems) {
 
-            if (ops.moveFileFrom != null && ops.moveFileFrom != ops.moveFileTo) {
-                val status = if (fileMoveCopyButton.text == getString(R.string.move_file_title)) {
-                    ops.moveFile()
-                } else {
-                    ops.copyFile()
+                    ops.moveFileFrom =
+                        ops.joinPath(moveCopyBulkFrom, file.name)
+
+                    ops.moveFileTo = ops.joinPath(
+                        ops.getFilesDir(),
+                        ops.getInternalPath(),
+                        file.name
+                    )
+
+                    if (ops.moveFileFrom != null && ops.moveFileFrom != ops.moveFileTo) {
+                        val statusCode =
+                            if (fileMoveCopyButton.text == getString(R.string.move_file_title)) {
+                                ops.moveFile()
+                            } else {
+                                ops.copyFile()
+                            }
+
+                        if (statusCode == -1) {
+                            status = -1
+                        }
+                    }
                 }
 
-                if (status == -1) {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.move_copy_file_failure),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.move_copy_file_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
+            } else {
 
-                    updateRecyclerView()
+                val fileName = fileMoveCopyName.text.toString()
+
+                ops.moveFileTo = ops.joinPath(
+                    ops.getFilesDir(),
+                    ops.getInternalPath(),
+                    fileName
+                )
+
+                if (ops.moveFileFrom != null && ops.moveFileFrom != ops.moveFileTo) {
+                    val statusCode =
+                        if (fileMoveCopyButton.text == getString(R.string.move_file_title)) {
+                            ops.moveFile()
+                        } else {
+                            ops.copyFile()
+                        }
+
+                    if (statusCode == -1) {
+                        status = -1
+                    }
+
                 }
             }
+
+            if (status == -1) {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.move_copy_file_failure),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.move_copy_file_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            moveCopyBulkFrom = ""
+            clearBulkMoveCopy()
+
+            updateRecyclerView()
             fileMoveCopyView.visibility = View.GONE
 
         }
@@ -636,6 +690,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         var currentPath = ""
 
+        clearBulkMoveCopy()
+
         if (!ops.isRootDirectory()) {
             val (_, currentPathTemp) = ops.setGetPreviousAndCurrentPath()
             currentPath = currentPathTemp
@@ -829,6 +885,42 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     }
 
+    private fun moveFileBulk() {
+        moveCopyBulkFrom = ops.joinPath(ops.getFilesDir(), ops.getInternalPath())
+
+        if (this.selectedItems.isNotEmpty()) {
+            fileMoveCopyView.visibility = View.VISIBLE
+            fileMoveCopyName.text = getString(R.string.multi_move)
+            fileMoveCopyOperation.text = getString(R.string.move_title)
+            fileMoveCopyButton.text = getString(R.string.move_file_title)
+        } else {
+            moveCopyBulkFrom = ""
+        }
+
+    }
+
+    private fun copyFileBulk() {
+
+        moveCopyBulkFrom = ops.joinPath(ops.getFilesDir(), ops.getInternalPath())
+
+        if (this.selectedItems.isNotEmpty()) {
+            fileMoveCopyView.visibility = View.VISIBLE
+            fileMoveCopyName.text = getString(R.string.multi_copy)
+            fileMoveCopyOperation.text = getString(R.string.copy_title)
+            fileMoveCopyButton.text = getString(R.string.copy_file_title)
+        } else {
+            moveCopyBulkFrom = ""
+        }
+
+    }
+
+    private fun clearBulkMoveCopy() {
+        if (moveCopyBulkFrom == "") {
+            this.selectedItems.clear()
+            toggleFloatingButtonVisibility(false)
+        }
+    }
+
     private fun copyFile(file: FileItem) {
         ops.moveFileFrom =
             ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), file.name)
@@ -895,10 +987,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             deleteButton.visibility = View.VISIBLE
             clearButton.visibility = View.VISIBLE
             exportButton.visibility = View.VISIBLE
+            moveBulkButton.visibility = View.VISIBLE
+            copyBulkButton.visibility = View.VISIBLE
         } else {
             deleteButton.visibility = View.GONE
             clearButton.visibility = View.GONE
             exportButton.visibility = View.GONE
+            moveBulkButton.visibility = View.GONE
+            copyBulkButton.visibility = View.GONE
         }
 
     }
@@ -913,10 +1009,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         ops.setInternalPath(folderItem.name)
 
-        // clear selection on directory change and hide delete button
-        toggleFloatingButtonVisibility(false)
+        clearBulkMoveCopy()
 
-        this.selectedItems.clear()
         updateRecyclerView()
     }
 
@@ -944,5 +1038,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         popup.show()
 
     }
+
 
 }
