@@ -100,4 +100,7 @@
     <string name="pin_error5">错误的PIN</string>
     <string name="multi_move">移动所选文件</string>
     <string name="multi_copy">复制所选文件</string>
+    <string name="change_pin">更改PIN</string>
+    <string name="current_pin">当前PIN</string>
+    <string name="pin_lost_warning">重要提示：不要忘记您的PIN码。始终备份您的数据。</string>
 </resources>

@@ -2,7 +2,6 @@ package org.privacymatters.safespace
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.KeyEvent
 import android.widget.EditText
@@ -12,10 +11,9 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.lib.Constants
+import org.privacymatters.safespace.lib.EncPref
 import org.privacymatters.safespace.lib.RootCheck
 import org.privacymatters.safespace.lib.SetTheme
 import java.util.concurrent.Executor
@@ -42,19 +40,8 @@ class AuthActivity : AppCompatActivity() {
     private var confirmCounter = 0
     private var confirmPIN = -1
     private var isHardPinSet = false
-    private lateinit var encPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-
-        encPref = EncryptedSharedPreferences.create(
-            "EncPref",
-            masterKeyAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
 
         // load theme from preferences
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
@@ -66,7 +53,7 @@ class AuthActivity : AppCompatActivity() {
         )
 
         // check if app pin is set
-        isHardPinSet = encPref.getBoolean(Constants.HARD_PIN_SET, false)
+        isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
@@ -126,7 +113,10 @@ class AuthActivity : AppCompatActivity() {
     private fun authenticateUsingHardPin() {
 
         if (pinField.text.toString().isDigitsOnly() &&
-            Integer.parseInt(pinField.text.toString()) == encPref.getInt(Constants.HARD_PIN, -1)
+            Integer.parseInt(pinField.text.toString()) == EncPref.getInt(
+                Constants.HARD_PIN,
+                applicationContext
+            )
         ) {
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -165,10 +155,9 @@ class AuthActivity : AppCompatActivity() {
                     pinField.setText("")
                     pinField.hint = getString(R.string.set_pin_text)
                 } else {
-                    encPref.edit()
-                        .putInt(Constants.HARD_PIN, confirmPIN)
-                        .putBoolean(Constants.HARD_PIN_SET, true)
-                        .apply()
+
+                    EncPref.setInt(Constants.HARD_PIN, confirmPIN, applicationContext)
+                    EncPref.setBoolean(Constants.HARD_PIN_SET, true, applicationContext)
 
                     finish()
                     startActivity(intent)

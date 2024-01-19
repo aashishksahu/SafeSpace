@@ -35,6 +35,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/change_pin"
+        android:title="@string/change_pin"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/change_theme"
         android:title="@string/change_theme"
         app:showAsAction="never" />

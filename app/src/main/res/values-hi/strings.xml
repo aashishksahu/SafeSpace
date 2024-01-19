@@ -100,4 +100,7 @@
     <string name="pin_error5">गलत पिन</string>
     <string name="multi_move">चयनित फ़ाइलें मूव करें</string>
     <string name="multi_copy">चयनित फ़ाइलें कॉपी करें</string>
+    <string name="change_pin">पिन बदलें</string>
+    <string name="current_pin">वर्तमान पिन</string>
+    <string name="pin_lost_warning">चेतावनी: अपना पिन भूलना नहीं है। अपने डेटा का हमेशा बैकअप रखें।</string>
 </resources>

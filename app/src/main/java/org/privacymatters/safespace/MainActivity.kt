@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -19,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -29,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.lib.Constants
+import org.privacymatters.safespace.lib.EncPref
 import org.privacymatters.safespace.lib.FileItem
 import org.privacymatters.safespace.lib.FilesRecyclerViewAdapter
 import org.privacymatters.safespace.lib.FolderClickListener
@@ -353,6 +356,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     importBackupActivityResult.launch(intent)
                 }
 
+                R.id.change_pin -> {
+                    changePin(topAppBar.context)
+                }
+
                 R.id.change_theme -> {
                     changeTheme(topAppBar.context)
                 }
@@ -506,6 +513,53 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val alert = builder.create()
         alert.show()
 
+    }
+
+    private fun changePin(context: Context) {
+        val builder = MaterialAlertDialogBuilder(context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val changePinLayout = inflater.inflate(R.layout.change_pin, null)
+        val currentPinEditText =
+            changePinLayout.findViewById<EditText>(R.id.editTextCurrentPin)
+
+        builder.setTitle(getString(R.string.change_pin))
+            .setCancelable(true)
+            .setView(changePinLayout)
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+
+                if (currentPinEditText.text.toString().isDigitsOnly() &&
+                    Integer.parseInt(currentPinEditText.text.toString()) == EncPref.getInt(
+                        Constants.HARD_PIN,
+                        applicationContext
+                    )
+                ) {
+
+                    // clear pin from shared prefs and reset enrollment status
+                    EncPref.clearInt(Constants.HARD_PIN, applicationContext)
+                    EncPref.clearBoolean(Constants.HARD_PIN_SET, applicationContext)
+
+                    // restart application to set pin again
+                    finish()
+                    val intent = Intent(applicationContext, AuthActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+
+                } else {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.pin_error5),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun changeTheme(context: Context) {
