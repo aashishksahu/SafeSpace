@@ -121,6 +121,8 @@
     <string name="change_pin">Change PIN</string>
     <string name="current_pin">Current PIN</string>
     <string name="pin_lost_warning">IMPORTANT: DO NOT forget your PIN. Always keep a backup of your data.</string>
+    <string name="compress_folder">Compress</string>
+    <string name="extract_zip">Extract the Zip file</string>
 
 
 </resources>

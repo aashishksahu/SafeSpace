@@ -97,6 +97,9 @@ class FilesRecyclerViewAdapter(
         } else if (Utils.getFileType(fileItem.name) == Constants.DOCUMENT_TYPE) {
             holder.fileIcon.setImageResource(R.drawable.description_white_36dp)
 
+        } else if (Utils.getFileType(fileItem.name) == Constants.ZIP) {
+            holder.fileIcon.setImageResource(R.drawable.folder_zip_black_24dp)
+
         } else if (Utils.getFileType(fileItem.name) == Constants.PDF) {
             holder.fileIcon.setImageResource(R.drawable.pdf_icon)
 

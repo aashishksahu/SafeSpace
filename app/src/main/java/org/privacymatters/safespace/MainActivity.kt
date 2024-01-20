@@ -618,7 +618,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         var (files, folders) = ops.getContents(ops.getInternalPath())
 
         files = sortinator.sortFiles(files)
-//        folders = sortinator.sortFolders(folders)
 
         filesRecyclerViewAdapter.setData(
             files,
@@ -684,6 +683,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
                     loadDocument(filePath)
+                }
+
+                Constants.ZIP -> {
+                    extractZip(filePath)
                 }
 
                 else -> {
@@ -1084,6 +1087,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     deleteFolderPopup(folderItem, view.context)
                 }
 
+                R.id.compress_item-> {
+                    compressFolder(folderItem)
+                }
+
             }
 
             true
@@ -1093,5 +1100,51 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     }
 
+    private fun compressFolder(folderItem: FolderItem){
+        CoroutineScope(Dispatchers.IO).launch {
+            when (ops.compressFolder(folderItem)) {
+                0 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        updateRecyclerView()
+                    }
+                }
 
+                4 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        backupError(4)
+                    }
+                }
+
+                1 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        backupError(1)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun extractZip(filePath: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            when (ops.extractZip(filePath)) {
+                0 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        updateRecyclerView()
+                    }
+                }
+
+                4 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        backupError(4)
+                    }
+                }
+
+                1 -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        backupError(1)
+                    }
+                }
+            }
+        }
+    }
 }

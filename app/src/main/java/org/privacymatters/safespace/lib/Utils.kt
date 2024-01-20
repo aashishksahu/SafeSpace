@@ -35,6 +35,9 @@ class Utils {
                 Constants.XML -> {
                     Constants.XML
                 }
+                Constants.ZIP -> {
+                    Constants.ZIP
+                }
                 else -> Constants.OTHER_TYPE
             }
 

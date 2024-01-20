@@ -6,4 +6,7 @@
     <item
         android:id="@+id/delete_item"
         android:title="@string/context_menu_delete" />
+    <item
+        android:id="@+id/compress_item"
+        android:title="@string/compress_folder" />
 </menu>

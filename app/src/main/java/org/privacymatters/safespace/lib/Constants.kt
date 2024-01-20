@@ -9,6 +9,7 @@ class Constants {
         const val AUDIO_TYPE = "audio"
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
+
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
 
@@ -20,6 +21,8 @@ class Constants {
         const val TXT = "txt"
         const val JSON = "json"
         const val XML = "xml"
+        const val ZIP = "zip"
+
         const val ROOT = "root"
         const val APP_FIRST_RUN = "FIRST_RUN"
 
@@ -34,12 +37,10 @@ class Constants {
         const val DATE = "date"
         const val ASC = "asc"
         const val DESC = "desc"
-        const val FOLDER_SORT = "folder_sort"
         const val FILE_SORT_BY = "file_sort_by"
         const val FILE_SORT_ORDER = "file_sort_order"
 
         const val HARD_PIN_SET = "HARD_PIN_SET"
-        const val HARD_PIN_NEEDED = "HARD_PIN_NEEDED"
         const val HARD_PIN = "HARD_PIN"
 
         val IMAGE_EXTENSIONS = arrayOf(

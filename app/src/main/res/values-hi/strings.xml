@@ -103,4 +103,6 @@
     <string name="change_pin">पिन बदलें</string>
     <string name="current_pin">वर्तमान पिन</string>
     <string name="pin_lost_warning">चेतावनी: अपना पिन भूलना नहीं है। अपने डेटा का हमेशा बैकअप रखें।</string>
+    <string name="compress_folder">कम्प्रेस</string>
+    <string name="extract_zip">ZIP निकालें</string>
 </resources>

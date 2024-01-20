@@ -374,9 +374,9 @@ class Operations(private val application: Application) {
             ZipOutputStream(BufferedOutputStream(FileOutputStream(pfd!!.fileDescriptor))).use { zos ->
 
                 inputDirectory.walkTopDown().forEach { file ->
-                    val zipFileName =
-                        file.absolutePath.removePrefix(inputDirectory.absolutePath)
-                            .removePrefix("/")
+                    val zipFileName = Constants.ROOT +
+                            file.absolutePath.removePrefix(inputDirectory.absolutePath)
+
                     val entry = ZipEntry("$zipFileName${(if (file.isDirectory) "/" else "")}")
 
                     zos.putNextEntry(entry)
@@ -448,6 +448,8 @@ class Operations(private val application: Application) {
             zis.closeEntry()
             zis.close()
             sourceFileStream?.close()
+
+
         } catch (exc: IOException) {
             return if (exc.message.toString().lowercase().contains("no space left")) {
                 4
@@ -458,6 +460,36 @@ class Operations(private val application: Application) {
 //            sec.printStackTrace()
             return 1
         }
+
+        try {
+
+            // android 14 throws security exception if zip archive has files at / location
+            // therefore after extracting the zip files all files will be moved out of the first folder in the zip
+
+            val importDir = File(joinPath(getFilesDir(), Constants.ROOT))
+
+            importDir.walkTopDown().forEach { file ->
+
+                val sourcePath = file.absolutePath
+                val targetPath = file.absolutePath.replaceFirst("/root", "")
+
+                if (file.isDirectory) {
+                    File(targetPath).mkdirs()
+                } else {
+                    Files.move(
+                        Paths.get(sourcePath),
+                        Paths.get(targetPath),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
+                }
+            }
+        } catch (exc: Exception) {
+            exc.printStackTrace()
+            return 1
+        } finally {
+            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
+        }
+
         return 0
     }
 
@@ -483,6 +515,104 @@ class Operations(private val application: Application) {
 
         return filesArray
 
+    }
+
+    fun compressFolder(folder: FolderItem): Int {
+        try {
+            val zipName = joinPath(getFilesDir(), getInternalPath(), folder.name + ".zip")
+
+            val inputDirectory = File(joinPath(getFilesDir(), getInternalPath(), folder.name))
+
+            ZipOutputStream(BufferedOutputStream(FileOutputStream(zipName))).use { zos ->
+
+                inputDirectory.walkTopDown().forEach { file ->
+                    val zipFileName = folder.name +
+                            file.absolutePath.removePrefix(inputDirectory.absolutePath)
+
+                    val entry = ZipEntry("$zipFileName${(if (file.isDirectory) "/" else "")}")
+
+                    zos.putNextEntry(entry)
+
+                    if (file.isFile) {
+                        file.inputStream().use { fis -> fis.copyTo(zos) }
+                    }
+                }
+
+            }
+
+        } catch (e: IOException) {
+//            e.printStackTrace()
+            return if (e.message.toString().lowercase().contains("no space left")) {
+                4
+            } else {
+                1
+            }
+        }
+        return 0
+    }
+
+    @Throws(SecurityException::class)
+    fun extractZip(filePath: String): Int {
+        try {
+
+            val currentDir = joinPath(getFilesDir(), getInternalPath())
+
+            // byte array of source file
+            val sourceFileStream = FileInputStream(filePath)
+
+            val zis = ZipInputStream(sourceFileStream)
+
+            var zipEntry = zis.nextEntry
+
+            while (zipEntry != null) {
+                val newFile = File(currentDir, zipEntry.name)
+
+                // https://support.google.com/faqs/answer/9294009
+                val canonicalPath = newFile.canonicalPath
+
+                if (!canonicalPath.startsWith(getFilesDir())) {
+                    throw SecurityException()
+                } else {
+                    if (zipEntry.isDirectory) {
+                        if (!newFile.isDirectory && !newFile.mkdirs()) {
+                            throw IOException("Failed to create directory $newFile")
+                        }
+                    } else {
+                        // fix for Windows-created archives
+                        val parent = newFile.parentFile
+                        if (parent != null) {
+                            if (!parent.isDirectory && !parent.mkdirs()) {
+                                throw IOException("Failed to create directory $parent")
+                            }
+                        }
+
+                        // write file content
+                        val fos = FileOutputStream(newFile)
+
+                        zis.copyTo(fos)
+
+                        fos.close()
+                    }
+                }
+                zipEntry = zis.nextEntry
+            }
+
+            zis.closeEntry()
+            zis.close()
+            sourceFileStream.close()
+        } catch (exc: IOException) {
+            return if (exc.message.toString().lowercase().contains("no space left")) {
+                4
+            } else {
+                1
+            }
+        } catch (sec: SecurityException) {
+//            sec.printStackTrace()
+            return 1
+
+
+        }
+        return 0
     }
 
 }
