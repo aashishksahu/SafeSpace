@@ -118,6 +118,9 @@
     <string name="pin_error5">Incorrect PIN</string>
     <string name="multi_move">Move selected files</string>
     <string name="multi_copy">Copy selected files</string>
+    <string name="change_pin">Change PIN</string>
+    <string name="current_pin">Current PIN</string>
+    <string name="pin_lost_warning">IMPORTANT: DO NOT forget your PIN. Always keep a backup of your data.</string>
 
 
 </resources>

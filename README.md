@@ -37,7 +37,7 @@ If you'd like to show some love then please contribute by sharing it with your p
 Safe space is an app that creates a separate place on your android device to store valuable files. This storage location is not visible to other apps and is encrypted by the system by default. 
 
 Features:
-* Store files in a secure storage location that is not visible to other apps and is secured by device encryption and system authentication (Biometric and PIN/Pattern/Password). [More info here](https://developer.android.com/training/data-storage/app-specific)
+* Store files in a secure storage location that is not visible to other apps and is secured by device encryption and Biometric + app PIN authentication (Uses Android KeyStore and Encrypted Shared Preferences). [More info here](https://developer.android.com/training/data-storage/app-specific)
 * Click Pictures and shoot videos within the app
 * Open Images, Audio, Video, PDF documents and plain text documents
 * Create simple text notes without leaving the app
@@ -55,7 +55,7 @@ Storing files on android is a mess, you can see everything in a file manager app
 In simple terms, most apps have file access permissions that are often not required for that app to function (e.g. - MS Office apps) and can actually read sensitive information from your files (e.g. - Aadhar number, PAN number etc.). These apps may not necessarily access information beyond what is required but they have the possibility to do so, which means, that you and your privacy are at the mercy of such app developers.
 
 #### Has there ever been a security audit?
-There hasn't been a security audit yet but the app doesn't use any non-standard ways of security, this app uses device encryption and uses system authentication (biometrics or screen lock) as security measures.
+There hasn't been a security audit yet but the app doesn't use any non-standard ways of security, this app uses device encryption and uses system biometric authentication along with app pin as security measures.
 If you are a security researcher, it would be great if you can provide insights on my app.
 
 #### Why should I use this app, XYZ app is better?
