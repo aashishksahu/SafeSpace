@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.MediaPlayer
-import org.privacymatters.safespace.lib.Operations
-import org.privacymatters.safespace.lib.Utils
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.mediaManager.MediaPlayer
+import org.privacymatters.safespace.lib.fileManager.Operations
+import org.privacymatters.safespace.lib.fileManager.Utils
 import kotlin.math.abs
 
 class MediaActivity : AppCompatActivity() {
