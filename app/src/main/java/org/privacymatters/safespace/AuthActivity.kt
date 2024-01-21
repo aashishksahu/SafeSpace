@@ -12,10 +12,10 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.EncPref
-import org.privacymatters.safespace.lib.RootCheck
-import org.privacymatters.safespace.lib.SetTheme
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.utils.EncPref
+import org.privacymatters.safespace.lib.utils.RootCheck
+import org.privacymatters.safespace.lib.utils.SetTheme
 import java.util.concurrent.Executor
 
 /*

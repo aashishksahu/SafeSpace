@@ -30,18 +30,18 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.EncPref
-import org.privacymatters.safespace.lib.FileItem
-import org.privacymatters.safespace.lib.FilesRecyclerViewAdapter
-import org.privacymatters.safespace.lib.FolderClickListener
-import org.privacymatters.safespace.lib.FolderItem
-import org.privacymatters.safespace.lib.FolderRecyclerViewAdapter
-import org.privacymatters.safespace.lib.ItemClickListener
-import org.privacymatters.safespace.lib.Operations
-import org.privacymatters.safespace.lib.SetTheme
-import org.privacymatters.safespace.lib.Sortinator
-import org.privacymatters.safespace.lib.Utils
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.utils.EncPref
+import org.privacymatters.safespace.lib.fileManager.FileItem
+import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
+import org.privacymatters.safespace.lib.recyclerView.FolderClickListener
+import org.privacymatters.safespace.lib.fileManager.FolderItem
+import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
+import org.privacymatters.safespace.lib.recyclerView.ItemClickListener
+import org.privacymatters.safespace.lib.fileManager.Operations
+import org.privacymatters.safespace.lib.utils.SetTheme
+import org.privacymatters.safespace.lib.fileManager.Sortinator
+import org.privacymatters.safespace.lib.fileManager.Utils
 
 
 class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {

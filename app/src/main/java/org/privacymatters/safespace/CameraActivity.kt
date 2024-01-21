@@ -29,9 +29,9 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
-import org.privacymatters.safespace.lib.CameraViewModel
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.Operations
+import org.privacymatters.safespace.lib.mediaManager.CameraViewModel
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.fileManager.Operations
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
