@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.utils
 
 class Constants {
     companion object {
@@ -45,6 +45,7 @@ class Constants {
 
         val IMAGE_EXTENSIONS = arrayOf(
             "jpg",
+            "jpeg",
             "png",
             "gif",
             "webp",
@@ -52,7 +53,6 @@ class Constants {
             "psd",
             "raw",
             "bmp",
-            "svg",
             "heif"
         )
 

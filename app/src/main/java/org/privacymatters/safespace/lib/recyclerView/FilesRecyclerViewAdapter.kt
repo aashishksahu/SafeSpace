@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.recyclerView
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.fileManager.FileItem
+import org.privacymatters.safespace.lib.fileManager.Operations
+import org.privacymatters.safespace.lib.fileManager.Utils
+import org.privacymatters.safespace.lib.utils.Constants
 
 
 class FilesRecyclerViewAdapter(

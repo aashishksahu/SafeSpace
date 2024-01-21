@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.mediaManager
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

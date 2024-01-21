@@ -1,10 +1,11 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.fileManager
 
 import android.app.Application
 import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
+import org.privacymatters.safespace.lib.utils.Constants
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream

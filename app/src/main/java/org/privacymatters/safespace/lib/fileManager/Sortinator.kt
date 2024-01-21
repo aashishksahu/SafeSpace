@@ -1,9 +1,10 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.fileManager
 
 import android.content.SharedPreferences
 import android.view.View
 import android.widget.RadioGroup
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.utils.Constants
 
 class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
 
@@ -65,7 +66,7 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
     }
 
     private fun fileSortBySelector(checkedId: Int?) {
-        if (checkedId != null){
+        if (checkedId != null) {
             fileSortBy = when (checkedId) {
                 R.id.sortByName -> Constants.NAME
                 R.id.sortBySize -> Constants.SIZE

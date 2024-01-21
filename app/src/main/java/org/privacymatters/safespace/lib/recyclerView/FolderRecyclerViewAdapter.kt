@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.recyclerView
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.fileManager.FolderItem
 
 class FolderRecyclerViewAdapter(
     private val folderClickListener: FolderClickListener,
@@ -27,7 +28,7 @@ class FolderRecyclerViewAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): FolderRecyclerViewAdapter.ViewHolder {
+    ): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         // Inflate the custom layout
         val fileView = inflater.inflate(R.layout.folder_view, parent, false)

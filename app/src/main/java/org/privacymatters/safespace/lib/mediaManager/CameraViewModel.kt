@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.mediaManager
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.lib.utils
 
 import android.content.Context
 import android.content.SharedPreferences
