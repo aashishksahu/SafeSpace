@@ -11,9 +11,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.MediaPlayer
-import org.privacymatters.safespace.lib.Utils
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.mediaManager.MediaPlayer
+import org.privacymatters.safespace.lib.fileManager.Utils
 
 class MediaFragment(private val mediaPath: String) : Fragment() {
 

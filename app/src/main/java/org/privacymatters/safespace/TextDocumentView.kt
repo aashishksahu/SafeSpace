@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.SetTheme
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.utils.SetTheme
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException

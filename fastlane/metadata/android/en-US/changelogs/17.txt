@@ -1,0 +1,2 @@
+* Added option to enable or disable biometric unlock
+* Moved actions to an easy to find button

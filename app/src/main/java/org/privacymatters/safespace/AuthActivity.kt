@@ -12,10 +12,11 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.EncPref
-import org.privacymatters.safespace.lib.RootCheck
-import org.privacymatters.safespace.lib.SetTheme
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.utils.EncPref
+import org.privacymatters.safespace.lib.utils.RootCheck
+import org.privacymatters.safespace.lib.utils.SetTheme
+import org.privacymatters.safespace.main.MainActivity
 import java.util.concurrent.Executor
 
 /*
@@ -45,6 +46,10 @@ class AuthActivity : AppCompatActivity() {
 
         // load theme from preferences
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+
+        if (!sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
+            biometricPossible = false
+        }
 
         SetTheme.setTheme(
             delegate,
@@ -82,7 +87,7 @@ class AuthActivity : AppCompatActivity() {
                 }
 
                 BiometricManager.BIOMETRIC_SUCCESS -> {
-                    if (isHardPinSet) initiateBiometricAuthentication()
+                    if (isHardPinSet && biometricPossible) initiateBiometricAuthentication()
                 }
             }
 

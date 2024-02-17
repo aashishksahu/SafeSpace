@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/camera"
-        android:icon="@drawable/photo_camera_black_24dp"
-        android:title="@string/open_camera"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction"/>
-    <item
-        android:id="@+id/import_files"
-        android:icon="@drawable/add_fill0_wght400_grad0_opsz24"
-        android:title="@string/import_files"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/create_dir"
-        android:icon="@drawable/baseline_create_new_folder_24"
-        android:title="@string/create_folder"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/create_txt"
-        android:title="@string/create_txt_menu"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/export_backup"
@@ -37,6 +15,11 @@
     <item
         android:id="@+id/change_pin"
         android:title="@string/change_pin"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/toggle_biometric"
+        android:title="@string/biometric_title"
         app:showAsAction="never" />
 
     <item

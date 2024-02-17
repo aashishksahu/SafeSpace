@@ -16,8 +16,8 @@ android {
         
         minSdk 29
         targetSdk 34
-        versionCode 15
-        versionName "1.4.1"
+        versionCode 17
+        versionName "1.4.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,9 +45,9 @@ dependencies {
     implementation "androidx.security:security-crypto:1.0.0"
 
 //  For Audio/Video
-    implementation 'androidx.media3:media3-exoplayer:1.2.0'
-    implementation 'androidx.media3:media3-ui:1.2.0'
-    implementation 'androidx.media3:media3-common:1.2.0'
+    implementation 'androidx.media3:media3-exoplayer:1.2.1'
+    implementation 'androidx.media3:media3-ui:1.2.1'
+    implementation 'androidx.media3:media3-common:1.2.1'
 
 //  For Pictures
     implementation 'com.github.bumptech.glide:glide:4.15.1'

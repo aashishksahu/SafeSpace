@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.lib.Constants
-import org.privacymatters.safespace.lib.PdfAdapter
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.mediaManager.PdfAdapter
 import java.io.File
 
 
