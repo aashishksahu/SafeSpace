@@ -1,2 +1,4 @@
+* Compress folders to zip
+* Extract Zip files
 * Added option to enable or disable biometric unlock
 * Moved actions to an easy to find button
