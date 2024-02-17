@@ -25,6 +25,7 @@ class Constants {
 
         const val ROOT = "root"
         const val APP_FIRST_RUN = "FIRST_RUN"
+        const val USE_BIOMETRIC = "USE_BIOMETRIC"
 
         const val FILE_EXIST = "FILE_EXIST"
 

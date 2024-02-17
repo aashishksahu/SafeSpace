@@ -123,7 +123,8 @@
     <string name="pin_lost_warning">IMPORTANT: DO NOT forget your PIN. Always keep a backup of your data.</string>
     <string name="compress_folder">Compress</string>
     <string name="extract_zip">Extract the Zip file</string>
-    <string name="toggle_biometric">Biometrics</string>
+    <string name="biometric_toggle">Unlock Using Biometrics</string>
+    <string name="biometric_title">Biometric Unlock</string>
 
 
 </resources>

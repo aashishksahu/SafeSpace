@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
@@ -20,7 +19,7 @@
 
     <item
         android:id="@+id/toggle_biometric"
-        android:title="@string/change_pin"
+        android:title="@string/biometric_title"
         app:showAsAction="never" />
 
     <item

@@ -34,11 +34,10 @@ class Actions(
     private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private val ops: Operations = Operations(mainActivity.application)
     private var importList: ArrayList<Uri> = ArrayList()
-    private val fabArea: LinearLayout
+    private val fabArea: LinearLayout = mainActivity.findViewById(R.id.fabArea)
 
     init {
 
-        fabArea = mainActivity.findViewById(R.id.fabArea)
         fabArea.visibility = View.GONE
 
         fabArea.setOnClickListener {

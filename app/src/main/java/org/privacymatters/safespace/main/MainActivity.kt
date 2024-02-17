@@ -27,6 +27,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -125,7 +126,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
         topAppBar = findViewById(R.id.topAppBar)
 
-
         val extendedFab = findViewById<ExtendedFloatingActionButton>(R.id.extended_fab)
         val cameraFab = findViewById<FloatingActionButton>(R.id.camera_fab)
         val importFilesFab = findViewById<FloatingActionButton>(R.id.import_fab)
@@ -139,7 +139,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             createNoteFab,
             this
         )
-
 
         // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
@@ -301,7 +300,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
 
                 R.id.toggle_biometric -> {
-                    TODO("Add dialog to toggle biometrics")
+                    biometricTogglePopup(topAppBar.context)
                 }
 
                 R.id.change_theme -> {
@@ -894,7 +893,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
 
-
     private fun exportItems() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
@@ -1010,6 +1008,36 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
             }
         }
+    }
+
+
+    private fun biometricTogglePopup(context: Context) {
+        val builder = MaterialAlertDialogBuilder(context)
+
+        val biometricToggleLayout = layoutInflater.inflate(R.layout.biometrics_toggle, null)
+        val biometricSwitch = biometricToggleLayout.findViewById<MaterialSwitch>(R.id.biometric_switch)
+
+        if (sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
+            biometricSwitch.isChecked = true
+        }
+
+        biometricSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            buttonView.isChecked = isChecked
+
+            with(sharedPref.edit()) {
+                putBoolean(Constants.USE_BIOMETRIC, isChecked)
+                apply()
+            }
+
+        }
+        builder.setTitle(getString(R.string.biometric_title))
+            .setCancelable(true)
+            .setView(biometricToggleLayout)
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
     }
 
 }

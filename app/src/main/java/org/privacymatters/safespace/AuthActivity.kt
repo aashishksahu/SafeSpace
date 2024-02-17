@@ -47,6 +47,10 @@ class AuthActivity : AppCompatActivity() {
         // load theme from preferences
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
+        if (!sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
+            biometricPossible = false
+        }
+
         SetTheme.setTheme(
             delegate,
             applicationContext,
@@ -83,7 +87,7 @@ class AuthActivity : AppCompatActivity() {
                 }
 
                 BiometricManager.BIOMETRIC_SUCCESS -> {
-                    if (isHardPinSet) initiateBiometricAuthentication()
+                    if (isHardPinSet && biometricPossible) initiateBiometricAuthentication()
                 }
             }
 
