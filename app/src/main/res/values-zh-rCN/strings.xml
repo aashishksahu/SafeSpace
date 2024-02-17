@@ -105,4 +105,5 @@
     <string name="pin_lost_warning">重要提示：不要忘记您的PIN码。始终备份您的数据。</string>
     <string name="compress_folder">压缩</string>
     <string name="extract_zip">解压缩ZIP</string>
+    <string name="toggle_biometric">生物测定学</string>
 </resources>

@@ -1,9 +1,8 @@
-package org.privacymatters.safespace
+package org.privacymatters.safespace.main
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -26,10 +25,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.privacymatters.safespace.AboutActivity
+import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.MediaActivity
+import org.privacymatters.safespace.PDFView
+import org.privacymatters.safespace.R
+import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.fileManager.FileItem
@@ -49,7 +56,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var ops: Operations
 
     private lateinit var nothingHereText: TextView
-    private var importList: ArrayList<Uri> = ArrayList()
     private lateinit var filesRecyclerView: RecyclerView
     private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
     private lateinit var folderRecyclerView: RecyclerView
@@ -70,6 +76,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
     private lateinit var sortinator: Sortinator
+    private lateinit var actions: Actions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
@@ -119,6 +126,21 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         topAppBar = findViewById(R.id.topAppBar)
 
 
+        val extendedFab = findViewById<ExtendedFloatingActionButton>(R.id.extended_fab)
+        val cameraFab = findViewById<FloatingActionButton>(R.id.camera_fab)
+        val importFilesFab = findViewById<FloatingActionButton>(R.id.import_fab)
+        val createDirFab = findViewById<FloatingActionButton>(R.id.create_dir_fab)
+        val createNoteFab = findViewById<FloatingActionButton>(R.id.note_fab)
+        actions = Actions(
+            extendedFab,
+            cameraFab,
+            importFilesFab,
+            createDirFab,
+            createNoteFab,
+            this
+        )
+
+
         // initialize at first run of app. Sets the root directory
         if (!sharedPref.getBoolean(Constants.APP_FIRST_RUN, false)) {
             if (ops.initRootDir() == 1) {
@@ -144,69 +166,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         fileMoveCopyView.visibility = View.GONE
         fileMoveCopyName.isSelected = true
-
-        // File picker result
-        val selectFilesActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-                importList.clear()
-
-                if (result.resultCode == RESULT_OK) {
-
-                    val data: Intent? = result.data
-
-                    //If multiple files selected
-                    if (data?.clipData != null) {
-                        val count = data.clipData?.itemCount ?: 0
-
-                        for (i in 0 until count) {
-                            importList.add(data.clipData?.getItemAt(i)?.uri!!)
-                        }
-                    }
-
-                    //If single file selected
-                    else if (data?.data != null) {
-                        importList.add(data.data!!)
-                    }
-
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.import_files_progress),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    for (uri in importList) {
-
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val importResult = ops.importFile(
-                                uri,
-                                ops.getInternalPath()
-                            )
-
-                            when (importResult) {
-                                // 1: success, -1: failure
-                                1 -> {
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        updateRecyclerView()
-                                    }
-                                }
-
-                                -1 -> {
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            getString(R.string.import_files_error),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-            }
 
         // Directory picker result
         selectExportDirActivityResult =
@@ -325,25 +284,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
-                R.id.camera -> {
-                    val intent = Intent(this, CameraActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.create_dir -> {
-                    createDirPopup(topAppBar.context)
-                }
-
-                R.id.import_files -> {
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                    intent.type = "*/*"
-                    selectFilesActivityResult.launch(intent)
-                }
-
-                R.id.create_txt -> {
-                    createTextNote(topAppBar.context)
-                }
 
                 R.id.export_backup -> {
                     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
@@ -358,6 +298,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 R.id.change_pin -> {
                     changePin(topAppBar.context)
+                }
+
+                R.id.toggle_biometric -> {
+                    TODO("Add dialog to toggle biometrics")
                 }
 
                 R.id.change_theme -> {
@@ -613,7 +557,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         updateRecyclerView()
     }
 
-    private fun updateRecyclerView() {
+    fun updateRecyclerView() {
         // display contents of the navigated path
         var (files, folders) = ops.getContents(ops.getInternalPath())
 
@@ -625,46 +569,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         )
 
         folderRecyclerViewAdapter.setData(folders)
-    }
-
-    private fun createDirPopup(context: Context) {
-
-        val builder = MaterialAlertDialogBuilder(context)
-
-        val inflater: LayoutInflater = layoutInflater
-        val createFolderLayout = inflater.inflate(R.layout.create_dir, null)
-        val folderNameTextView =
-            createFolderLayout.findViewById<TextInputLayout>(R.id.createDirTextLayout)
-
-        builder.setTitle(getString(R.string.create_folder))
-            .setCancelable(true)
-            .setView(createFolderLayout)
-            .setPositiveButton(getString(R.string.create)) { _, _ ->
-
-                if (!folderNamePattern.containsMatchIn(folderNameTextView.editText?.text.toString())) {
-
-                    if (ops.createDir(
-                            ops.getInternalPath(),
-                            folderNameTextView.editText?.text.toString()
-                        ) == 1
-                    ) {
-                        updateRecyclerView()
-                    }
-                } else {
-
-                    Toast.makeText(
-                        context,
-                        getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                // Dismiss the dialog
-                dialog.dismiss()
-            }
-        val alert = builder.create()
-        alert.show()
     }
 
     // item single tap
@@ -702,6 +606,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     }
 
     override fun onLongClick(data: FileItem, view: View) {
+
         val popup = PopupMenu(this, view)
 
         popup.inflate(R.menu.files_context_menu)
@@ -908,7 +813,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         startActivity(mediaViewIntent)
     }
 
-    private fun loadDocument(filePath: String) {
+    fun loadDocument(filePath: String) {
 
         toggleFloatingButtonVisibility(false)
 
@@ -988,50 +893,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         fileMoveCopyButton.text = getString(R.string.copy_file_title)
     }
 
-    private fun createTextNote(viewContext: Context) {
 
-        val builder = MaterialAlertDialogBuilder(viewContext)
-
-        val inflater: LayoutInflater = layoutInflater
-        val textNoteNameLayout = inflater.inflate(R.layout.text_note_name_layout, null)
-        val noteNameTextView =
-            textNoteNameLayout.findViewById<TextInputLayout>(R.id.newNoteTextLayout)
-
-        builder.setTitle(getString(R.string.new_text_note))
-            .setCancelable(true)
-            .setView(textNoteNameLayout)
-            .setPositiveButton(getString(R.string.create)) { _, _ ->
-
-                if (!folderNamePattern.containsMatchIn(noteNameTextView.editText?.text.toString())) {
-                    val result = ops.createTextNote(
-                        noteNameTextView.editText!!.text.toString() + "." + Constants.TXT
-                    )
-
-                    if (result == Constants.FILE_EXIST) {
-                        Toast.makeText(
-                            viewContext,
-                            getString(R.string.file_exists_error),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        loadDocument(result)
-                        updateRecyclerView()
-                    }
-                } else {
-                    Toast.makeText(
-                        viewContext,
-                        getString(R.string.create_folder_invalid_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                // Dismiss the dialog
-                dialog.dismiss()
-            }
-        val alert = builder.create()
-        alert.show()
-    }
 
     private fun exportItems() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
@@ -1046,12 +908,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             exportButton.visibility = View.VISIBLE
             moveBulkButton.visibility = View.VISIBLE
             copyBulkButton.visibility = View.VISIBLE
+            actions.extendedFabVisible(false)
         } else {
             deleteButton.visibility = View.GONE
             clearButton.visibility = View.GONE
             exportButton.visibility = View.GONE
             moveBulkButton.visibility = View.GONE
             copyBulkButton.visibility = View.GONE
+            actions.extendedFabVisible(true)
         }
 
     }
@@ -1087,7 +951,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     deleteFolderPopup(folderItem, view.context)
                 }
 
-                R.id.compress_item-> {
+                R.id.compress_item -> {
                     compressFolder(folderItem)
                 }
 
@@ -1100,7 +964,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
     }
 
-    private fun compressFolder(folderItem: FolderItem){
+    private fun compressFolder(folderItem: FolderItem) {
         CoroutineScope(Dispatchers.IO).launch {
             when (ops.compressFolder(folderItem)) {
                 0 -> {
@@ -1124,7 +988,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         }
     }
 
-    private fun extractZip(filePath: String){
+    private fun extractZip(filePath: String) {
         CoroutineScope(Dispatchers.IO).launch {
             when (ops.extractZip(filePath)) {
                 0 -> {
@@ -1147,4 +1011,5 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         }
     }
+
 }

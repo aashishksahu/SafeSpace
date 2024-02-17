@@ -16,6 +16,7 @@ import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.utils.RootCheck
 import org.privacymatters.safespace.lib.utils.SetTheme
+import org.privacymatters.safespace.main.MainActivity
 import java.util.concurrent.Executor
 
 /*
