@@ -117,11 +117,6 @@ class AuthActivity : AppCompatActivity() {
 
     private fun authenticateUsingHardPin() {
 
-        val x = EncPref.getString(
-            Constants.HARD_PIN,
-            applicationContext
-        )
-
         if (pinField.text.toString().isDigitsOnly() &&
             pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
