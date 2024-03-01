@@ -28,20 +28,6 @@ class EncPref {
             return encPref!!.getBoolean(pref, false)
         }
 
-        fun getInt(pref: String, applicationContext: Context): Int {
-            init(applicationContext)
-            return encPref!!.getInt(pref, -1)
-        }
-
-
-        fun setInt(pref: String, value: Int, applicationContext: Context) {
-            init(applicationContext)
-
-            encPref!!.edit()
-                .putInt(pref, value)
-                .apply()
-        }
-
         fun setBoolean(pref: String, value: Boolean, applicationContext: Context) {
             init(applicationContext)
 
@@ -51,11 +37,26 @@ class EncPref {
 
         }
 
-        fun clearInt(pref: String, applicationContext: Context) {
+        fun getString(pref: String, applicationContext: Context): String? {
+            init(applicationContext)
+            return encPref!!.getString(pref, "-1")
+        }
+
+
+        fun setString(pref: String, value: String, applicationContext: Context) {
             init(applicationContext)
 
             encPref!!.edit()
-                .putInt(pref, -1)
+                .putString(pref, value)
+                .apply()
+        }
+
+
+        fun clearString(pref: String, applicationContext: Context) {
+            init(applicationContext)
+
+            encPref!!.edit()
+                .putString(pref, "-1")
                 .apply()
         }
 

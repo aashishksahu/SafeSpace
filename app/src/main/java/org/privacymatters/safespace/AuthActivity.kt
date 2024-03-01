@@ -39,7 +39,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var authTouch: ImageButton
     private lateinit var pinField: EditText
     private var confirmCounter = 0
-    private var confirmPIN = -1
+    private var confirmPIN = "-1"
     private var isHardPinSet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,8 +117,13 @@ class AuthActivity : AppCompatActivity() {
 
     private fun authenticateUsingHardPin() {
 
+        val x = EncPref.getString(
+            Constants.HARD_PIN,
+            applicationContext
+        )
+
         if (pinField.text.toString().isDigitsOnly() &&
-            Integer.parseInt(pinField.text.toString()) == EncPref.getInt(
+            pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
                 applicationContext
             )
@@ -147,7 +152,7 @@ class AuthActivity : AppCompatActivity() {
                 if (pinField.text.toString().isDigitsOnly()) {
                     confirmCounter += 1
                     pinField.hint = getString(R.string.confirm_pin_text)
-                    confirmPIN = Integer.parseInt(pinField.text.toString())
+                    confirmPIN = pinField.text.toString()
                     pinField.error = null
                     pinField.setText("")
                 } else {
@@ -155,13 +160,13 @@ class AuthActivity : AppCompatActivity() {
                 }
 
             } else if (confirmCounter == 1) {
-                if (confirmPIN.toString() != pinField.text.toString()) {
+                if (confirmPIN != pinField.text.toString()) {
                     pinField.error = getString(R.string.pin_error4)
                     pinField.setText("")
                     pinField.hint = getString(R.string.set_pin_text)
                 } else {
 
-                    EncPref.setInt(Constants.HARD_PIN, confirmPIN, applicationContext)
+                    EncPref.setString(Constants.HARD_PIN, confirmPIN, applicationContext)
                     EncPref.setBoolean(Constants.HARD_PIN_SET, true, applicationContext)
 
                     finish()
@@ -169,7 +174,7 @@ class AuthActivity : AppCompatActivity() {
 
                 }
                 confirmCounter = 0
-                confirmPIN = -1
+                confirmPIN = "-1"
             }
         }
     }
