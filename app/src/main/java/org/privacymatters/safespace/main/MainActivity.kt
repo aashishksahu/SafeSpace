@@ -472,14 +472,14 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
                 if (currentPinEditText.text.toString().isDigitsOnly() &&
-                    Integer.parseInt(currentPinEditText.text.toString()) == EncPref.getInt(
+                    currentPinEditText.text.toString() == EncPref.getString(
                         Constants.HARD_PIN,
                         applicationContext
                     )
                 ) {
 
                     // clear pin from shared prefs and reset enrollment status
-                    EncPref.clearInt(Constants.HARD_PIN, applicationContext)
+                    EncPref.clearString(Constants.HARD_PIN, applicationContext)
                     EncPref.clearBoolean(Constants.HARD_PIN_SET, applicationContext)
 
                     // restart application to set pin again
@@ -1015,7 +1015,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val builder = MaterialAlertDialogBuilder(context)
 
         val biometricToggleLayout = layoutInflater.inflate(R.layout.biometrics_toggle, null)
-        val biometricSwitch = biometricToggleLayout.findViewById<MaterialSwitch>(R.id.biometric_switch)
+        val biometricSwitch =
+            biometricToggleLayout.findViewById<MaterialSwitch>(R.id.biometric_switch)
 
         if (sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
             biometricSwitch.isChecked = true
