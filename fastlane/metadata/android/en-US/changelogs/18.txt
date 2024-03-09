@@ -1,0 +1,2 @@
+* Fixed file sorting where file names were numerical
+* Fixed PIN issues where PIN starts with 0
