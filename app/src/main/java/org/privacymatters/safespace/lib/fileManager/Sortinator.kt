@@ -20,9 +20,9 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
         this.ops = ops
         this.sharedPref = sharedPref
 
-        fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, "") // Name, Date or Size
+        fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, Constants.NAME) // Name, Date or Size
         fileSortOrder =
-            sharedPref.getString(Constants.FILE_SORT_ORDER, "") // Ascending or Descending
+            sharedPref.getString(Constants.FILE_SORT_ORDER, Constants.ASC) // Ascending or Descending
 
     }
 
