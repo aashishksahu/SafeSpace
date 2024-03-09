@@ -21,6 +21,15 @@ class EncPref {
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
                 )
             }
+
+            // migrate to new pin
+            val oldPin = encPref!!.getInt(Constants.HARD_PIN, -1)
+
+            if (oldPin != -1) {
+                encPref!!.edit().putString(Constants.HARD_PIN, oldPin.toString()).apply()
+            }
+
+
         }
 
         fun getBoolean(pref: String, applicationContext: Context): Boolean {
