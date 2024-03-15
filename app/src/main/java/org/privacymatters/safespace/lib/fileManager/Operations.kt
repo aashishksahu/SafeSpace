@@ -7,7 +7,6 @@ import android.os.FileUtils
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.lib.utils.Constants
 import java.io.BufferedOutputStream
@@ -84,22 +83,23 @@ class Operations(private val application: Application) {
     ) {
         val uniqueNotificationId = sourceFileName.hashCode()
         val fileTransferNotification = FileTransferNotification(context, uniqueNotificationId)
-        FileHelper.copyFileWithProgress(sourceFileStream, targetFileStream)
-            .catch { exception ->
-                exception.printStackTrace()
-                fileTransferNotification.showFailureNotification(sourceFileName, exception)
-            }
-            .collect { progress ->
-                fileTransferNotification.showProgressNotification(
-                    fileName = sourceFileName,
-                    progress = progress,
-                    type = type
-                )
-            }
-        fileTransferNotification.showSuccessNotification(
-            fileName = sourceFileName,
-            type = type
-        )
+        try {
+            FileHelper.copyFileWithProgress(sourceFileStream, targetFileStream)
+                .collect { progress ->
+                    fileTransferNotification.showProgressNotification(
+                        fileName = sourceFileName,
+                        progress = progress,
+                        type = type
+                    )
+                }
+            fileTransferNotification.showSuccessNotification(
+                fileName = sourceFileName,
+                type = type
+            )
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            fileTransferNotification.showFailureNotification(sourceFileName, exception)
+        }
     }
 
     suspend fun importFile(uri: Uri, internalPath: String): Int =
