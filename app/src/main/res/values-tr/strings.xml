@@ -102,7 +102,7 @@
     <string name="sort_by_title_folder">Klasörleri Ada Göre Sırala</string>
     <string name="sort_by_order">Sipariş</string>
     <string name="pin_text_box">PIN kodunu girin</string>
-    <string name="set_pin_text">PIN'İ AYARLA</string>
+    <string name="set_pin_text">PIN\'İ AYARLA</string>
     <string name="confirm_pin_text">PIN KODUNU ONAYLAYIN</string>
     <string name="pin_error">PIN KODU boş olamaz</string>
     <string name="pin_error2">PIN KODU en az 4 basamaklı olmalıdır</string>

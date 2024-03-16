@@ -353,10 +353,7 @@ class Operations(private val application: Application) {
     }
 
     fun isPreviousRootDirectory(): Boolean {
-        if (internalPath.size == 0) {
-            return true
-        }
-        return false
+        return internalPath.size == 0
     }
 
     fun exportBackup(exportUri: Uri): Int {

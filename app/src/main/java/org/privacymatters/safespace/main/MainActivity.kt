@@ -892,7 +892,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         fileMoveCopyButton.text = getString(R.string.copy_file_title)
     }
 
-
     private fun exportItems() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
