@@ -1,0 +1,2 @@
+Fixed app crash while sorting
+added file transfer progress notification
