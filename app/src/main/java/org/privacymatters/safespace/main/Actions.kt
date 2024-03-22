@@ -120,8 +120,7 @@ class Actions(
 
                         CoroutineScope(Dispatchers.IO).launch {
                             val importResult = ops.importFile(
-                                uri,
-                                ops.getInternalPath()
+                                uri, ops.getInternalPath(),
                             )
 
                             when (importResult) {

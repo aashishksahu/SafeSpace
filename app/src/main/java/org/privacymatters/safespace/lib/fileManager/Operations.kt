@@ -1,16 +1,20 @@
 package org.privacymatters.safespace.lib.fileManager
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.lib.utils.Constants
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -70,52 +74,82 @@ class Operations(private val application: Application) {
 
     }
 
-    fun importFile(uri: Uri, internalPath: String): Int {
-
+    private suspend fun copyFileWithProgressNotifications(
+        sourceFileName: String,
+        sourceFileStream: InputStream,
+        targetFileStream: FileOutputStream,
+        type: FileTransferNotification.NotificationType,
+        context: Context
+    ) {
+        val uniqueNotificationId = sourceFileName.hashCode()
+        val fileTransferNotification = FileTransferNotification(context, uniqueNotificationId)
         try {
-
-            // create directory if not exists
-            // createDir(internalPath, "")
-
-            var sourceFileName = ""
-
-            val cursor = application.contentResolver.query(
-                uri, null, null, null, null, null
-            )
-
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    val colIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                    if (colIndex >= 0) {
-                        sourceFileName = it.getString(colIndex)
-                    }
+            FileHelper.copyFileWithProgress(sourceFileStream, targetFileStream)
+                .collect { progress ->
+                    fileTransferNotification.showProgressNotification(
+                        fileName = sourceFileName,
+                        progress = progress,
+                        type = type
+                    )
                 }
-            }
+            fileTransferNotification.showSuccessNotification(
+                fileName = sourceFileName,
+                type = type
+            )
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            fileTransferNotification.showFailureNotification(sourceFileName, exception)
+        }
+    }
 
-            // byte array of source file
-            val sourceFileStream = application.contentResolver.openInputStream(uri)
-
-            // output stream for target file
-            val targetFileStream =
-                FileOutputStream(
-                    File(joinPath(getFilesDir(), internalPath, sourceFileName))
+    suspend fun importFile(uri: Uri, internalPath: String): Int =
+        withContext(Dispatchers.IO) {
+            try {
+                // create directory if not exists
+                // createDir(internalPath, "")
+                var sourceFileName = ""
+                val cursor = application.contentResolver.query(
+                    uri, null, null, null, null, null
                 )
 
-            if (sourceFileStream != null) {
-                FileUtils.copy(sourceFileStream, targetFileStream)
-            } else {
-                return -1
+                cursor?.use {
+                    if (it.moveToFirst()) {
+                        val colIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        if (colIndex >= 0) {
+                            sourceFileName = it.getString(colIndex)
+                        }
+                    }
+                }
+
+                // byte array of source file
+                val sourceFileStream = application.contentResolver.openInputStream(uri)
+
+                // output stream for target file
+                val targetFileStream =
+                    FileOutputStream(
+                        File(joinPath(getFilesDir(), internalPath, sourceFileName))
+                    )
+
+                if (sourceFileStream != null) {
+                    copyFileWithProgressNotifications(
+                        sourceFileName, sourceFileStream,
+                        targetFileStream,
+                        FileTransferNotification.NotificationType.Import,
+                        application.applicationContext,
+                    )
+                } else {
+                    return@withContext -1
+                }
+
+                sourceFileStream.close()
+                targetFileStream.close()
+
+            } catch (e: Exception) {
+                return@withContext -1
             }
 
-            sourceFileStream.close()
-            targetFileStream.close()
-
-        } catch (e: Exception) {
-            return -1
+            return@withContext 1
         }
-
-        return 1
-    }
 
     fun createDir(internalPath: String, newDirName: String): Int {
 
@@ -324,10 +358,10 @@ class Operations(private val application: Application) {
 
     }
 
-    fun exportItems(
+    suspend fun exportItems(
         exportUri: Uri,
         selectedItem: FileItem
-    ): Boolean {
+    ): Boolean = withContext(Dispatchers.IO) {
 
         try {
             val fileToExport =
@@ -340,23 +374,24 @@ class Operations(private val application: Application) {
             val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
             val fos = FileOutputStream(pfd!!.fileDescriptor)
 
-            FileUtils.copy(fis, fos)
+            copyFileWithProgressNotifications(
+                selectedItem.name, fis, fos,
+                FileTransferNotification.NotificationType.Export,
+                application.applicationContext
+            )
 
             fos.close()
             pfd.close()
 
 
         } catch (e: Exception) {
-            return false
+            return@withContext false
         }
-        return true
+        return@withContext true
     }
 
     fun isPreviousRootDirectory(): Boolean {
-        if (internalPath.size == 0) {
-            return true
-        }
-        return false
+        return internalPath.size == 0
     }
 
     fun exportBackup(exportUri: Uri): Int {

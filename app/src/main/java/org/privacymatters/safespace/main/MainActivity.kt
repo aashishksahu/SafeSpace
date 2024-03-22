@@ -1,8 +1,11 @@
 package org.privacymatters.safespace.main
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,9 +19,12 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,6 +84,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
     private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
     private lateinit var sortinator: Sortinator
     private lateinit var actions: Actions
+    private val notificationPermissionRequestCode = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set theme on app launch
@@ -107,6 +114,13 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             "items" to getString(R.string.items),
             "item" to getString(R.string.item)
         )
+
+        // request notification permission for Android 13 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!isNotificationPermissionGranted()) {
+                requestNotificationPermission()
+            }
+        }
 
         filesRecyclerView = findViewById(R.id.filesRecyclerView)
         filesRecyclerViewAdapter = FilesRecyclerViewAdapter(this, filesRVAdapterTexts, ops)
@@ -892,7 +906,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         fileMoveCopyButton.text = getString(R.string.copy_file_title)
     }
 
-
     private fun exportItems() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
@@ -1039,6 +1052,25 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             }
         val alert = builder.create()
         alert.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun isNotificationPermissionGranted(): Boolean {
+        val permission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+
+        return permission == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            notificationPermissionRequestCode
+        )
     }
 
 }

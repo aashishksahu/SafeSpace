@@ -7,12 +7,12 @@ package org.privacymatters.safespace.lib.fileManager
 
 fun compareRight(s1: String, s2: String): Int {
     var temp = 0
-    var iS1 = 0
-    var iS2 = 0
+    var strIndex1 = 0
+    var strIndex2 = 0
 
     while (true) {
-        val charS1 = charAt(s1, iS1)
-        val charS2 = charAt(s2, iS2)
+        val charS1 = charAt(s1, strIndex1)
+        val charS2 = charAt(s2, strIndex2)
 
         if (!Character.isDigit(charS1) && !Character.isDigit(charS2)) {
             return temp
@@ -33,61 +33,65 @@ fun compareRight(s1: String, s2: String): Int {
                 temp = 1
             }
         }
-        iS1++
-        iS2++
+        strIndex1++
+        strIndex2++
     }
 }
 
 fun naturalCompareAscending(o1: FileItem, o2: FileItem): Int {
     val s1 = o1.name
     val s2 = o2.name
-    
-    var iS1 = 0
-    var iS2 = 0
 
-    var nzS1: Int
-    var nzS2: Int
+    var strIndex1 = 0
+    var strIndex2 = 0
+
+    var numZeroS1: Int
+    var numZeroS2: Int
 
     var charS1: Char
     var charS2: Char
 
     while (true) {
         // Only count the number of zeroes leading the last number compared
-        nzS2 = 0
-        nzS1 = 0
+        numZeroS2 = 0
+        numZeroS1 = 0
 
-        charS1 = charAt(s1, iS1)
-        charS2 = charAt(s2, iS2)
+        try {
+            charS1 = charAt(s1, strIndex1)
+            charS2 = charAt(s2, strIndex2)
+        } catch (exp: StringIndexOutOfBoundsException) {
+            break
+        }
 
         // skip over leading spaces or zeros
         while (Character.isSpaceChar(charS1) || charS1 == '0') {
             if (charS1 == '0') {
-                nzS1++
+                numZeroS1++
             } else {
                 // Only count consecutive zeroes
-                nzS1 = 0
+                numZeroS1 = 0
             }
-            charS1 = charAt(s1, ++iS1)
+            charS1 = charAt(s1, ++strIndex1)
         }
         while (Character.isSpaceChar(charS2) || charS2 == '0') {
             if (charS2 == '0') {
-                nzS2++
+                numZeroS2++
             } else {
                 // Only count consecutive zeroes
-                nzS2 = 0
+                numZeroS2 = 0
             }
-            charS2 = charAt(s2, ++iS2)
+            charS2 = charAt(s2, ++strIndex2)
         }
 
         // Process run of digits
         if (Character.isDigit(charS1) && Character.isDigit(charS2)) {
-            val temp = compareRight(s1.substring(iS1), s2.substring(iS2))
+            val temp = compareRight(s1.substring(strIndex1), s2.substring(strIndex2))
             if (temp != 0) {
                 return temp
             }
         }
         if (charS1.code == 0 && charS2.code == 0) {
-            return nzS1 - nzS2
+            return numZeroS1 - numZeroS2
         }
         if (charS1 < charS2) {
             return -1
@@ -95,20 +99,21 @@ fun naturalCompareAscending(o1: FileItem, o2: FileItem): Int {
         if (charS1 > charS2) {
             return +1
         }
-        ++iS1
-        ++iS2
+        ++strIndex1
+        ++strIndex2
     }
+    return 0
 }
 
 
 fun compareLeft(s1: String, s2: String): Int {
     var temp = 0
-    var iS1 = 0
-    var iS2 = 0
+    var strIndex1 = 0
+    var strIndex2 = 0
 
     while (true) {
-        val charS1 = charAt(s1, iS1)
-        val charS2 = charAt(s2, iS2)
+        val charS1 = charAt(s1, strIndex1)
+        val charS2 = charAt(s2, strIndex2)
 
         if (!Character.isDigit(charS1) && !Character.isDigit(charS2)) {
             return temp
@@ -129,8 +134,8 @@ fun compareLeft(s1: String, s2: String): Int {
                 temp = -1
             }
         }
-        iS1++
-        iS2++
+        strIndex1++
+        strIndex2++
     }
 }
 
@@ -138,52 +143,56 @@ fun naturalCompareDescending(o1: FileItem, o2: FileItem): Int {
     val s1 = o1.name
     val s2 = o2.name
 
-    var iS1 = 0
-    var iS2 = 0
+    var strIndex1 = 0
+    var strIndex2 = 0
 
-    var nzS1: Int
-    var nzS2: Int
+    var numZeroS1: Int
+    var numZeroS2: Int
 
     var charS1: Char
     var charS2: Char
 
     while (true) {
         // Only count the number of zeroes leading the last number compared
-        nzS2 = 0
-        nzS1 = 0
+        numZeroS1 = 0
+        numZeroS2 = 0
 
-        charS1 = charAt(s1, iS1)
-        charS2 = charAt(s2, iS2)
+        try {
+            charS1 = charAt(s1, strIndex1)
+            charS2 = charAt(s2, strIndex2)
+        } catch (exp: StringIndexOutOfBoundsException) {
+            break
+        }
 
         // skip over leading spaces or zeros
         while (Character.isSpaceChar(charS1) || charS1 == '0') {
             if (charS1 == '0') {
-                nzS1++
+                numZeroS1++
             } else {
                 // Only count consecutive zeroes
-                nzS1 = 0
+                numZeroS1 = 0
             }
-            charS1 = charAt(s1, ++iS1)
+            charS1 = charAt(s1, ++strIndex1)
         }
         while (Character.isSpaceChar(charS2) || charS2 == '0') {
             if (charS2 == '0') {
-                nzS2++
+                numZeroS2++
             } else {
                 // Only count consecutive zeroes
-                nzS2 = 0
+                numZeroS2 = 0
             }
-            charS2 = charAt(s2, ++iS2)
+            charS2 = charAt(s2, ++strIndex2)
         }
 
         // Process run of digits
         if (Character.isDigit(charS1) && Character.isDigit(charS2)) {
-            val temp = compareLeft(s1.substring(iS1), s2.substring(iS2))
+            val temp = compareLeft(s1.substring(strIndex1), s2.substring(strIndex2))
             if (temp != 0) {
                 return temp
             }
         }
         if (charS1.code == 0 && charS2.code == 0) {
-            return nzS1 - nzS2
+            return numZeroS1 - numZeroS2
         }
         if (charS1 < charS2) {
             return +1
@@ -191,13 +200,14 @@ fun naturalCompareDescending(o1: FileItem, o2: FileItem): Int {
         if (charS1 > charS2) {
             return -1
         }
-        ++iS1
-        ++iS2
+        ++strIndex1
+        ++strIndex2
     }
+    return 0
 }
 
 
 fun charAt(s: String, i: Int): Char {
-    return if (i >= s.length) '0' else s[i]
+    return if (i >= s.length) throw StringIndexOutOfBoundsException() else s[i]
 }
 
