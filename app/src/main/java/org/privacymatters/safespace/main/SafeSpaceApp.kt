@@ -6,7 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import org.privacymatters.safespace.lib.fileManager.FileTransferNotification
 
-class SafePlaceApp: Application() {
+class SafeSpaceApp: Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
