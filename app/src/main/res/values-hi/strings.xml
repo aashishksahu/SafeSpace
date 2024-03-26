@@ -94,8 +94,7 @@
     <string name="set_pin_text">पिन सेट करें</string>
     <string name="confirm_pin_text">पिन की पुष्टि करें</string>
     <string name="pin_error">पिन खाली नहीं हो सकती</string>
-    <string name="pin_error2">पिन कम से कम 4 अंकों की होनी चाहिए</string>
-    <string name="pin_error3">पिन में केवल अंक होने चाहिए</string>
+    <string name="pin_error2">पिन कम से कम 4 अक्षरों की होनी चाहिए</string>
     <string name="pin_error4">पिन मेल नहीं खाती</string>
     <string name="pin_error5">गलत पिन</string>
     <string name="multi_move">चयनित फ़ाइलें मूव करें</string>

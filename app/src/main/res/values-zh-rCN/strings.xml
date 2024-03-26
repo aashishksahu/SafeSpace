@@ -94,8 +94,7 @@
     <string name="set_pin_text">设置PIN</string>
     <string name="confirm_pin_text">确认PIN</string>
     <string name="pin_error">PIN不能为空</string>
-    <string name="pin_error2">PIN必须至少为4位数</string>
-    <string name="pin_error3">PIN必须仅包含数字</string>
+    <string name="pin_error2">PIN 码必须至少包含 4 个字符</string>
     <string name="pin_error4">PIN不匹配</string>
     <string name="pin_error5">错误的PIN</string>
     <string name="multi_move">移动所选文件</string>
