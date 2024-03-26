@@ -3,6 +3,8 @@ package org.privacymatters.safespace.lib.utils
 class Constants {
     companion object {
 
+        const val TIME_TO_UNLOCK_DURATION = "TIME_TO_UNLOCK_DURATION"
+        const val TIME_TO_UNLOCK_START = "TIME_TO_UNLOCK_START"
         const val SHARED_PREF_FILE = "org.privacymatters.safespace_preferences"
 
         const val DOCUMENT_TYPE = "document"
