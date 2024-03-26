@@ -106,4 +106,5 @@
     <string name="extract_zip">ZIP निकालें</string>
     <string name="biometric_title">बायोमेट्रिक अनलॉक</string>
     <string name="biometric_toggle">बायोमेट्रिक्स द्वारा अनलॉक करें</string>
+    <string name="pin_error6">बहुत सारे गलत प्रयास, बाद में पुनः प्रयास करें</string>
 </resources>

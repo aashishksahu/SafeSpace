@@ -105,4 +105,5 @@
     <string name="extract_zip">Zip dosyasını ayıkla</string>
     <string name="biometric_toggle">Biyometriyi Kullanarak Kilidi Aç</string>
     <string name="biometric_title">Biyometrik Kilit Açma</string>
+    <string name="pin_error6">Çok fazla yanlış deneme var, daha sonra tekrar deneyin</string>
 </resources>
