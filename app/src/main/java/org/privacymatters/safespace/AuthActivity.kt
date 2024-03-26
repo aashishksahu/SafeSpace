@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
@@ -64,7 +63,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.activity_auth)
 
         authTouch = findViewById(R.id.fingerprint)
-        pinField = findViewById(R.id.editTextNumberPassword)
+        pinField = findViewById(R.id.editTextPassword)
 
         // Root Check
         if (!isPhoneRooted(pinField.context)) {
@@ -117,8 +116,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun authenticateUsingHardPin() {
 
-        if (pinField.text.toString().isDigitsOnly() &&
-            pinField.text.toString() == EncPref.getString(
+        if (pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
                 applicationContext
             )
@@ -144,15 +142,12 @@ class AuthActivity : AppCompatActivity() {
         } else {
 
             if (confirmCounter == 0) {
-                if (pinField.text.toString().isDigitsOnly()) {
-                    confirmCounter += 1
-                    pinField.hint = getString(R.string.confirm_pin_text)
-                    confirmPIN = pinField.text.toString()
-                    pinField.error = null
-                    pinField.setText("")
-                } else {
-                    pinField.error = getString(R.string.pin_error3)
-                }
+
+                confirmCounter += 1
+                pinField.hint = getString(R.string.confirm_pin_text)
+                confirmPIN = pinField.text.toString()
+                pinField.error = null
+                pinField.setText("")
 
             } else if (confirmCounter == 1) {
                 if (confirmPIN != pinField.text.toString()) {
