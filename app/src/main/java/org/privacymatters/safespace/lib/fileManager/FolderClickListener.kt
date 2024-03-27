@@ -1,7 +1,6 @@
-package org.privacymatters.safespace.lib.recyclerView
+package org.privacymatters.safespace.lib.fileManager
 
 import android.view.View
-import org.privacymatters.safespace.lib.fileManager.FolderItem
 
 interface FolderClickListener {
     fun onFolderSelect(folderItem: FolderItem)

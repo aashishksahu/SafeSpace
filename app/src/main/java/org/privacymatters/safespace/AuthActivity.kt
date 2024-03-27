@@ -33,6 +33,8 @@ Possible authentication scenarios
 
  */
 
+// ToDo: Block biometric until user successfully authenticates using hard pin
+
 class AuthActivity : AppCompatActivity() {
 
     private var biometricPossible = true
@@ -49,7 +51,6 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var loginBlockMsg: TextView
     private lateinit var loginBlockTimer: TextView
     private var loginBlockedTime: Long = -1L
-    private var loginBlockedDuration: Long = -1L
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,8 +70,6 @@ class AuthActivity : AppCompatActivity() {
 
         // check if app pin is set
         isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
-        loginBlockedTime = sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, -1L)
-        loginBlockedDuration = sharedPref.getLong(Constants.TIME_TO_UNLOCK_DURATION, -1L)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
@@ -80,13 +79,14 @@ class AuthActivity : AppCompatActivity() {
 
         loginBlockMsg = findViewById(R.id.loginBlockMsg)
         loginBlockTimer = findViewById(R.id.loginBlockTimer)
+        loginBlockedTime = sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, -1L)
 
         // check if user is blocked from login
         val isLoginUnlocked = checkLoginUnlocked() // returns a pair(is blocked?, for how long)
 
         // if user is blocked, start a countdown
         if (!isLoginUnlocked.first) {
-            pinField.isEnabled = false
+            setLoginBlockMsg()
             countDown(isLoginUnlocked.second).start()
         }
 
@@ -157,32 +157,32 @@ class AuthActivity : AppCompatActivity() {
             pinField.setText("")
             attemptCount += 1
             when (attemptCount) {
-                11 -> {
+                10 -> {
                     blockLogin(300000) // 5 minutes
                     countDown(300000).start()
                 }
 
-                14 -> {
+                12 -> {
                     blockLogin(600000) // 10 minutes
                     countDown(600000).start()
                 }
 
-                17 -> {
+                14 -> {
                     blockLogin(1800000) // 30 minutes
                     countDown(1800000).start()
                 }
 
-                20 -> {
-                    blockLogin(60) // 1 Hour
+                16 -> {
+                    blockLogin(3600000) // 1 Hour
                     countDown(3600000).start()
                 }
 
-                23 -> {
+                18 -> {
                     blockLogin(10800000) // 3 hours
                     countDown(10800000).start()
                 }
 
-                in 35..38 /* Noice */ -> {
+                20 -> {
                     blockLogin(86400000) // 1 Day
                     countDown(86400000).start()
                     attemptCount = 0
@@ -192,18 +192,15 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun blockLogin(time: Long) {
-        loginBlockMsg.text = getString(R.string.pin_error6)
-        pinField.isEnabled = false
+    private fun blockLogin(blockDuration: Long) {
+        setLoginBlockMsg()
         sharedPref.edit()
-            .putLong(Constants.TIME_TO_UNLOCK_DURATION, time)
-            .putLong(Constants.TIME_TO_UNLOCK_START, System.currentTimeMillis())
+            .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
             .apply()
     }
 
     private fun unlockLogin() {
-        pinField.isEnabled = true
-        loginBlockMsg.text = ""
+        removeLoginBlockMsg()
         sharedPref.edit()
             .putLong(Constants.TIME_TO_UNLOCK_DURATION, -1)
             .putLong(Constants.TIME_TO_UNLOCK_START, -1L)
@@ -211,18 +208,12 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun checkLoginUnlocked(): Pair<Boolean, Long> {
-        // if user is not locked out, then loginBlockedDuration and loginBlockedTime will be -1 then,
-        // timeRemaining = currentTime - (-1) * 60000
-        // timeRemaining = currentTime + 60000
-        val timeRemaining = System.currentTimeMillis() - loginBlockedTime
 
-        // currentTime + 60000 > -1 -> true
-        if (timeRemaining > loginBlockedDuration) {
-            unlockLogin()
+        if (System.currentTimeMillis() > loginBlockedTime) {
             return Pair(true, -1)
         }
 
-        return Pair(false, timeRemaining)
+        return Pair(false, loginBlockedTime - System.currentTimeMillis())
     }
 
     private fun countDown(millisRemaining: Long): CountDownTimer {
@@ -258,6 +249,18 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun setLoginBlockMsg() {
+        loginBlockMsg.text = getString(R.string.pin_error6)
+        pinField.isEnabled = false
+        authTouch.isEnabled = false
+    }
+
+    private fun removeLoginBlockMsg() {
+        loginBlockMsg.text = ""
+        pinField.isEnabled = true
+        authTouch.isEnabled = true
     }
 
     private fun setUpHardPin() {

@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib.recyclerView
+package org.privacymatters.safespace.lib.fileManager
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.fileManager.FolderItem
 
 class FolderRecyclerViewAdapter(
     private val folderClickListener: FolderClickListener,
@@ -50,10 +49,10 @@ class FolderRecyclerViewAdapter(
 
         var itemCountText = selectedFolder.itemCount.toString()
 
-        if (selectedFolder.itemCount == 1) {
-            itemCountText = itemCountText + " " + folderRVAdapterTexts["item"]
+        itemCountText = if (selectedFolder.itemCount == 1) {
+            itemCountText + " " + folderRVAdapterTexts["item"]
         } else {
-            itemCountText = itemCountText + " " + folderRVAdapterTexts["items"]
+            itemCountText + " " + folderRVAdapterTexts["items"]
         }
 
         holder.folderItemCount.text = itemCountText

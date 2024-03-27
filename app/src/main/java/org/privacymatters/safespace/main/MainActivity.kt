@@ -47,11 +47,11 @@ import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.fileManager.FileItem
-import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
-import org.privacymatters.safespace.lib.recyclerView.FolderClickListener
+import org.privacymatters.safespace.lib.fileManager.FilesRecyclerViewAdapter
+import org.privacymatters.safespace.lib.fileManager.FolderClickListener
 import org.privacymatters.safespace.lib.fileManager.FolderItem
-import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
-import org.privacymatters.safespace.lib.recyclerView.ItemClickListener
+import org.privacymatters.safespace.lib.fileManager.FolderRecyclerViewAdapter
+import org.privacymatters.safespace.lib.fileManager.ItemClickListener
 import org.privacymatters.safespace.lib.fileManager.Operations
 import org.privacymatters.safespace.lib.utils.SetTheme
 import org.privacymatters.safespace.lib.fileManager.Sortinator
