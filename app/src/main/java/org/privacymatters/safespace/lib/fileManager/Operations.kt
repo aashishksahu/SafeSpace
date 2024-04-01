@@ -2,12 +2,15 @@ package org.privacymatters.safespace.lib.fileManager
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.FileUtils
 import android.provider.OpenableColumns
+import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.privacymatters.safespace.R
 import org.privacymatters.safespace.lib.utils.Constants
 import java.io.BufferedOutputStream
 import java.io.File
@@ -341,6 +344,27 @@ class Operations(private val application: Application) {
             moveFileTo = null
         }
         return 1
+    }
+
+    fun shareFile(file: FileItem, internalPath: String) {
+        val fileToShare = File(joinPath(getFilesDir(), internalPath, file.name))
+        val fileUri = FileProvider.getUriForFile(
+            application,
+            application.applicationContext.packageName + ".provider",
+            fileToShare
+        )
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = application.contentResolver.getType(fileUri)
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+
+        val chooser = Intent.createChooser(
+            intent,
+            application.getString(R.string.share_chooser_title)
+        )
+        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        application.startActivity(chooser)
     }
 
     fun createTextNote(noteName: String): String {

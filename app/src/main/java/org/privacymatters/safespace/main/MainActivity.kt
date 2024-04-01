@@ -44,18 +44,18 @@ import org.privacymatters.safespace.MediaActivity
 import org.privacymatters.safespace.PDFView
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.TextDocumentView
-import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.fileManager.FileItem
-import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
-import org.privacymatters.safespace.lib.recyclerView.FolderClickListener
 import org.privacymatters.safespace.lib.fileManager.FolderItem
-import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
-import org.privacymatters.safespace.lib.recyclerView.ItemClickListener
 import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.lib.utils.SetTheme
 import org.privacymatters.safespace.lib.fileManager.Sortinator
 import org.privacymatters.safespace.lib.fileManager.Utils
+import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
+import org.privacymatters.safespace.lib.recyclerView.FolderClickListener
+import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
+import org.privacymatters.safespace.lib.recyclerView.ItemClickListener
+import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.lib.utils.EncPref
+import org.privacymatters.safespace.lib.utils.SetTheme
 
 
 class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener {
@@ -624,6 +624,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
         popup.inflate(R.menu.files_context_menu)
 
+        // remove share option for directories
+        if (data.isDir) {
+            popup.menu.removeItem(R.id.share_item)
+        }
+
         popup.setOnMenuItemClickListener { item: MenuItem? ->
 
             when (item!!.itemId) {
@@ -641,6 +646,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
 
                 R.id.copy_item -> {
                     copyFile(data)
+                }
+
+                R.id.share_item -> {
+                    shareFilePopup(data, view.context)
                 }
 
             }
@@ -809,6 +818,29 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                         updateRecyclerView()
                     }
                 }
+            }
+            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun shareFilePopup(file: FileItem, context: Context) {
+        val builder = MaterialAlertDialogBuilder(context)
+
+        val inflater: LayoutInflater = layoutInflater
+        val shareLayout = inflater.inflate(R.layout.share_dialog, null)
+
+        builder.setTitle(getString(R.string.share_dialog_title))
+            .setCancelable(true)
+            .setView(shareLayout)
+            .setPositiveButton(getString(R.string.context_menu_share)) { _, _ ->
+                ops.shareFile(
+                    file,
+                    ops.getInternalPath()
+                )
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog
