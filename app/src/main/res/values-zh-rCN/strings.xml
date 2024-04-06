@@ -35,8 +35,12 @@
     <string name="multi_export">导出</string>
     <string name="context_menu_move">移动</string>
     <string name="context_menu_copy">复制</string>
+    <string name="context_menu_share">分享</string>
     <string name="generic_error">出现错误，请重试</string>
     <string name="delete_confirmation">确认删除</string>
+    <string name="share_dialog_title">警告！</string>
+    <string name="share_dialog_description">您正在与第三方应用共享此文件，请确保您信任该应用。</string>
+    <string name="share_chooser_title">分享至…</string>
     <string name="directory_indicator">文件夹</string>
     <string name="file_indicator">文件</string>
     <string name="import_files_progress">正在后台导入，请稍等…</string>

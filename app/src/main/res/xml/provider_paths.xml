@@ -2,5 +2,5 @@
 <paths>
     <files-path
         name="internal_files"
-        path="/" />
+        path="root/" />
 </paths>
