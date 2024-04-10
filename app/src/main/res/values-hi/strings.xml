@@ -35,8 +35,12 @@
     <string name="multi_export">निर्यात</string>
     <string name="context_menu_move">स्थानांतरित करें</string>
     <string name="context_menu_copy">कॉपी करें</string>
+    <string name="context_menu_share">साझा करें</string>
     <string name="generic_error">कुछ गलत हो गया। कृपया पुन: प्रयास करें</string>
     <string name="delete_confirmation">क्या आप वाकई इसे हटाना चाहते हैं?</string>
+    <string name="share_dialog_title">चेतावनी!</string>
+    <string name="share_dialog_description">आप इस फ़ाइल को तीसरे-पक्ष एप्लिकेशन के साथ साझा कर रहे हैं, सुनिश्चित करें कि आप एप्लिकेशन पर विश्वास करते हैं।</string>
+    <string name="share_chooser_title">के साथ साझा करें…</string>
     <string name="directory_indicator">फ़ोल्डर</string>
     <string name="file_indicator">फ़ाइल</string>
     <string name="import_files_progress">आयात किया जा रहा है, कृपया प्रतीक्षा करें…</string>
