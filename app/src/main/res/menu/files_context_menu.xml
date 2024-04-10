@@ -13,4 +13,8 @@
         android:id="@+id/copy_item"
         android:title="@string/context_menu_copy" />
 
+    <item
+        android:id="@+id/share_item"
+        android:title="@string/context_menu_share" />
+
 </menu>

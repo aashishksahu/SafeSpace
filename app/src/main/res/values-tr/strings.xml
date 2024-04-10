@@ -34,8 +34,12 @@
     <string name="multi_export">Dışa Aktar</string>
     <string name="context_menu_move">Taşı</string>
     <string name="context_menu_copy">Kopyala</string>
+    <string name="context_menu_share">Paylaş</string>
     <string name="generic_error">Bir hata oluştu. Lütfen tekrar deneyin</string>
     <string name="delete_confirmation">Bunu silmek istediğinizden emin misiniz?</string>
+    <string name="share_dialog_title">Uyarı!</string>
+    <string name="share_dialog_description">Bu dosyayı üçüncü taraf bir uygulama ile paylaşıyorsunuz, uygulamaya güvendiğinizden emin olun.</string>
+    <string name="share_chooser_title">Paylaş…</string>
     <string name="directory_indicator">Klasör</string>
     <string name="file_indicator">Dosya</string>
     <string name="import_files_progress">Arka planda içe aktarılıyor, lütfen bekleyin…</string>

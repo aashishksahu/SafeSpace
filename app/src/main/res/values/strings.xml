@@ -39,8 +39,12 @@
     <string name="multi_export">Export</string>
     <string name="context_menu_move">Move</string>
     <string name="context_menu_copy">Copy</string>
+    <string name="context_menu_share">Share</string>
     <string name="generic_error">Something went wrong. Please try again</string>
     <string name="delete_confirmation">Are you sure you want to delete this?</string>
+    <string name="share_dialog_title">Warning!</string>
+    <string name="share_dialog_description">You\'re sharing this file with a third-party app, make sure you trust the app.</string>
+    <string name="share_chooser_title">Share with…</string>
     <string name="directory_indicator">Folder</string>
     <string name="file_indicator">File</string>
     <string name="import_files_progress">Importing in background, please wait…</string>
