@@ -3,6 +3,7 @@ package org.privacymatters.safespace.lib.utils
 class Constants {
     companion object {
 
+        const val DEF_NUM_FLAG = -1L
         const val TIME_TO_UNLOCK_DURATION = "TIME_TO_UNLOCK_DURATION"
         const val TIME_TO_UNLOCK_START = "TIME_TO_UNLOCK_START"
         const val SHARED_PREF_FILE = "org.privacymatters.safespace_preferences"
@@ -28,6 +29,7 @@ class Constants {
         const val ROOT = "root"
         const val APP_FIRST_RUN = "FIRST_RUN"
         const val USE_BIOMETRIC = "USE_BIOMETRIC"
+        const val USE_BIOMETRIC_BCKP = "USE_BIOMETRIC_BCKP"
 
         const val FILE_EXIST = "FILE_EXIST"
 

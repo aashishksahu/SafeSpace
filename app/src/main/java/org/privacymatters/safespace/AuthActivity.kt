@@ -50,7 +50,7 @@ class AuthActivity : AppCompatActivity() {
     private var attemptCount = 0
     private lateinit var loginBlockMsg: TextView
     private lateinit var loginBlockTimer: TextView
-    private var loginBlockedTime: Long = -1L
+    private var loginBlockedTime: Long = Constants.DEF_NUM_FLAG
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +79,8 @@ class AuthActivity : AppCompatActivity() {
 
         loginBlockMsg = findViewById(R.id.loginBlockMsg)
         loginBlockTimer = findViewById(R.id.loginBlockTimer)
-        loginBlockedTime = sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, -1L)
+        loginBlockedTime =
+            sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
 
         // check if user is blocked from login
         val isLoginUnlocked = checkLoginUnlocked() // returns a pair(is blocked?, for how long)
@@ -111,12 +112,12 @@ class AuthActivity : AppCompatActivity() {
                 }
 
                 BiometricManager.BIOMETRIC_SUCCESS -> {
-                    if (isHardPinSet && biometricPossible && isLoginUnlocked.first) initiateBiometricAuthentication()
+                    if (isHardPinSet && biometricPossible) initiateBiometricAuthentication()
                 }
             }
 
             authTouch.setOnClickListener {
-                if (biometricPossible && isHardPinSet && isLoginUnlocked.first) biometricPrompt.authenticate(
+                if (biometricPossible && isHardPinSet) biometricPrompt.authenticate(
                     promptInfo
                 )
             }
@@ -148,6 +149,12 @@ class AuthActivity : AppCompatActivity() {
             )
         ) {
             attemptCount = 0
+
+            sharedPref.edit().putBoolean(
+                Constants.USE_BIOMETRIC,
+                sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+            ).apply()
+
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -194,16 +201,22 @@ class AuthActivity : AppCompatActivity() {
 
     private fun blockLogin(blockDuration: Long) {
         setLoginBlockMsg()
+        biometricPossible = false
         sharedPref.edit()
             .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
+            .putBoolean(
+                Constants.USE_BIOMETRIC_BCKP,
+                sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
+            )
+            .putBoolean(Constants.USE_BIOMETRIC, false)
             .apply()
     }
 
     private fun unlockLogin() {
         removeLoginBlockMsg()
         sharedPref.edit()
-            .putLong(Constants.TIME_TO_UNLOCK_DURATION, -1)
-            .putLong(Constants.TIME_TO_UNLOCK_START, -1L)
+            .putLong(Constants.TIME_TO_UNLOCK_DURATION, Constants.DEF_NUM_FLAG)
+            .putLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
             .apply()
     }
 
