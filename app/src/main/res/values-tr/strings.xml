@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Safe Space</string>
     <string name="cancel">İptal</string>
     <string name="create">Oluştur</string>
     <string name="ok">Tamam</string>
@@ -19,15 +18,11 @@
     <string name="open_camera">Kamerayı Aç</string>
     <string name="photo">Fotoğraf</string>
     <string name="video">Video</string>
-    <string name="q1080p" translatable="false">1080p</string>
-    <string name="q720p" translatable="false">720p</string>
-    <string name="q480p" translatable="false">480p</string>
     <string name="video_quality">Video Kalitesi</string>
     <string name="switch_camera">Kamerayı Değiştir</string>
     <string name="flash_toggle">Flaş</string>
     <string name="start_capture">Yakalamayı Başlat</string>
     <string name="video_error">Dahili Hata, video kaydedilemedi</string>
-    <string name="video_timer" translatable="false">00:00</string>
     <string name="permission_denied">İzin isteği reddedildi</string>
     <string name="import_files_error">Bazı dosyalar içe aktarılmadı, lütfen tekrar deneyin</string>
     <string name="create_folder_invalid_error">Yalnızca harf ve sayılara izin verilir </string>
@@ -85,12 +80,6 @@
     <string name="about_sub_title1">Tüm önemli dijital eşyalarınız için Güvenli Alan.</string>
     <string name="about_sub_title2">Dosyaları depolamak için uygulamaya özel depolama kullanır, bu dosyalar şifrelenir ve diğer uygulamalar tarafından görülemez ve telefon kilitlendiğinde erişilemez.</string>
     <string name="about_foss">Kullanılan kütüphaneler ve varlıklar:</string>
-    <string name="glide" translatable="false">Glide</string>
-    <string name="androidx" translatable="false">AndroidX</string>
-    <string name="camerax" translatable="false">CameraX</string>
-    <string name="photoview" translatable="false">Chris Banes tarafından PhotoView</string>
-    <string name="exo" translatable="false">Exo player</string>
-    <string name="material" translatable="false">Google Material 3</string>
     <string name="root_check_title">Kök Kontrolü</string>
     <string name="root_check_subtitle">Bu uygulamayı köklü bir telefonda kullanmanız önerilmez. Uygulama şimdi kapanacak.</string>
     <string name="System">Sistem</string>
@@ -109,10 +98,10 @@
     <string name="set_pin_text">PIN\'İ AYARLA</string>
     <string name="confirm_pin_text">PIN KODUNU ONAYLAYIN</string>
     <string name="pin_error">PIN KODU boş olamaz</string>
-    <string name="pin_error2">PIN KODU en az 4 basamaklı olmalıdır</string>
-    <string name="pin_error3">PIN yalnızca rakamdan oluşmalıdır</string>
+    <string name="pin_error2">PIN KODU en az 4 karakter olmalıdır</string>
     <string name="pin_error4">PIN KODU EŞLEŞMİYOR</string>
     <string name="pin_error5">Yanlış PIN</string>
+    <string name="pin_error6">Çok fazla yanlış deneme var, daha sonra tekrar deneyin</string>
     <string name="multi_move">Seçili dosyaları taşı</string>
     <string name="multi_copy">Seçilen dosyaları kopyala</string>
     <string name="change_pin">PIN KODUNU DEĞİŞTİR</string>

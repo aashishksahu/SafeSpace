@@ -2,15 +2,17 @@ package org.privacymatters.safespace
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
@@ -18,6 +20,7 @@ import org.privacymatters.safespace.lib.utils.RootCheck
 import org.privacymatters.safespace.lib.utils.SetTheme
 import org.privacymatters.safespace.main.MainActivity
 import java.util.concurrent.Executor
+
 
 /*
 
@@ -38,14 +41,20 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var authTouch: ImageButton
     private lateinit var pinField: EditText
+    private lateinit var sharedPref: SharedPreferences
     private var confirmCounter = 0
     private var confirmPIN = "-1"
     private var isHardPinSet = false
+    private var attemptCount = 0
+    private lateinit var loginBlockMsg: TextView
+    private lateinit var loginBlockTimer: TextView
+    private var loginBlockedTime: Long = Constants.DEF_NUM_FLAG
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // load theme from preferences
-        val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         if (!sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
             biometricPossible = false
@@ -64,7 +73,21 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.activity_auth)
 
         authTouch = findViewById(R.id.fingerprint)
-        pinField = findViewById(R.id.editTextNumberPassword)
+        pinField = findViewById(R.id.editTextPassword)
+
+        loginBlockMsg = findViewById(R.id.loginBlockMsg)
+        loginBlockTimer = findViewById(R.id.loginBlockTimer)
+        loginBlockedTime =
+            sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
+
+        // check if user is blocked from login
+        val isLoginUnlocked = checkLoginUnlocked() // returns a pair(is blocked?, for how long)
+
+        // if user is blocked, start a countdown
+        if (!isLoginUnlocked.first) {
+            setLoginBlockMsg()
+            countDown(isLoginUnlocked.second).start()
+        }
 
         // Root Check
         if (!isPhoneRooted(pinField.context)) {
@@ -87,12 +110,14 @@ class AuthActivity : AppCompatActivity() {
                 }
 
                 BiometricManager.BIOMETRIC_SUCCESS -> {
-                    if (isHardPinSet && biometricPossible) initiateBiometricAuthentication()
+                    if (isHardPinSet && biometricPossible && isLoginUnlocked.first) initiateBiometricAuthentication()
                 }
             }
 
             authTouch.setOnClickListener {
-                if (biometricPossible && isHardPinSet) biometricPrompt.authenticate(promptInfo)
+                if (biometricPossible && isHardPinSet) biometricPrompt.authenticate(
+                    promptInfo
+                )
             }
 
         }
@@ -114,15 +139,20 @@ class AuthActivity : AppCompatActivity() {
             else -> super.onKeyUp(keyCode, event)
         }
     }
-
+//Todo: Biometric not enabling after successful password attempt
     private fun authenticateUsingHardPin() {
-
-        if (pinField.text.toString().isDigitsOnly() &&
-            pinField.text.toString() == EncPref.getString(
+        if (pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
                 applicationContext
             )
         ) {
+            attemptCount = 0
+
+            sharedPref.edit().putBoolean(
+                Constants.USE_BIOMETRIC,
+                sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+            ).apply()
+
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -130,7 +160,119 @@ class AuthActivity : AppCompatActivity() {
         } else {
             pinField.error = getString(R.string.pin_error5)
             pinField.setText("")
+            attemptCount += 1
+            when (attemptCount) {
+                10 -> {
+                    blockLogin(10000) // 5 minutes
+                    countDown(10000).start()
+                }
+
+                12 -> {
+                    blockLogin(600000) // 10 minutes
+                    countDown(600000).start()
+                }
+
+                14 -> {
+                    blockLogin(1800000) // 30 minutes
+                    countDown(1800000).start()
+                }
+
+                16 -> {
+                    blockLogin(3600000) // 1 Hour
+                    countDown(3600000).start()
+                }
+
+                18 -> {
+                    blockLogin(10800000) // 3 hours
+                    countDown(10800000).start()
+                }
+
+                20 -> {
+                    blockLogin(86400000) // 1 Day
+                    countDown(86400000).start()
+                    attemptCount = 0
+                }
+            }
+
         }
+    }
+
+    private fun blockLogin(blockDuration: Long) {
+        setLoginBlockMsg()
+
+        biometricPossible = false
+        sharedPref.edit()
+            .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
+            .putBoolean(
+                Constants.USE_BIOMETRIC_BCKP,
+                sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
+            )
+            .putBoolean(Constants.USE_BIOMETRIC, false)
+            .apply()
+    }
+
+    private fun unlockLogin() {
+        removeLoginBlockMsg()
+        sharedPref.edit()
+            .putLong(Constants.TIME_TO_UNLOCK_DURATION, Constants.DEF_NUM_FLAG)
+            .putLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
+            .apply()
+    }
+
+    private fun checkLoginUnlocked(): Pair<Boolean, Long> {
+
+        if (System.currentTimeMillis() > loginBlockedTime) {
+            return Pair(true, -1)
+        }
+
+        return Pair(false, loginBlockedTime - System.currentTimeMillis())
+    }
+
+    private fun countDown(millisRemaining: Long): CountDownTimer {
+
+        return object : CountDownTimer(millisRemaining, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                val minutesUntilFinished = (millisUntilFinished / 60000)
+                val secondsUntilFinished = (millisUntilFinished % 60000) / 1000
+
+                var remainingTime = ""
+
+                remainingTime += if (minutesUntilFinished < 10) {
+                    "0$minutesUntilFinished"
+                } else {
+                    minutesUntilFinished.toString()
+                }
+
+                remainingTime += ":"
+
+                remainingTime += if (secondsUntilFinished < 10) {
+                    "0$secondsUntilFinished"
+                } else {
+                    secondsUntilFinished.toString()
+                }
+
+                loginBlockTimer.text = remainingTime
+            }
+
+            override fun onFinish() {
+                unlockLogin()
+                loginBlockTimer.text = ""
+            }
+        }
+
+    }
+
+    private fun setLoginBlockMsg() {
+        loginBlockMsg.text = getString(R.string.pin_error6)
+        pinField.isEnabled = false
+        authTouch.isEnabled = false
+    }
+
+    private fun removeLoginBlockMsg() {
+        loginBlockMsg.text = ""
+        pinField.isEnabled = true
+        authTouch.isEnabled = true
     }
 
     private fun setUpHardPin() {
@@ -144,15 +286,12 @@ class AuthActivity : AppCompatActivity() {
         } else {
 
             if (confirmCounter == 0) {
-                if (pinField.text.toString().isDigitsOnly()) {
-                    confirmCounter += 1
-                    pinField.hint = getString(R.string.confirm_pin_text)
-                    confirmPIN = pinField.text.toString()
-                    pinField.error = null
-                    pinField.setText("")
-                } else {
-                    pinField.error = getString(R.string.pin_error3)
-                }
+
+                confirmCounter += 1
+                pinField.hint = getString(R.string.confirm_pin_text)
+                confirmPIN = pinField.text.toString()
+                pinField.error = null
+                pinField.setText("")
 
             } else if (confirmCounter == 1) {
                 if (confirmPIN != pinField.text.toString()) {
@@ -226,4 +365,5 @@ class AuthActivity : AppCompatActivity() {
         }
         return false
     }
+
 }

@@ -116,10 +116,10 @@
     <string name="set_pin_text">Set PIN</string>
     <string name="confirm_pin_text">Confirm PIN</string>
     <string name="pin_error">PIN cannot be empty</string>
-    <string name="pin_error2">PIN must be at least 4 digits</string>
-    <string name="pin_error3">PIN must be digits only</string>
+    <string name="pin_error2">PIN must be at least 4 characters</string>
     <string name="pin_error4">PIN does not match</string>
     <string name="pin_error5">Incorrect PIN</string>
+    <string name="pin_error6">Too many wrong attempts, try again later</string>
     <string name="multi_move">Move selected files</string>
     <string name="multi_copy">Copy selected files</string>
     <string name="change_pin">Change PIN</string>
