@@ -139,7 +139,7 @@ class AuthActivity : AppCompatActivity() {
             else -> super.onKeyUp(keyCode, event)
         }
     }
-//Todo: Biometric not enabling after successful password attempt
+
     private fun authenticateUsingHardPin() {
         if (pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
@@ -148,10 +148,7 @@ class AuthActivity : AppCompatActivity() {
         ) {
             attemptCount = 0
 
-            sharedPref.edit().putBoolean(
-                Constants.USE_BIOMETRIC,
-                sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
-            ).apply()
+            blockBiometric(false, 0)
 
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -163,8 +160,8 @@ class AuthActivity : AppCompatActivity() {
             attemptCount += 1
             when (attemptCount) {
                 10 -> {
-                    blockLogin(10000) // 5 minutes
-                    countDown(10000).start()
+                    blockLogin(300000) // 5 minutes
+                    countDown(300000).start()
                 }
 
                 12 -> {
@@ -197,18 +194,35 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    private fun blockBiometric(flag: Boolean, blockDuration: Long) {
+        if(flag){
+
+            val biometricBackup = sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
+
+            sharedPref.edit()
+                .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
+                .putBoolean(
+                    Constants.USE_BIOMETRIC_BCKP,
+                    biometricBackup
+                )
+                .putBoolean(Constants.USE_BIOMETRIC, false)
+                .apply()
+        }else{
+            val biometricRestore = sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+
+            sharedPref.edit().putBoolean(
+                Constants.USE_BIOMETRIC,
+                biometricRestore
+            ).apply()
+        }
+    }
+
     private fun blockLogin(blockDuration: Long) {
         setLoginBlockMsg()
 
         biometricPossible = false
-        sharedPref.edit()
-            .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
-            .putBoolean(
-                Constants.USE_BIOMETRIC_BCKP,
-                sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
-            )
-            .putBoolean(Constants.USE_BIOMETRIC, false)
-            .apply()
+
+        blockBiometric(true, blockDuration)
     }
 
     private fun unlockLogin() {
