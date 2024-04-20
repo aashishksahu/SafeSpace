@@ -50,10 +50,10 @@ class FolderRecyclerViewAdapter(
 
         var itemCountText = selectedFolder.itemCount.toString()
 
-        if (selectedFolder.itemCount == 1) {
-            itemCountText = itemCountText + " " + folderRVAdapterTexts["item"]
+        itemCountText = if (selectedFolder.itemCount == 1) {
+            itemCountText + " " + folderRVAdapterTexts["item"]
         } else {
-            itemCountText = itemCountText + " " + folderRVAdapterTexts["items"]
+            itemCountText + " " + folderRVAdapterTexts["items"]
         }
 
         holder.folderItemCount.text = itemCountText

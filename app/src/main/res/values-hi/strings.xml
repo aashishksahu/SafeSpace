@@ -35,8 +35,12 @@
     <string name="multi_export">निर्यात</string>
     <string name="context_menu_move">स्थानांतरित करें</string>
     <string name="context_menu_copy">कॉपी करें</string>
+    <string name="context_menu_share">साझा करें</string>
     <string name="generic_error">कुछ गलत हो गया। कृपया पुन: प्रयास करें</string>
     <string name="delete_confirmation">क्या आप वाकई इसे हटाना चाहते हैं?</string>
+    <string name="share_dialog_title">चेतावनी!</string>
+    <string name="share_dialog_description">आप इस फ़ाइल को तीसरे-पक्ष एप्लिकेशन के साथ साझा कर रहे हैं, सुनिश्चित करें कि आप एप्लिकेशन पर विश्वास करते हैं।</string>
+    <string name="share_chooser_title">के साथ साझा करें…</string>
     <string name="directory_indicator">फ़ोल्डर</string>
     <string name="file_indicator">फ़ाइल</string>
     <string name="import_files_progress">आयात किया जा रहा है, कृपया प्रतीक्षा करें…</string>
@@ -94,10 +98,10 @@
     <string name="set_pin_text">पिन सेट करें</string>
     <string name="confirm_pin_text">पिन की पुष्टि करें</string>
     <string name="pin_error">पिन खाली नहीं हो सकती</string>
-    <string name="pin_error2">पिन कम से कम 4 अंकों की होनी चाहिए</string>
-    <string name="pin_error3">पिन में केवल अंक होने चाहिए</string>
+    <string name="pin_error2">पिन कम से कम 4 अक्षरों की होनी चाहिए</string>
     <string name="pin_error4">पिन मेल नहीं खाती</string>
     <string name="pin_error5">गलत पिन</string>
+    <string name="pin_error6">बहुत सारे गलत प्रयास, बाद में पुनः प्रयास करें</string>
     <string name="multi_move">चयनित फ़ाइलें मूव करें</string>
     <string name="multi_copy">चयनित फ़ाइलें कॉपी करें</string>
     <string name="change_pin">पिन बदलें</string>

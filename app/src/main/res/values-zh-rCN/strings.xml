@@ -35,8 +35,12 @@
     <string name="multi_export">导出</string>
     <string name="context_menu_move">移动</string>
     <string name="context_menu_copy">复制</string>
+    <string name="context_menu_share">分享</string>
     <string name="generic_error">出现错误，请重试</string>
     <string name="delete_confirmation">确认删除</string>
+    <string name="share_dialog_title">警告！</string>
+    <string name="share_dialog_description">您正在与第三方应用共享此文件，请确保您信任该应用。</string>
+    <string name="share_chooser_title">分享至…</string>
     <string name="directory_indicator">文件夹</string>
     <string name="file_indicator">文件</string>
     <string name="import_files_progress">正在后台导入，请稍等…</string>
@@ -94,10 +98,10 @@
     <string name="set_pin_text">设置PIN</string>
     <string name="confirm_pin_text">确认PIN</string>
     <string name="pin_error">PIN不能为空</string>
-    <string name="pin_error2">PIN必须至少为4位数</string>
-    <string name="pin_error3">PIN必须仅包含数字</string>
+    <string name="pin_error2">PIN 码必须至少包含 4 个字符</string>
     <string name="pin_error4">PIN不匹配</string>
     <string name="pin_error5">错误的PIN</string>
+    <string name="pin_error6">错误尝试次数过多，请稍后再试</string>
     <string name="multi_move">移动所选文件</string>
     <string name="multi_copy">复制所选文件</string>
     <string name="change_pin">更改PIN</string>
