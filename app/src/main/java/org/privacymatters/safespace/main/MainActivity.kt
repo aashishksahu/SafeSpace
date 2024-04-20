@@ -25,7 +25,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -485,8 +484,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
             .setView(changePinLayout)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                if (currentPinEditText.text.toString().isDigitsOnly() &&
-                    currentPinEditText.text.toString() == EncPref.getString(
+                if (currentPinEditText.text.toString() == EncPref.getString(
                         Constants.HARD_PIN,
                         applicationContext
                     )
@@ -495,6 +493,10 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                     // clear pin from shared prefs and reset enrollment status
                     EncPref.clearString(Constants.HARD_PIN, applicationContext)
                     EncPref.clearBoolean(Constants.HARD_PIN_SET, applicationContext)
+                    sharedPref.edit()
+                        .putBoolean(Constants.USE_BIOMETRIC, false)
+                        .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+                        .apply()
 
                     // restart application to set pin again
                     finish()

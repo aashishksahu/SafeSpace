@@ -1,0 +1,2 @@
+* Share files with other apps
+* Multiple failed password attempts protection
