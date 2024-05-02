@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -32,13 +31,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.AboutActivity
-import org.privacymatters.safespace.AuthActivity
 import org.privacymatters.safespace.MediaActivity
 import org.privacymatters.safespace.PDFView
 import org.privacymatters.safespace.R
@@ -53,7 +49,6 @@ import org.privacymatters.safespace.lib.recyclerView.FolderClickListener
 import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
 import org.privacymatters.safespace.lib.recyclerView.ItemClickListener
 import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.utils.SetTheme
 
 
@@ -137,7 +132,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         fileMoveCopyOperation = findViewById(R.id.moveCopyFileOperation)
         fileMoveCopyButton = findViewById(R.id.moveCopyFileButton)
         val fileMoveCopyButtonCancel: MaterialButton = findViewById(R.id.moveCopyFileButtonCancel)
-        topAppBar = findViewById(R.id.topAppBar)
+//        topAppBar = findViewById(R.id.topAppBar)
 
         val extendedFab = findViewById<ExtendedFloatingActionButton>(R.id.extended_fab)
         val cameraFab = findViewById<FloatingActionButton>(R.id.camera_fab)
@@ -205,127 +200,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
             }
 
-        // Export Backup
-        val backupExportDirActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-                if (result.resultCode == RESULT_OK) {
-                    result.data.also { intent ->
-                        val uri = intent?.data
-                        if (uri != null) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                when (ops.exportBackup(uri)) {
-                                    0 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            Toast.makeText(
-                                                baseContext,
-                                                getString(R.string.export_backup_success),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-
-                                    4 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(4)
-                                        }
-                                    }
-
-                                    1 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(1)
-                                        }
-                                    }
-                                }
-                            }
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.export_backup_msg),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-
-            }
-
-        // Import Backup
-        val importBackupActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-                if (result.resultCode == RESULT_OK) {
-                    result.data.also { intent ->
-                        val uri = intent?.data
-                        if (uri != null) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                when (ops.importBackup(uri)) {
-                                    0 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            updateRecyclerView()
-                                        }
-                                    }
-
-                                    4 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(4)
-                                        }
-                                    }
-
-                                    1 -> {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(1)
-                                        }
-                                    }
-                                }
-                            }
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.import_backup_msg),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-
-            }
-
         // Top App Bar
         topAppBar.setNavigationOnClickListener {
             backButtonAction()
-        }
-
-        topAppBar.setOnMenuItemClickListener { menuItem: MenuItem ->
-            when (menuItem.itemId) {
-
-                R.id.export_backup -> {
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                    backupExportDirActivityResult.launch(intent)
-                }
-
-                R.id.import_backup -> {
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "application/zip"
-                    importBackupActivityResult.launch(intent)
-                }
-
-                R.id.change_pin -> {
-                    changePin(topAppBar.context)
-                }
-
-                R.id.toggle_biometric -> {
-                    biometricTogglePopup(topAppBar.context)
-                }
-
-                R.id.change_theme -> {
-                    changeTheme(topAppBar.context)
-                }
-
-                R.id.about -> {
-                    val intent = Intent(this, AboutActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-            true
         }
 
         // Click Listeners
@@ -469,90 +346,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
         val alert = builder.create()
         alert.show()
 
-    }
-
-    private fun changePin(context: Context) {
-        val builder = MaterialAlertDialogBuilder(context)
-
-        val inflater: LayoutInflater = layoutInflater
-        val changePinLayout = inflater.inflate(R.layout.change_pin, null)
-        val currentPinEditText =
-            changePinLayout.findViewById<EditText>(R.id.editTextCurrentPin)
-
-        builder.setTitle(getString(R.string.change_pin))
-            .setCancelable(true)
-            .setView(changePinLayout)
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-
-                if (currentPinEditText.text.toString() == EncPref.getString(
-                        Constants.HARD_PIN,
-                        applicationContext
-                    )
-                ) {
-
-                    // clear pin from shared prefs and reset enrollment status
-                    EncPref.clearString(Constants.HARD_PIN, applicationContext)
-                    EncPref.clearBoolean(Constants.HARD_PIN_SET, applicationContext)
-                    sharedPref.edit()
-                        .putBoolean(Constants.USE_BIOMETRIC, false)
-                        .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
-                        .apply()
-
-                    // restart application to set pin again
-                    finish()
-                    val intent = Intent(applicationContext, AuthActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.pin_error5),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                // Dismiss the dialog
-                dialog.dismiss()
-            }
-        val alert = builder.create()
-        alert.show()
-    }
-
-    private fun changeTheme(context: Context) {
-        val builder = MaterialAlertDialogBuilder(context)
-
-        val inflater: LayoutInflater = layoutInflater
-        val changeThemeLayout = inflater.inflate(R.layout.change_theme, null)
-        val changeThemeTextView =
-            changeThemeLayout.findViewById<TextInputLayout>(R.id.changeThemeTextLayout)
-
-        builder.setTitle(getString(R.string.change_theme))
-            .setCancelable(true)
-            .setView(changeThemeLayout)
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-
-                SetTheme.setTheme(
-                    delegate,
-                    applicationContext,
-                    changeThemeTextView.editText?.text.toString()
-                )
-
-                sharedPref.edit()
-                    .putString(
-                        getString(R.string.change_theme),
-                        changeThemeTextView.editText?.text.toString()
-                    )
-                    .apply()
-            }
-            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                // Dismiss the dialog
-                dialog.dismiss()
-            }
-        val alert = builder.create()
-        alert.show()
     }
 
     private fun backupError(errorCode: Int) {
@@ -1055,37 +848,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, FolderClickListener
                 }
             }
         }
-    }
-
-
-    private fun biometricTogglePopup(context: Context) {
-        val builder = MaterialAlertDialogBuilder(context)
-
-        val biometricToggleLayout = layoutInflater.inflate(R.layout.biometrics_toggle, null)
-        val biometricSwitch =
-            biometricToggleLayout.findViewById<MaterialSwitch>(R.id.biometric_switch)
-
-        if (sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
-            biometricSwitch.isChecked = true
-        }
-
-        biometricSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            buttonView.isChecked = isChecked
-
-            with(sharedPref.edit()) {
-                putBoolean(Constants.USE_BIOMETRIC, isChecked)
-                apply()
-            }
-
-        }
-        builder.setTitle(getString(R.string.biometric_title))
-            .setCancelable(true)
-            .setView(biometricToggleLayout)
-            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-        val alert = builder.create()
-        alert.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

@@ -111,4 +111,5 @@
     <string name="extract_zip">Zip dosyasını ayıkla</string>
     <string name="biometric_toggle">Biyometriyi Kullanarak Kilidi Aç</string>
     <string name="biometric_title">Biyometrik Kilit Açma</string>
+    <string name="title_activity_settings">Ayarlar</string>
 </resources>

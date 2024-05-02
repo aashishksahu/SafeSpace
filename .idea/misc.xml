@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BuildAttributionWarningsFilter">
     <option name="noGCSettingWarning" value="true" />
@@ -12,7 +13,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.18433609970829778" />
+        <option name="scale" value="0.5742092457420924" />
       </ProjectState>
     </option>
   </component>

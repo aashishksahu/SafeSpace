@@ -14,6 +14,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.privacymatters.safespace.experimental.mainn.MainnActivity
 import org.privacymatters.safespace.lib.utils.Constants
 import org.privacymatters.safespace.lib.utils.EncPref
 import org.privacymatters.safespace.lib.utils.RootCheck
@@ -71,6 +72,13 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+
+        // Experimental - Remove before release
+        val intent = Intent(applicationContext, MainnActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+
 
         authTouch = findViewById(R.id.fingerprint)
         pinField = findViewById(R.id.editTextPassword)
@@ -195,7 +203,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun blockBiometric(flag: Boolean, blockDuration: Long) {
-        if(flag){
+        if (flag) {
 
             val biometricBackup = sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
 
@@ -207,7 +215,7 @@ class AuthActivity : AppCompatActivity() {
                 )
                 .putBoolean(Constants.USE_BIOMETRIC, false)
                 .apply()
-        }else{
+        } else {
             val biometricRestore = sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
 
             sharedPref.edit().putBoolean(

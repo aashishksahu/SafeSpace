@@ -111,4 +111,5 @@
     <string name="extract_zip">ZIP निकालें</string>
     <string name="biometric_title">बायोमेट्रिक अनलॉक</string>
     <string name="biometric_toggle">बायोमेट्रिक्स द्वारा अनलॉक करें</string>
+    <string name="title_activity_settings">सेटिंग्स</string>
 </resources>

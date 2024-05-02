@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:icon="@drawable/fingerprint_black_48dp"
+        app:key="USE_BIOMETRIC"
+        app:title="@string/biometric_title" />
+
+    <Preference
+        app:icon="@drawable/key_black_36dp"
+        app:key="change_pin"
+        app:title="@string/change_pin" />
+
+    <Preference
+        app:icon="@drawable/palette_black_36dp"
+        app:key="change_theme"
+        app:title="@string/change_theme" />
+
+    <Preference
+        app:icon="@drawable/cloud_download_black_24dp"
+        app:key="import_backup"
+        app:title="@string/import_backup" />
+
+    <Preference
+        app:icon="@drawable/backup_black_36dp"
+        app:key="export_backup"
+        app:title="@string/export_backup" />
+
+    <Preference
+        app:icon="@drawable/info_black_36dp"
+        app:key="about"
+        app:title="@string/about_text" />
+
+</androidx.preference.PreferenceScreen>

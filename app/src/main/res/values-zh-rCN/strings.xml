@@ -111,4 +111,5 @@
     <string name="extract_zip">解压缩ZIP</string>
     <string name="biometric_title">生物特征解锁</string>
     <string name="biometric_toggle">使用生物识别技术解锁</string>
+    <string name="title_activity_settings">设置</string>
 </resources>
