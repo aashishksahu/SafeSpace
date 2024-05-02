@@ -28,7 +28,7 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color.Black,
     onPrimary = Color(0xFF242331),
     onSecondary = Color.White,
-    tertiary = Color(0xFF4A4A4A),
+    tertiary = Color(0xFF001433),
 //    onTertiary = Color.White,
 //    onBackground = Color(0xFF1C1B1F),
 //    onSurface = Color(0xFF1C1B1F),
@@ -37,11 +37,11 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF242331),
     secondary = Color(0xFFE0DDCF),
-    background = Color.White,
+    background = Color(0xFFEBE7ED),
     surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color(0xFF1B1A25),
-    tertiary = Color.White,
+    tertiary = Color(0xFFcce0ff),
 )
 
 // Set of Material typography styles to start with
@@ -52,16 +52,15 @@ private val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+    ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
+        fontSize = 32.sp,
+        lineHeight = 48.sp,
         letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
+    )
+    /*labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
@@ -79,11 +78,6 @@ fun SafeSpaceTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -91,8 +85,9 @@ fun SafeSpaceTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

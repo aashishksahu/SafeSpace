@@ -55,7 +55,7 @@
     <string name="copy_file_title">यहा रखें</string>
     <string name="copy_title">कॉपी</string>
     <string name="move_title">स्थानांतरण</string>
-    <string name="move_copy_btn_text">"कॉपी या स्थानांतरित करें "</string>
+    <string name="move_btn_text">"कॉपी या स्थानांतरित करें "</string>
     <string name="unsupported_format">फ़ाइल प्रारूप समर्थित नहीं है</string>
     <string name="create_txt_menu">एक टिप्पणी बनाएं</string>
     <string name="new_text_note">नई टिप्पणी</string>

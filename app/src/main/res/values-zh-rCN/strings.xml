@@ -55,7 +55,7 @@
     <string name="copy_file_title">复制到此处</string>
     <string name="copy_title">复制</string>
     <string name="move_title">移动</string>
-    <string name="move_copy_btn_text">移动或者复制至此</string>
+    <string name="move_btn_text">搬来这</string>
     <string name="unsupported_format">文件格式不受支持</string>
     <string name="create_txt_menu">创建文本文件</string>
     <string name="new_text_note">新文本文件</string>

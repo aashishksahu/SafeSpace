@@ -54,7 +54,7 @@
     <string name="copy_file_title">Buraya Kopyala</string>
     <string name="copy_title">Kopyala</string>
     <string name="move_title">Taşı</string>
-    <string name="move_copy_btn_text">Buraya taşı veya kopyala</string>
+    <string name="move_btn_text">Buraya taşı veya kopyala</string>
     <string name="unsupported_format">Dosya biçimi desteklenmiyor</string>
     <string name="create_txt_menu">Metin Notu Oluştur</string>
     <string name="new_text_note">Yeni Metin Notu</string>

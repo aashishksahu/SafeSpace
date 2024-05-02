@@ -59,7 +59,7 @@
     <string name="copy_file_title">Copy Here</string>
     <string name="copy_title">Copy</string>
     <string name="move_title">Move</string>
-    <string name="move_copy_btn_text">Move or copy here</string>
+    <string name="move_btn_text">Move here</string>
     <string name="unsupported_format">File format not supported</string>
     <string name="create_txt_menu">Create a Text Note</string>
     <string name="new_text_note">New Text Note</string>
@@ -136,7 +136,6 @@
     <!-- Sync Preferences -->
     <string name="title_activity_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

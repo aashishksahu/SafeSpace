@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.mainn.itemlist
+package org.privacymatters.safespace.experimental.mainn
 
 data class Item(
     val name: String,
