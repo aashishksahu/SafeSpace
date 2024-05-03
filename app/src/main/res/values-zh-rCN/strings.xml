@@ -3,8 +3,8 @@
     <string name="cancel">取消</string>
     <string name="create">创建</string>
     <string name="ok">好的</string>
-    <string name="create_folder">新建文件夹</string>
-    <string name="import_files">导入文件</string>
+    <string name="create_folder">文件夹</string>
+    <string name="import_files">文件</string>
     <string name="export_backup">导出Zip压缩包备份</string>
     <string name="change_theme">更改主题</string>
     <string name="dark_theme_text">暗色</string>
@@ -16,7 +16,7 @@
     <string name="import_backup">导入Zip备份</string>
     <string name="backup_err_other">发生意外错误，请重试</string>
     <string name="import_backup_msg">正在后台导入ZIP压缩包，导入大文件时会消耗比较多的时间</string>
-    <string name="open_camera">打开相机</string>
+    <string name="open_camera">相机</string>
     <string name="photo">图片</string>
     <string name="video">视频</string>
     <string name="video_quality">视频质量</string>
@@ -57,7 +57,7 @@
     <string name="move_title">移动</string>
     <string name="move_btn_text">搬来这</string>
     <string name="unsupported_format">文件格式不受支持</string>
-    <string name="create_txt_menu">创建文本文件</string>
+    <string name="create_txt_menu">笔记</string>
     <string name="new_text_note">新文本文件</string>
     <string name="file_exists_error">文件已存在</string>
     <string name="nothing_here">啥也没有¯\\_(ツ)_/¯</string>

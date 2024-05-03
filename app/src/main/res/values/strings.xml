@@ -3,8 +3,8 @@
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
     <string name="ok">OK</string>
-    <string name="create_folder">Create Folder</string>
-    <string name="import_files">Import Files</string>
+    <string name="create_folder">Folder</string>
+    <string name="import_files">File</string>
     <string name="export_backup">Export Zip Backup</string>
     <string name="change_theme">Change Theme</string>
     <string name="dark_theme_text">Dark</string>
@@ -16,7 +16,7 @@
     <string name="import_backup">Import Zip Backup</string>
     <string name="backup_err_other">Unexpected Error, Please try again</string>
     <string name="import_backup_msg">Importing zip archive in background, large files will take time..</string>
-    <string name="open_camera">Open Camera</string>
+    <string name="open_camera">Camera</string>
     <string name="photo">Photo</string>
     <string name="video">Video</string>
     <string name="q1080p" translatable="false">1080p</string>
@@ -61,7 +61,7 @@
     <string name="move_title">Move</string>
     <string name="move_btn_text">Move here</string>
     <string name="unsupported_format">File format not supported</string>
-    <string name="create_txt_menu">Create a Text Note</string>
+    <string name="create_txt_menu">Note</string>
     <string name="new_text_note">New Text Note</string>
     <string name="file_exists_error">This File Already Exists</string>
     <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>

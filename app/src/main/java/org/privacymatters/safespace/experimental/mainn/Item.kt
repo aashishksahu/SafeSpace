@@ -1,9 +1,13 @@
 package org.privacymatters.safespace.experimental.mainn
 
+import android.graphics.Bitmap
+
 data class Item(
+    val icon: Bitmap,
     val name: String,
-    val size: Long,
+    val size: String,
     val isDir: Boolean,
-    val itemCount: Int,
-    val lastModified: Long
+    val itemCount: String,
+    val lastModified: String,
+    val isSelected: Boolean,
 )

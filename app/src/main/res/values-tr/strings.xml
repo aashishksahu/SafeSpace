@@ -2,8 +2,8 @@
     <string name="cancel">İptal</string>
     <string name="create">Oluştur</string>
     <string name="ok">Tamam</string>
-    <string name="create_folder">Klasör Oluştur</string>
-    <string name="import_files">Dosyaları İçe Aktar</string>
+    <string name="create_folder">Dosya</string>
+    <string name="import_files">veri</string>
     <string name="export_backup">Zip Yedeklemesini Dışa Aktar</string>
     <string name="change_theme">Temayı Değiştir</string>
     <string name="dark_theme_text">Koyu</string>
@@ -15,7 +15,7 @@
     <string name="import_backup">Zip Yedeklemesini İçe Aktar</string>
     <string name="backup_err_other">Beklenmeyen Hata, Lütfen tekrar deneyin</string>
     <string name="import_backup_msg">ZIP arşivi arka planda içe aktarılıyor, büyük dosyalar zaman alacak..</string>
-    <string name="open_camera">Kamerayı Aç</string>
+    <string name="open_camera">kamera</string>
     <string name="photo">Fotoğraf</string>
     <string name="video">Video</string>
     <string name="video_quality">Video Kalitesi</string>
@@ -56,7 +56,7 @@
     <string name="move_title">Taşı</string>
     <string name="move_btn_text">Buraya taşı veya kopyala</string>
     <string name="unsupported_format">Dosya biçimi desteklenmiyor</string>
-    <string name="create_txt_menu">Metin Notu Oluştur</string>
+    <string name="create_txt_menu">Not</string>
     <string name="new_text_note">Yeni Metin Notu</string>
     <string name="file_exists_error">Bu Dosya Zaten Var</string>
     <string name="nothing_here">Burada hiçbir şey ¯\\_(ツ )_/¯</string>
