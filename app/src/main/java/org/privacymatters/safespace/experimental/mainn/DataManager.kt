@@ -4,9 +4,8 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
-import android.os.CancellationSignal
+import android.util.Log
 import android.util.Size
-import androidx.lifecycle.MutableLiveData
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.lib.fileManager.Utils
 import org.privacymatters.safespace.lib.utils.Constants
@@ -15,29 +14,24 @@ import java.io.IOException
 
 object DataManager {
 
-    var internalPath: MutableLiveData<ArrayList<String>> = MutableLiveData()
+    var internalPath: ArrayList<String> = arrayListOf()
     private lateinit var application: Application
-    fun init(app: Application): DataManager {
+
+    fun ready(app: Application): Int {
         application = app
 
-        val tempInternalPath = arrayListOf<String>()
-        tempInternalPath.add(Constants.ROOT)
-        internalPath.value = tempInternalPath
-
-        return this
-    }
-
-    fun initRootDir(): Int {
-
+        // initialize at first run of app. Sets the root directory
         try {
-            val newDir = File(getFilesDir())
-            if (!newDir.exists()) {
-                newDir.mkdirs()
+            val rootDir = File(getFilesDir())
+            if (!rootDir.exists()) {
+                rootDir.mkdirs()
             }
-
+//            internalPath.add(Constants.ROOT)
         } catch (e: FileSystemException) {
+            Log.e(Constants.TAG_ERROR, "@ DataManager.ready() ", e)
             return 0
         }
+
         return 1
     }
 
@@ -53,22 +47,21 @@ object DataManager {
     }
 
     private fun getInternalPath(): String {
-        return internalPath.value?.joinToString(File.separator) ?: Constants.ROOT
+        return internalPath.joinToString(File.separator)
     }
 
     fun getItems(): ArrayList<Item> {
 
         val dirPath = File(joinPath(getFilesDir(), getInternalPath()))
         var icon: Bitmap
-        val iconSize = 64
+        val iconSize = 256
         var fileCount = ""
         val contents = dirPath.listFiles()
-
-        val itemList = arrayListOf<Item>()
-
+        val tempItemsList = arrayListOf<Item>()
 
         contents?.let {
             for (content in it) {
+
                 if (content.isDirectory) {
 
                     // File count
@@ -98,10 +91,14 @@ object DataManager {
                     // Generate thumbnail based on file type
                     if (Utils.getFileType(content.name) == Constants.AUDIO_TYPE) {
                         icon = try {
-                            ThumbnailUtils.createAudioThumbnail(
-                                file,
-                                Size(iconSize, iconSize),
-                                CancellationSignal()
+                            ThumbnailUtils.extractThumbnail(
+                                ThumbnailUtils.createAudioThumbnail(
+                                    file,
+                                    Size(iconSize, iconSize),
+                                    null
+                                ),
+                                iconSize,
+                                iconSize
                             )
                         } catch (ex: IOException) {
                             BitmapFactory.decodeResource(
@@ -111,10 +108,14 @@ object DataManager {
                         }
                     } else if (Utils.getFileType(content.name) == Constants.VIDEO_TYPE) {
                         icon = try {
-                            ThumbnailUtils.createVideoThumbnail(
-                                file,
-                                Size(iconSize, iconSize),
-                                CancellationSignal()
+                            ThumbnailUtils.extractThumbnail(
+                                ThumbnailUtils.createVideoThumbnail(
+                                    file,
+                                    Size(iconSize, iconSize),
+                                    null
+                                ),
+                                iconSize,
+                                iconSize
                             )
                         } catch (ex: IOException) {
                             BitmapFactory.decodeResource(
@@ -124,10 +125,14 @@ object DataManager {
                         }
                     } else if (Utils.getFileType(content.name) == Constants.IMAGE_TYPE) {
                         icon = try {
-                            ThumbnailUtils.createImageThumbnail(
-                                file,
-                                Size(iconSize, iconSize),
-                                CancellationSignal()
+                            ThumbnailUtils.extractThumbnail(
+                                ThumbnailUtils.createImageThumbnail(
+                                    file,
+                                    Size(iconSize, iconSize),
+                                    null
+                                ),
+                                iconSize,
+                                iconSize
                             )
                         } catch (ex: IOException) {
                             BitmapFactory.decodeResource(
@@ -142,7 +147,7 @@ object DataManager {
                         )
                     }
                 }
-                itemList.add(
+                tempItemsList.add(
                     Item(
                         icon = icon,
                         name = content.name,
@@ -157,9 +162,9 @@ object DataManager {
         }
 
         // sort -> folders first -> ascending by name
-        itemList.sortWith(compareByDescending<Item> { it.isDir }.thenBy { it.name })
+        tempItemsList.sortWith(compareByDescending<Item> { it.isDir }.thenBy { it.name })
 
-        return itemList
+        return tempItemsList
     }
 
 }

@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,13 +42,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import org.privacymatters.safespace.CameraActivity
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.experimental.mainn.ui.theme.SafeSpaceTheme
+import org.privacymatters.safespace.experimental.mainn.ui.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.settings.SettingsActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainnActivity : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
+    private lateinit var itemList: List<Item>
 //    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
 //    private val ops: Operations = Operations(application)
 //    private var importList: ArrayList<Uri> = ArrayList()
@@ -55,9 +57,12 @@ class MainnActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.ops.internalPath.observe(this) {
-            viewModel.getContents()
-        }
+        /* TODO:
+            * Add listener to viewModel.longPressAction changes and change the bottom bar
+              accordingly on long press
+            * Add settings option to switch between grid and list
+         */
+
 
         /*       File picker result
                 val selectFilesActivityResult =
@@ -123,6 +128,11 @@ class MainnActivity : AppCompatActivity() {
 
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        viewModel.getItems()
+    }
+
     @Composable
     fun MainActivity() {
         SafeSpaceTheme {
@@ -131,7 +141,6 @@ class MainnActivity : AppCompatActivity() {
                     TopAppBar()
                 },
                 bottomBar = {
-                    // TODO: Add listener to viewModel.longPressAction changes and change the bottom bar accordingly on long press
                     NormalActionBar()
 //                    LongPressActionBar()
 //                    MoveActionBar()
@@ -172,27 +181,47 @@ class MainnActivity : AppCompatActivity() {
 
     @Composable
     private fun ItemList(innerPadding: PaddingValues) {
+        itemList = viewModel.itemList
 
-        val itemList = viewModel.itemList.observeAsState()
-
-        LazyColumn {
-            items(itemList.value as List<Item>) { item ->
-                ItemCard(item)
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = innerPadding.calculateTopPadding())
+                .fillMaxWidth()
+        ) {
+            items(itemList) { item ->
+                if (item == itemList.last()) {
+                    Spacer(modifier = Modifier.padding(innerPadding.calculateTopPadding()))
+                } else {
+                    ItemCard(item)
+                }
             }
         }
+
 
     }
 
     @Composable
     private fun ItemCard(item: Item) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                modifier = Modifier.size(64.dp),
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(5.dp)
+                .clickable { openCamera() }
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(64.dp, 64.dp)
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.background),
                 bitmap = item.icon.asImageBitmap(),
-                contentDescription = getString(R.string.file_icon_description)
+                contentDescription = getString(R.string.file_icon_description),
             )
-            Column {
-                Text(text = item.name, style = MaterialTheme.typography.headlineMedium)
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
+            ) {
+                Text(text = item.name, style = MaterialTheme.typography.titleMedium)
                 if (item.isDir) {
                     Text(text = item.itemCount)
                 } else {
@@ -304,7 +333,7 @@ class MainnActivity : AppCompatActivity() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 IconButton(
-                    onClick = { deleteItems() },
+                    onClick = { viewModel.deleteItems() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -313,7 +342,7 @@ class MainnActivity : AppCompatActivity() {
                     )
                 }
                 IconButton(
-                    onClick = { moveItems() },
+                    onClick = { viewModel.moveItems() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -322,7 +351,7 @@ class MainnActivity : AppCompatActivity() {
                     )
                 }
                 IconButton(
-                    onClick = { copyItems() },
+                    onClick = { viewModel.copyItems() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -331,7 +360,7 @@ class MainnActivity : AppCompatActivity() {
                     )
                 }
                 IconButton(
-                    onClick = { clearSelection() },
+                    onClick = { viewModel.clearSelection() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -340,7 +369,7 @@ class MainnActivity : AppCompatActivity() {
                     )
                 }
                 IconButton(
-                    onClick = { exportSelection() },
+                    onClick = { viewModel.exportSelection() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -349,7 +378,7 @@ class MainnActivity : AppCompatActivity() {
                     )
                 }
                 IconButton(
-                    onClick = { shareFiles() },
+                    onClick = { viewModel.shareFiles() },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(
@@ -373,7 +402,7 @@ class MainnActivity : AppCompatActivity() {
                     elevation = 3.dp,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { moveToDestination() }
+                .clickable { viewModel.moveToDestination() }
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
@@ -399,7 +428,7 @@ class MainnActivity : AppCompatActivity() {
                     elevation = 3.dp,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { copyToDestination() }
+                .clickable { viewModel.copyToDestination() }
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
@@ -411,50 +440,6 @@ class MainnActivity : AppCompatActivity() {
                 Text(text = getString(R.string.copy_file_title))
             }
         }
-    }
-
-    private fun moveToDestination() {
-        TODO("Not yet implemented")
-    }
-
-    private fun copyToDestination() {
-        TODO("Not yet implemented")
-    }
-
-    private fun shareFiles() {
-        TODO("Not yet implemented")
-    }
-
-    private fun exportSelection() {
-        TODO("Not yet implemented")
-    }
-
-    private fun clearSelection() {
-        TODO("Not yet implemented")
-    }
-
-    private fun copyItems() {
-        TODO("Not yet implemented")
-    }
-
-    private fun moveItems() {
-        TODO("Not yet implemented")
-    }
-
-    private fun deleteItems() {
-        TODO("Not yet implemented")
-    }
-
-    private fun createTextNote() {
-        TODO("Not yet implemented")
-    }
-
-    private fun createFolder() {
-        TODO("Not yet implemented")
-    }
-
-    private fun importFiles() {
-        TODO("Not yet implemented")
     }
 
     private fun openCamera() {

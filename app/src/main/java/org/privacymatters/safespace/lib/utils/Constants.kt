@@ -3,6 +3,7 @@ package org.privacymatters.safespace.lib.utils
 class Constants {
     companion object {
 
+        const val TAG_ERROR = "org.privacymatters.safespace:E"
         const val TIME_TO_UNLOCK_DURATION = "TIME_TO_UNLOCK_DURATION"
         const val TIME_TO_UNLOCK_START = "TIME_TO_UNLOCK_START"
         const val DEF_NUM_FLAG = -1L
