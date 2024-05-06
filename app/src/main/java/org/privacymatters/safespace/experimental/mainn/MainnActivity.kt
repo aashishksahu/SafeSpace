@@ -1,58 +1,39 @@
 package org.privacymatters.safespace.experimental.mainn
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.dp
-import org.privacymatters.safespace.CameraActivity
-import org.privacymatters.safespace.R
+import androidx.compose.runtime.remember
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import org.privacymatters.safespace.experimental.mainn.ui.BottomAppBar
+import org.privacymatters.safespace.experimental.mainn.ui.ItemList
 import org.privacymatters.safespace.experimental.mainn.ui.SafeSpaceTheme
-import org.privacymatters.safespace.experimental.settings.SettingsActivity
+import org.privacymatters.safespace.experimental.mainn.ui.TopAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 class MainnActivity : AppCompatActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModels()
-    private lateinit var itemList: List<Item>
+    private val notificationPermissionRequestCode = 100
+    lateinit var snackBarHostState: SnackbarHostState
+    val viewModel: MainActivityViewModel by viewModels()
+    private lateinit var topAppBar: TopAppBar
+    private lateinit var bottomAppBar: BottomAppBar
+    lateinit var selectFilesActivityResult: ActivityResultLauncher<Intent>
+
 //    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
-//    private val ops: Operations = Operations(application)
-//    private var importList: ArrayList<Uri> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,71 +41,33 @@ class MainnActivity : AppCompatActivity() {
         /* TODO:
             * Add listener to viewModel.longPressAction changes and change the bottom bar
               accordingly on long press
-            * Add settings option to switch between grid and list
+            * Add breadcrumbs
          */
 
+        registerFilePickerListener()
 
-        /*       File picker result
-                val selectFilesActivityResult =
-                    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                               importList.clear()
-
-                        if (result.resultCode == AppCompatActivity.RESULT_OK) {
-
-                            val data: Intent? = result.data
-
-                            //If multiple files selected
-                            if (data?.clipData != null) {
-                                val count = data.clipData?.itemCount ?: 0
-
-                                for (i in 0 until count) {
-                                    importList.add(data.clipData?.getItemAt(i)?.uri!!)
-                                }
-                            }
-
-                            //If single file selected
-                            else if (data?.data != null) {
-                                importList.add(data.data!!)
-                            }
-
-                            Toast.makeTextapplicationContextgetString(R.string.import_files_progress),
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            for (uri in importList) {
-
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    val importResult = ops.importFile(
-                                        uri, ops.getInternalPath(),
-                                    )
-
-                                    when (importResult) {
-                                        // 1: success, -1: failure
-                                        1 -> {
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                updateRecyclerView()
-                                            }
-                                        }
-
-                                        -1 -> {
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                Toast.makeText(
-                                                    applicationContext,
-                                                    getString(R.string.import_files_error),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                               }
-                        }
-        */
+        // request notification permission for Android 13 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!isNotificationPermissionGranted()) {
+                requestNotificationPermission()
+            }
+        }
 
         setContent {
             MainActivity()
         }
+
+        // back button - system navigation
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!viewModel.isRootDirectory()) {
+                    viewModel.returnToPreviousLocation()
+                    viewModel.getItems()
+                } else {
+                    finish()
+                }
+            }
+        })
 
     }
 
@@ -136,321 +79,65 @@ class MainnActivity : AppCompatActivity() {
     @Composable
     fun MainActivity() {
         SafeSpaceTheme {
+            snackBarHostState = remember { SnackbarHostState() }
+
             Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackBarHostState)
+                },
                 topBar = {
-                    TopAppBar()
+                    topAppBar = TopAppBar(this)
+                    topAppBar.NormalTopBar()
                 },
                 bottomBar = {
-                    NormalActionBar()
+                    bottomAppBar = BottomAppBar(this)
+                    bottomAppBar.NormalActionBar()
 //                    LongPressActionBar()
 //                    MoveActionBar()
 //                    CopyActionBar()
                 }
             ) { innerPadding ->
-                ItemList(innerPadding)
+                val lazyListDisplay = ItemList(this)
+
+                BreadCrumbs()
+
+                lazyListDisplay.LazyList(innerPadding)
             }
         }
     }
 
     @Composable
-    private fun TopAppBar() {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
-            title = {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            },
-            actions = {
-                IconButton(
-                    onClick = { openSettings() }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.settings_black_36dp),
-                        contentDescription = getString(R.string.title_activity_settings)
-                    )
-                }
+    fun BreadCrumbs() {
+        // Todo: "Not yet implemented")
+    }
+
+    private fun registerFilePickerListener() {
+        // File picker result
+        selectFilesActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                viewModel.importFiles(result)
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun isNotificationPermissionGranted(): Boolean {
+        val permission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+
+        return permission == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            notificationPermissionRequestCode
         )
     }
 
-
-    @Composable
-    private fun ItemList(innerPadding: PaddingValues) {
-        itemList = viewModel.itemList
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .fillMaxWidth()
-        ) {
-            items(itemList) { item ->
-                if (item == itemList.last()) {
-                    Spacer(modifier = Modifier.padding(innerPadding.calculateTopPadding()))
-                } else {
-                    ItemCard(item)
-                }
-            }
-        }
-
-
-    }
-
-    @Composable
-    private fun ItemCard(item: Item) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(5.dp)
-                .clickable { openCamera() }
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(64.dp, 64.dp)
-                    .padding(5.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.background),
-                bitmap = item.icon.asImageBitmap(),
-                contentDescription = getString(R.string.file_icon_description),
-            )
-            Column(
-                modifier = Modifier
-                    .padding(5.dp)
-            ) {
-                Text(text = item.name, style = MaterialTheme.typography.titleMedium)
-                if (item.isDir) {
-                    Text(text = item.itemCount)
-                } else {
-                    Text(text = item.size)
-                }
-                Text(text = item.lastModified)
-            }
-        }
-    }
-
-    @Composable
-    private fun NormalActionBar() {
-        BottomAppBar(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
-
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { openCamera() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.photo_camera_black_24dp),
-                        contentDescription = getString(R.string.open_camera),
-                    )
-                    Text(text = getString(R.string.open_camera))
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { openCamera() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.add_fill0_wght400_grad0_opsz24),
-                        contentDescription = getString(R.string.import_files)
-                    )
-                    Text(text = getString(R.string.import_files))
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { openCamera() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.baseline_create_new_folder_24),
-                        contentDescription = getString(R.string.create_folder)
-                    )
-                    Text(text = getString(R.string.create_folder))
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { openCamera() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.baseline_create_new_folder_24),
-                        contentDescription = getString(R.string.create_txt_menu)
-                    )
-                    Text(text = getString(R.string.create_txt_menu))
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun LongPressActionBar() {
-        BottomAppBar(
-            containerColor = Color(0xFFe6e6ef),
-            contentColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
-
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                IconButton(
-                    onClick = { viewModel.deleteItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
-                        contentDescription = getString(R.string.context_menu_delete)
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.moveItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.drive_file_move_black_24dp),
-                        contentDescription = getString(R.string.context_menu_move)
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.copyItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.file_copy_black_24dp),
-                        contentDescription = getString(R.string.context_menu_copy)
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.clearSelection() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.clear_all_black_24dp),
-                        contentDescription = getString(R.string.multi_clear)
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.exportSelection() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
-                        contentDescription = getString(R.string.multi_export)
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.shareFiles() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
-                        contentDescription = getString(R.string.context_menu_share)
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun MoveActionBar() {
-        BottomAppBar(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clickable { viewModel.moveToDestination() }
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
-
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = getString(R.string.move_btn_text))
-            }
-        }
-    }
-
-    @Composable
-    private fun CopyActionBar() {
-        BottomAppBar(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clickable { viewModel.copyToDestination() }
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
-
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Text(text = getString(R.string.copy_file_title))
-            }
-        }
-    }
-
-    private fun openCamera() {
-        val cameraIntent = Intent(this, CameraActivity::class.java)
-        startActivity(cameraIntent)
-    }
-
-    private fun openSettings() {
-        val settingsIntent = Intent(this, SettingsActivity::class.java)
-        startActivity(settingsIntent)
-    }
 }
 
 

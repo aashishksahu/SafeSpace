@@ -2,20 +2,19 @@
     <!-- Base application theme. -->
     <style name="Theme.SafeSpace" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <item name="android:itemBackground">@color/card_background_dark</item>
-
         <!--  Primary brand color.  -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorOnPrimary">@color/secondary_500</item>
-        <item name="colorPrimaryVariant">@color/primary_700</item>
-        <item name="iconTint">@color/primary_500</item>
-        <item name="cardBackgroundColor">@color/card_background_dark</item>
+        <item name="colorPrimary">#DBE2EF</item>
+        <item name="colorOnPrimary">#112D4E</item>
+
         <!--  Secondary brand color.  -->
-        <item name="colorSecondary">@color/secondary_500</item>
-        <item name="colorOnSecondary">@color/primary_500</item>
-        <item name="backgroundColor">@color/dark_background</item>
+        <item name="colorSecondary">#F9F7F7</item>
+        <item name="colorOnSecondary">#3F72AF</item>
+
+        <item name="backgroundColor">#000000</item>
+        <item name="colorOnBackground">#F9F7F7</item>
+
         <!--  Status bar color.  -->
-        <item name="android:statusBarColor">?attr/backgroundColor</item>
+        <item name="android:statusBarColor">#000000</item>
     </style>
 
 </resources>

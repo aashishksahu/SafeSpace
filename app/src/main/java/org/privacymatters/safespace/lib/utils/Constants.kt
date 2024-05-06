@@ -26,6 +26,7 @@ class Constants {
         const val JSON = "json"
         const val XML = "xml"
         const val ZIP = "zip"
+        const val BIN = "BIN"
 
         const val ROOT = "root"
         const val APP_FIRST_RUN = "FIRST_RUN"

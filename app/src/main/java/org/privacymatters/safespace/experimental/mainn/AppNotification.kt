@@ -1,12 +1,11 @@
-package org.privacymatters.safespace.main
+package org.privacymatters.safespace.experimental.mainn
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import org.privacymatters.safespace.lib.fileManager.FileTransferNotification
 
-class SafeSpaceApp: Application() {
+class AppNotification: Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
@@ -16,7 +15,7 @@ class SafeSpaceApp: Application() {
         val channel = NotificationChannel(
             FileTransferNotification.CHANNEL_ID,
             FileTransferNotification.CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_LOW
         )
         channel.description = "Shows file transfer progress."
 
