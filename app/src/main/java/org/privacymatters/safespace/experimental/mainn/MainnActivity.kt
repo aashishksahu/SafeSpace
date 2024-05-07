@@ -12,26 +12,46 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.mainn.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.mainn.ui.ItemList
 import org.privacymatters.safespace.experimental.mainn.ui.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.mainn.ui.TopAppBar
+import org.privacymatters.safespace.lib.utils.Constants
 
 class MainnActivity : AppCompatActivity() {
 
     private val notificationPermissionRequestCode = 100
-    lateinit var snackBarHostState: SnackbarHostState
-    val viewModel: MainActivityViewModel by viewModels()
     private lateinit var topAppBar: TopAppBar
     private lateinit var bottomAppBar: BottomAppBar
+    private lateinit var breadcrumbs: List<String>
+
+    lateinit var snackBarHostState: SnackbarHostState
     lateinit var selectFilesActivityResult: ActivityResultLauncher<Intent>
+
+    val viewModel: MainActivityViewModel by viewModels()
 
 //    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
 
@@ -41,7 +61,6 @@ class MainnActivity : AppCompatActivity() {
         /* TODO:
             * Add listener to viewModel.longPressAction changes and change the bottom bar
               accordingly on long press
-            * Add breadcrumbs
          */
 
         registerFilePickerListener()
@@ -63,6 +82,7 @@ class MainnActivity : AppCompatActivity() {
                 if (!viewModel.isRootDirectory()) {
                     viewModel.returnToPreviousLocation()
                     viewModel.getItems()
+                    viewModel.getInternalPath()
                 } else {
                     finish()
                 }
@@ -98,17 +118,38 @@ class MainnActivity : AppCompatActivity() {
                 }
             ) { innerPadding ->
                 val lazyListDisplay = ItemList(this)
-
-                BreadCrumbs()
-
-                lazyListDisplay.LazyList(innerPadding)
+                Column(
+                    modifier = Modifier
+                        .padding(top = innerPadding.calculateTopPadding())
+                ) {
+                    BreadCrumbs()
+                    lazyListDisplay.LazyList(innerPadding)
+                }
             }
         }
     }
 
     @Composable
     fun BreadCrumbs() {
-        // Todo: "Not yet implemented")
+        breadcrumbs = viewModel.internalPathList
+
+        LazyRow(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            items(breadcrumbs) {
+                if (it == Constants.ROOT) {
+                    Icon(Icons.Filled.Home, contentDescription = getString(R.string.app_name))
+                } else {
+                    Text(text = it, style = MaterialTheme.typography.bodyLarge)
+                }
+                Text(text = " / ", style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+
     }
 
     private fun registerFilePickerListener() {

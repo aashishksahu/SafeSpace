@@ -49,7 +49,7 @@ class ItemList(private val activity: MainnActivity) {
 
         LazyColumn(
             modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
+//                .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxWidth()
         ) {
             items(itemList) { item ->

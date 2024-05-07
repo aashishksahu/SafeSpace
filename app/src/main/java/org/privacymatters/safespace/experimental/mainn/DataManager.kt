@@ -22,7 +22,8 @@ import java.util.zip.ZipInputStream
 
 object DataManager {
 
-    var internalPath: ArrayList<String> = arrayListOf()
+    // keep the "" , helps in loading the breadcrumbs initially
+    var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
 
     fun ready(app: Application): Int {
@@ -34,7 +35,6 @@ object DataManager {
             if (!rootDir.exists()) {
                 rootDir.mkdirs()
             }
-//            internalPath.add(Constants.ROOT)
         } catch (e: FileSystemException) {
             Log.e(Constants.TAG_ERROR, "@ DataManager.ready() ", e)
             return 0
@@ -45,7 +45,7 @@ object DataManager {
 
     private fun getFilesDir(): String {
         // root folder inside app files directory will be the first folder
-        return application.filesDir.canonicalPath.toString() + File.separator + Constants.ROOT
+        return application.filesDir.canonicalPath.toString() + File.separator
     }
 
     fun joinPath(vararg pathList: String): String {
@@ -54,6 +54,10 @@ object DataManager {
 
     fun getInternalPath(): String {
         return joinPath(getFilesDir(), internalPath.joinToString(File.separator))
+    }
+
+    fun getInternalPathList(): List<String> {
+        return internalPath
     }
 
     fun getItems(): ArrayList<Item> {

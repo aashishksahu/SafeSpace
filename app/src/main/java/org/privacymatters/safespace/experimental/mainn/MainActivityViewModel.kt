@@ -24,9 +24,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val _itemList: SnapshotStateList<Item> = mutableStateListOf()
     val itemList: List<Item> = _itemList
 
+    private val _internalPathList: SnapshotStateList<String> = mutableStateListOf()
+    val internalPathList: List<String> = _internalPathList
+
     init {
         ops.ready(application)
         getItems()
+        getInternalPath()
     }
 
     fun getItems() {
@@ -34,9 +38,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         _itemList.addAll(ops.getItems())
     }
 
+    fun getInternalPath() {
+        _internalPathList.clear()
+        _internalPathList.addAll(ops.getInternalPathList())
+    }
+
     fun travelToLocation(dir: String) {
         ops.internalPath.add(dir)
         getItems()
+        getInternalPath()
     }
 
     fun returnToPreviousLocation() {
