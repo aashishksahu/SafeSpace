@@ -14,7 +14,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -53,14 +52,13 @@ class MainnActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-//    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         /* TODO:
             * Add listener to viewModel.longPressAction changes and change the bottom bar
               accordingly on long press
+            * Improve getItems() performance
          */
 
         registerFilePickerListener()

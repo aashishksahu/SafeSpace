@@ -129,13 +129,7 @@
     <string name="extract_zip">Extract the Zip file</string>
     <string name="biometric_toggle">Unlock Using Biometrics</string>
     <string name="biometric_title">Biometric Unlock</string>
-    <!-- Preference Titles -->
-
-    <!-- Messages Preferences -->
-
-    <!-- Sync Preferences -->
     <string name="title_activity_settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
 
 
 </resources>

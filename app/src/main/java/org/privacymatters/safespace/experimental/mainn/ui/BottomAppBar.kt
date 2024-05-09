@@ -10,26 +10,40 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.CameraActivity
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.experimental.mainn.MainnActivity
+import org.privacymatters.safespace.lib.utils.Constants
 
 class BottomAppBar(private val activity: MainnActivity) {
+
+    private val createFolderShowDialog = mutableStateOf(false)
+    private val createNoteShowDialog = mutableStateOf(false)
+    private var name: String = ""
 
     @Composable
     fun NormalActionBar() {
@@ -94,8 +108,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { /* Todo: Create folder dialog */ }
+                        .clickable {
+                            createFolderShowDialog.value = true
+                        }
                 ) {
+                    val showDialog = remember { createFolderShowDialog }
+
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.baseline_create_new_folder_24),
                         contentDescription = activity.getString(R.string.create_folder)
@@ -104,14 +122,34 @@ class BottomAppBar(private val activity: MainnActivity) {
                         text = activity.getString(R.string.create_folder),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
+                    if (showDialog.value) {
+                        Prompt(
+                            onDismiss = {
+                                name = ""
+                                createFolderShowDialog.value = false
+                            },
+                            onConfirmation = {
+                                if (name.isNotEmpty()) {
+                                    activity.viewModel.createFolder(name)
+                                    name = ""
+                                    createFolderShowDialog.value = false
+                                }
+                            },
+                            dialogTitle = activity.getString(R.string.create_folder)
+                        )
+                    }
                 }
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { }
+                        .clickable {
+                            createNoteShowDialog.value = true
+                        }
                 ) {
+                    val showDialog = remember { createNoteShowDialog }
+
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.edit_note_black_36dp),
                         contentDescription = activity.getString(R.string.create_txt_menu)
@@ -120,6 +158,32 @@ class BottomAppBar(private val activity: MainnActivity) {
                         text = activity.getString(R.string.create_txt_menu),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
+                    if (showDialog.value) {
+                        Prompt(
+                            onDismiss = {
+                                name = ""
+                                createNoteShowDialog.value = false
+                            },
+                            onConfirmation = {
+                                if (name.isNotEmpty()) {
+                                    val noteFile = activity.viewModel.createTextNote(name)
+                                    val documentViewIntent =
+                                        Intent(activity.application, TextDocumentView::class.java)
+
+                                    documentViewIntent.putExtra(
+                                        Constants.INTENT_KEY_PATH,
+                                        noteFile.canonicalPath
+                                    )
+
+                                    name = ""
+                                    createNoteShowDialog.value = false
+
+                                    activity.startActivity(documentViewIntent)
+                                }
+                            },
+                            dialogTitle = activity.getString(R.string.create_txt_menu)
+                        )
+                    }
                 }
             }
         }
@@ -255,6 +319,69 @@ class BottomAppBar(private val activity: MainnActivity) {
         }
     }
 
+    @Composable
+    fun Prompt(
+        onConfirmation: () -> Unit,
+        onDismiss: () -> Unit,
+        dialogTitle: String
+    ) {
+        val textFieldContent = remember { mutableStateOf(TextFieldValue(name)) }
+        val isValid = remember { mutableStateOf(true) }
+        val namePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
+
+        AlertDialog(
+            title = {
+                Text(text = dialogTitle)
+            },
+            text = {
+
+                OutlinedTextField(
+                    label = { Text(activity.getString(R.string.name)) },
+                    value = textFieldContent.value,
+                    onValueChange = {
+                        textFieldContent.value = it
+                        if (namePattern.containsMatchIn(textFieldContent.value.text)) {
+                            isValid.value = false
+                        } else {
+                            isValid.value = true
+                            name = textFieldContent.value.text
+                        }
+                    },
+                    isError = !isValid.value,
+                    supportingText = {
+                        if (!isValid.value) {
+                            Text(
+                                text = activity.getString(R.string.create_folder_invalid_error),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        if (!isValid.value)
+                            Icon(
+                                Icons.Filled.Warning,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                    },
+                )
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(text = activity.getString(R.string.cancel))
+                }
+                textFieldContent.value = TextFieldValue("")
+            },
+            onDismissRequest = {
+                onDismiss()
+                textFieldContent.value = TextFieldValue("")
+            },
+            confirmButton = {
+                TextButton(onClick = { onConfirmation() }) {
+                    Text(text = activity.getString(R.string.create))
+                }
+            })
+    }
 
     private fun openCamera() {
         val cameraIntent = Intent(activity, CameraActivity::class.java)

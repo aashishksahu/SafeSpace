@@ -11,9 +11,11 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.lib.utils.Constants
+import java.io.File
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+class MainActivityViewModel(private val application: Application) : AndroidViewModel(application) {
 
     private var ops = DataManager
 
@@ -100,12 +102,26 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     }
 
-    fun createTextNote() {
+    fun createTextNote(name: String): File {
+        val fileName = name + "." + Constants.TXT
 
+        val noteFile = File(ops.joinPath(ops.getInternalPath(), fileName))
+
+        if(!noteFile.exists()){
+            noteFile.createNewFile()
+        }
+        return noteFile
     }
 
-    fun createFolder() {
+    fun createFolder(name: String): File {
 
+        val folder = File(ops.joinPath(ops.getInternalPath(), name))
+
+        if(!folder.exists()){
+            folder.mkdirs()
+            getItems()
+        }
+        return folder
     }
 
     fun importFiles(result: ActivityResult) {
