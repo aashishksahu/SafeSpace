@@ -2,12 +2,9 @@ package org.privacymatters.safespace.experimental.mainn
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
-import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
-import android.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
@@ -31,7 +28,7 @@ object DataManager {
 
         // initialize at first run of app. Sets the root directory
         try {
-            val rootDir = File(getFilesDir())
+            val rootDir = File(joinPath(getFilesDir(), Constants.ROOT))
             if (!rootDir.exists()) {
                 rootDir.mkdirs()
             }
@@ -63,93 +60,27 @@ object DataManager {
     fun getItems(): ArrayList<Item> {
 
         val dirPath = File(getInternalPath())
-        var icon: Bitmap?
-        var iconDrawable: Int = -1
-        val iconSize = 256
         var fileCount = ""
         val contents = dirPath.listFiles()
         val tempItemsList = arrayListOf<Item>()
 
         contents?.let {
             for (content in it) {
-                icon = null
 
                 if (content.isDirectory) {
-
                     // File count
                     val fileInsideFolder = content.listFiles()
                     val count = fileInsideFolder?.size
                     fileCount = when (count) {
-                        0 -> {
-                            "0 " + application.getString(R.string.items)
-                        }
-
-                        1 -> {
-                            "1 " + application.getString(R.string.item)
-                        }
-
-                        else -> {
-                            count.toString() + " " + application.getString(R.string.items)
-                        }
+                        0 -> "0 " + application.getString(R.string.items)
+                        1 -> "1 " + application.getString(R.string.item)
+                        else -> count.toString() + " " + application.getString(R.string.items)
                     }
 
-                    // Icon
-                    iconDrawable = R.drawable.folder_36dp
-                } else {
-
-                    val file = File(content.canonicalPath)
-
-                    // Generate thumbnail based on file type
-                    if (Utils.getFileType(content.name) == Constants.AUDIO_TYPE) {
-                        try {
-                            icon = ThumbnailUtils.extractThumbnail(
-                                ThumbnailUtils.createAudioThumbnail(
-                                    file,
-                                    Size(iconSize, iconSize),
-                                    null
-                                ),
-                                iconSize,
-                                iconSize
-                            )
-                        } catch (ex: IOException) {
-                            iconDrawable = R.drawable.music_note_white_36dp
-                        }
-                    } else if (Utils.getFileType(content.name) == Constants.VIDEO_TYPE) {
-                        try {
-                            icon = ThumbnailUtils.extractThumbnail(
-                                ThumbnailUtils.createVideoThumbnail(
-                                    file,
-                                    Size(iconSize, iconSize),
-                                    null
-                                ),
-                                iconSize,
-                                iconSize
-                            )
-                        } catch (ex: IOException) {
-                            iconDrawable = R.drawable.video_file_white_36dp
-                        }
-                    } else if (Utils.getFileType(content.name) == Constants.IMAGE_TYPE) {
-                        try {
-                            icon = ThumbnailUtils.extractThumbnail(
-                                ThumbnailUtils.createImageThumbnail(
-                                    file,
-                                    Size(iconSize, iconSize),
-                                    null
-                                ),
-                                iconSize,
-                                iconSize
-                            )
-                        } catch (ex: IOException) {
-                            iconDrawable = R.drawable.image_white_36dp
-                        }
-                    } else {
-                        iconDrawable = R.drawable.description_white_36dp
-                    }
                 }
+
                 tempItemsList.add(
                     Item(
-                        icon = icon,
-                        iconDrawable = iconDrawable,
                         name = content.name,
                         size = Utils.getSize(content.length()),
                         isDir = content.isDirectory,
@@ -165,13 +96,16 @@ object DataManager {
         tempItemsList.sortWith(compareByDescending<Item> { it.isDir }.thenBy { it.name })
 
         return tempItemsList
+
     }
 
     @Throws(SecurityException::class)
     fun extractZip(filePath: String): Boolean {
-        try {
 
-            val currentDir = getInternalPath()
+        try {
+            var (zipDir, _) = Utils.getFileNameAndExtension(filePath)
+
+            zipDir = checkDuplicate(File(zipDir).name).canonicalPath
 
             // byte array of source file
             val sourceFileStream = FileInputStream(filePath)
@@ -181,7 +115,7 @@ object DataManager {
             var zipEntry = zis.nextEntry
 
             while (zipEntry != null) {
-                val newFile = File(currentDir, zipEntry.name)
+                val newFile = File(zipDir, zipEntry.name)
 
                 // https://support.google.com/faqs/answer/9294009
                 val canonicalPath = newFile.canonicalPath
@@ -226,7 +160,7 @@ object DataManager {
         return true
     }
 
-    suspend fun importFile(uri: Uri, internalPath: String): Boolean =
+    suspend fun importFile(uri: Uri): Boolean =
         withContext(Dispatchers.IO) {
             try {
                 // create directory if not exists
@@ -248,37 +182,15 @@ object DataManager {
                 // byte array of source file
                 val sourceFileStream = application.contentResolver.openInputStream(uri)
 
-                var targetFile: File? = null
-
-                var i = 1
-
-                while (i != -1) {
-                    val (nameOnly, ext) = Utils.getFileNameAndExtension(sourceFileName)
-
-                    val duplicateFile: String = if (ext == Constants.BIN) {
-                        "$nameOnly($i)"
-                    } else {
-                        "$nameOnly($i).$ext"
-                    }
-
-                    targetFile = File(joinPath(internalPath, duplicateFile))
-
-                    if (targetFile.isFile) {
-                        i += 1
-                    } else {
-                        i = -1
-                    }
-
-                }
+                val targetFile = checkDuplicate(sourceFileName)
 
                 // output stream for target file
-                val targetFileStream = targetFile?.let {
-                    FileOutputStream(it)
-                }
+                val targetFileStream = FileOutputStream(targetFile)
 
-                if (sourceFileStream != null && targetFileStream != null) {
+                if (sourceFileStream != null) {
                     copyFileWithProgressNotifications(
-                        sourceFileName, sourceFileStream,
+                        sourceFileName,
+                        sourceFileStream,
                         targetFileStream,
                         FileTransferNotification.NotificationType.Import,
                         application.applicationContext,
@@ -298,6 +210,35 @@ object DataManager {
             return@withContext true
         }
 
+
+    private fun checkDuplicate(sourceFileName: String): File {
+
+        var targetFile = File(joinPath(getInternalPath(), sourceFileName))
+        val (nameOnly, ext) = Utils.getFileNameAndExtension(targetFile.name)
+
+        if (targetFile.exists()) {
+            var i = 1
+
+            while (true) {
+
+                val duplicateFile: String = if (ext == Constants.BIN) {
+                    "$nameOnly($i)"
+                } else {
+                    "$nameOnly($i).$ext"
+                }
+
+                targetFile = File(joinPath(getInternalPath(), duplicateFile))
+
+                if (targetFile.exists()) {
+                    i += 1
+                } else {
+                    break
+                }
+            }
+        }
+        return targetFile
+    }
+
     private suspend fun copyFileWithProgressNotifications(
         sourceFileName: String,
         sourceFileStream: InputStream,
@@ -306,7 +247,8 @@ object DataManager {
         context: Context
     ) {
         val uniqueNotificationId = sourceFileName.hashCode()
-        val fileTransferNotification = FileTransferNotification(context, uniqueNotificationId)
+        val fileTransferNotification =
+            FileTransferNotification(context, uniqueNotificationId)
         try {
             FileHelper.copyFileWithProgress(sourceFileStream, targetFileStream)
                 .collect { progress ->
@@ -320,10 +262,86 @@ object DataManager {
                 fileName = sourceFileName,
                 type = type
             )
+
         } catch (exception: Exception) {
             exception.printStackTrace()
             fileTransferNotification.showFailureNotification(sourceFileName, exception)
         }
     }
+
+    /*
+        private fun getThumbsDir(): String {
+            // thumbnails folder
+            return joinPath(
+                application.filesDir.canonicalPath.toString(),
+                Constants.THUMBS
+            ) + File.separator
+        }
+
+       private fun saveThumbnailCache(icon: File, file: File) {
+           CoroutineScope(Dispatchers.IO).launch {
+               val iconSize = 64
+               try {
+                   val bmp = when (Utils.getFileType(file.name)) {
+                       Constants.AUDIO_TYPE -> {
+                           ThumbnailUtils.extractThumbnail(
+                               ThumbnailUtils.createAudioThumbnail(
+                                   file,
+                                   Size(iconSize, iconSize),
+                                   null
+                               ),
+                               iconSize,
+                               iconSize
+                           )
+                       }
+
+                       Constants.VIDEO_TYPE -> {
+                           ThumbnailUtils.extractThumbnail(
+                               ThumbnailUtils.createVideoThumbnail(
+                                   file,
+                                   Size(iconSize, iconSize),
+                                   null
+                               ),
+                               iconSize,
+                               iconSize
+                           )
+                       }
+
+                       Constants.IMAGE_TYPE -> {
+                           ThumbnailUtils.extractThumbnail(
+                               ThumbnailUtils.createImageThumbnail(
+                                   file,
+                                   Size(iconSize, iconSize),
+                                   null
+                               ),
+                               iconSize,
+                               iconSize
+                           )
+                       }
+
+                       else -> null
+                   }
+
+                   bmp?.let {
+                       if (!icon.exists()) {
+                           val path = Utils.getPathAndFileName(icon.canonicalPath).first
+                           Files.createDirectories(Paths.get(path))
+                           icon.createNewFile()
+                       }
+                       FileOutputStream(icon).use { out ->
+                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                               it.compress(Bitmap.CompressFormat.WEBP_LOSSY, 50, out)
+                           } else {
+                               @Suppress("DEPRECATION")
+                               it.compress(Bitmap.CompressFormat.WEBP, 50, out)
+                           }
+                       }
+                   }
+               } catch (e: Exception) {
+                   Log.e(Constants.TAG_ERROR, "@ DataManager.saveThumbnailCache() ", e)
+               }
+           }
+       }
+       */
 
 }

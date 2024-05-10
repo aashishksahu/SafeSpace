@@ -130,7 +130,11 @@ class BottomAppBar(private val activity: MainnActivity) {
                             },
                             onConfirmation = {
                                 if (name.isNotEmpty()) {
-                                    activity.viewModel.createFolder(name)
+                                    try {
+                                        activity.viewModel.createFolder(name)
+                                    } catch (e: Exception) {
+                                        showMessage(activity.getString(R.string.create_folder_invalid_error))
+                                    }
                                     name = ""
                                     createFolderShowDialog.value = false
                                 }

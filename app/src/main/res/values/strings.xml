@@ -31,6 +31,7 @@
     <string name="permission_denied">Permission request denied</string>
     <string name="import_files_error">Some files were not imported, please try again</string>
     <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
+    <string name="folder_already_exists">This Folder Already Exists</string>
     <string name="file_icon_description">File or folder icon</string>
     <string name="context_menu_rename">Rename</string>
     <string name="context_menu_rename_hint">Enter name</string>

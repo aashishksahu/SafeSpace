@@ -76,7 +76,6 @@
     <string name="auth_no_biometric_msg">Verilerinizi güvende tutmak için bir PIN veya Şifre kullanmanız önerilir</string>
     <string name="auth_stuck">Burada takılı kalırsanız ekranınızı kilitleyin ve kilidini açın.</string>
     <string name="about_text">Hakkında</string>
-    <string name="about_title" translatable="false">Safe Space</string>
     <string name="about_sub_title1">Tüm önemli dijital eşyalarınız için Güvenli Alan.</string>
     <string name="about_sub_title2">Dosyaları depolamak için uygulamaya özel depolama kullanır, bu dosyalar şifrelenir ve diğer uygulamalar tarafından görülemez ve telefon kilitlendiğinde erişilemez.</string>
     <string name="about_foss">Kullanılan kütüphaneler ve varlıklar:</string>
@@ -112,4 +111,5 @@
     <string name="biometric_toggle">Biyometriyi Kullanarak Kilidi Aç</string>
     <string name="biometric_title">Biyometrik Kilit Açma</string>
     <string name="title_activity_settings">Ayarlar</string>
+    <string name="folder_already_exists">Bu klasör zaten var</string>
 </resources>

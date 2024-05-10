@@ -29,9 +29,9 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
+import org.privacymatters.safespace.experimental.mainn.DataManager
 import org.privacymatters.safespace.lib.mediaManager.CameraViewModel
 import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.fileManager.Operations
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,7 +44,7 @@ class CameraActivity : AppCompatActivity() {
     private var recorder: Recorder? = null
     private var videoFlashOn: Boolean = false
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    private lateinit var ops: Operations
+    private val ops = DataManager
 
     private lateinit var photoToggleButton: Button
     private lateinit var videoToggleButton: Button
@@ -111,7 +111,7 @@ class CameraActivity : AppCompatActivity() {
 
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
 
-        ops = Operations(application)
+        ops.ready(application)
 
         val cameraSelectorText = intent.getStringExtra(Constants.CAMERA_SELECTOR)
         cameraMode = intent.getStringExtra(Constants.CAMERA_MODE)
@@ -393,7 +393,7 @@ class CameraActivity : AppCompatActivity() {
                 .format(System.currentTimeMillis()) + IMG_EXTENSION
 
         val saveLoc =
-            File(ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), File.separator, name))
+            File(ops.joinPath(ops.getInternalPath(), name))
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions
@@ -477,7 +477,7 @@ class CameraActivity : AppCompatActivity() {
                 .format(System.currentTimeMillis()) + VID_EXTENSION
 
             val saveLoc =
-                File(ops.joinPath(ops.getFilesDir(), ops.getInternalPath(), File.separator, name))
+                File(ops.joinPath(ops.getInternalPath(), name))
 
             val fileOutputOptions = FileOutputOptions.Builder(saveLoc).build()
 

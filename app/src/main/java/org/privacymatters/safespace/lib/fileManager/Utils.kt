@@ -2,9 +2,11 @@ package org.privacymatters.safespace.lib.fileManager
 
 import android.annotation.SuppressLint
 import org.privacymatters.safespace.lib.utils.Constants
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@Suppress("unused")
 class Utils {
     companion object {
 
@@ -106,6 +108,22 @@ class Utils {
             }
 
             return Pair(nameOnly, ext)
+
+        }
+
+        fun getPathAndFileName(name: String): Pair<String, String> {
+            var path = name
+            var file = ""
+
+            val lastDelimiterIndex = name.lastIndexOf(File.separator)
+
+            if (lastDelimiterIndex != -1) {
+                path = name.substring(0, lastDelimiterIndex)
+                file = name.substring(lastDelimiterIndex + 1)
+
+            }
+
+            return Pair(path, file)
 
         }
     }

@@ -1,11 +1,9 @@
 package org.privacymatters.safespace.experimental.mainn.ui
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,13 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.MediaActivity
 import org.privacymatters.safespace.PDFView
@@ -38,6 +38,7 @@ import org.privacymatters.safespace.experimental.mainn.Item
 import org.privacymatters.safespace.experimental.mainn.MainnActivity
 import org.privacymatters.safespace.lib.fileManager.Utils
 import org.privacymatters.safespace.lib.utils.Constants
+import java.io.File
 
 class ItemList(private val activity: MainnActivity) {
 
@@ -49,7 +50,6 @@ class ItemList(private val activity: MainnActivity) {
 
         LazyColumn(
             modifier = Modifier
-//                .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxWidth()
         ) {
             items(itemList) { item ->
@@ -68,6 +68,7 @@ class ItemList(private val activity: MainnActivity) {
 
     }
 
+    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     private fun FileCard(item: Item) {
         Row(
@@ -76,32 +77,18 @@ class ItemList(private val activity: MainnActivity) {
                 .padding(10.dp)
                 .clickable { openItem(item) }
         ) {
-            if (item.icon == null) {
-                Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(5.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.secondary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(32.dp),
-                        painter = painterResource(id = item.iconDrawable),
-                        contentDescription = activity.getString(R.string.file_icon_description),
-                    )
-                }
-            } else {
-                Image(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(5.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.primary),
-                    bitmap = item.icon.asImageBitmap(),
-                    contentDescription = activity.getString(R.string.file_icon_description),
-                )
-            }
+            GlideImage(
+                modifier = Modifier
+                    .size(64.dp)
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.primary),
+                model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
+                contentDescription = activity.getString(R.string.file_icon_description),
+                contentScale = ContentScale.FillBounds,
+                failure = placeholder(R.drawable.description_white_36dp),
+                loading = placeholder(R.drawable.description_white_36dp)
+            )
             Column(
                 modifier = Modifier
                     .padding(5.dp)
@@ -144,6 +131,7 @@ class ItemList(private val activity: MainnActivity) {
         }
     }
 
+    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     private fun FolderCard(item: Item) {
         Row(
@@ -152,21 +140,18 @@ class ItemList(private val activity: MainnActivity) {
                 .padding(10.dp)
                 .clickable { openItem(item) }
         ) {
-            Box(
+            GlideImage(
                 modifier = Modifier
                     .size(64.dp)
                     .padding(5.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.secondary),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.size(32.dp),
-                    painter = painterResource(id = item.iconDrawable),
-                    contentDescription = activity.getString(R.string.file_icon_description),
-                )
-
-            }
+                    .background(MaterialTheme.colorScheme.primary),
+                model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
+                contentDescription = activity.getString(R.string.file_icon_description),
+                contentScale = ContentScale.FillBounds,
+                failure = placeholder(R.drawable.folder_36dp),
+                loading = placeholder(R.drawable.folder_36dp)
+            )
             Column(
                 modifier = Modifier
                     .padding(5.dp)

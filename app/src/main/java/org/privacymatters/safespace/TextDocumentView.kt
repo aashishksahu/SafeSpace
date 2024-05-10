@@ -81,31 +81,6 @@ class TextDocumentView : AppCompatActivity() {
         }
 
         textFileContentView.setText(content.toString())
-
-        val saveButton = findViewById<FloatingActionButton>(R.id.saveButton)
-
-        saveButton.setOnClickListener {
-
-            try {
-                saveFile(textFileContentView.text.toString(), file)
-
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.save_success),
-                    Toast.LENGTH_LONG
-                ).show()
-
-            } catch (e: Exception) {
-                Toast.makeText(
-                    applicationContext,
-                    getString(R.string.save_error),
-                    Toast.LENGTH_LONG
-                ).show()
-                Log.d("ERROR", e.message!!)
-            }
-
-
-        }
     }
 
     override fun onStop() {
@@ -115,10 +90,25 @@ class TextDocumentView : AppCompatActivity() {
 
     private fun saveFile(contentToSave: String?, file: File?) {
 
-        if (contentToSave?.isNotEmpty() == true && file != null) {
-            file.writeText(contentToSave)
-        }
+        try {
+            if (contentToSave?.isNotEmpty() == true && file != null) {
+                file.writeText(contentToSave)
+            }
 
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.save_success),
+                Toast.LENGTH_LONG
+            ).show()
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.save_error),
+                Toast.LENGTH_LONG
+            ).show()
+            Log.e(Constants.TAG_ERROR, "@TextDocumentView.saveFile ", e)
+        }
     }
 
 

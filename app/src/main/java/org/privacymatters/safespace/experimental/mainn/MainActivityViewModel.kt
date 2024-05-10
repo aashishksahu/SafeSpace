@@ -11,11 +11,10 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.lib.utils.Constants
 import java.io.File
 
-class MainActivityViewModel(private val application: Application) : AndroidViewModel(application) {
+class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
     private var ops = DataManager
 
@@ -43,6 +42,10 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun getInternalPath() {
         _internalPathList.clear()
         _internalPathList.addAll(ops.getInternalPathList())
+    }
+
+    fun getIconPath(fileName: String): String {
+        return ops.joinPath(ops.getInternalPath(), fileName)
     }
 
     fun travelToLocation(dir: String) {
@@ -107,7 +110,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
         val noteFile = File(ops.joinPath(ops.getInternalPath(), fileName))
 
-        if(!noteFile.exists()){
+        if (!noteFile.exists()) {
             noteFile.createNewFile()
         }
         return noteFile
@@ -117,9 +120,11 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
         val folder = File(ops.joinPath(ops.getInternalPath(), name))
 
-        if(!folder.exists()){
+        if (!folder.exists()) {
             folder.mkdirs()
             getItems()
+        } else {
+            throw Exception(Constants.ALREADY_EXISTS)
         }
         return folder
     }
@@ -146,7 +151,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
             CoroutineScope(Dispatchers.IO).launch {
                 for (i in 0 until importList.size) {
-                    ops.importFile(importList[i], ops.getInternalPath())
+                    ops.importFile(importList[i])
                 }
                 CoroutineScope(Dispatchers.Main).launch {
                     getItems()
