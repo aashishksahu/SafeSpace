@@ -1,6 +1,7 @@
 package org.privacymatters.safespace.experimental.mainn.ui
 
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,14 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,30 +34,38 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.MediaActivity
 import org.privacymatters.safespace.PDFView
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.TextDocumentView
 import org.privacymatters.safespace.experimental.mainn.Item
 import org.privacymatters.safespace.experimental.mainn.MainnActivity
+import org.privacymatters.safespace.experimental.media.MediaNActivity
 import org.privacymatters.safespace.lib.fileManager.Utils
 import org.privacymatters.safespace.lib.utils.Constants
 import java.io.File
 
 class ItemList(private val activity: MainnActivity) {
 
+    private var currentIndex = 0
     private lateinit var itemList: List<Item>
 
     @Composable
     fun LazyList(innerPadding: PaddingValues) {
         itemList = activity.viewModel.itemList
 
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            items(itemList) { item ->
 
+            coroutineScope.launch {
+                listState.animateScrollToItem(currentIndex)
+            }
+
+            items(itemList) { item ->
                 if (item.isDir) {
                     FolderCard(item)
                 } else {
@@ -64,8 +76,6 @@ class ItemList(private val activity: MainnActivity) {
                 }
             }
         }
-
-
     }
 
     @OptIn(ExperimentalGlideComposeApi::class)
@@ -85,7 +95,7 @@ class ItemList(private val activity: MainnActivity) {
                     .background(MaterialTheme.colorScheme.primary),
                 model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
                 contentDescription = activity.getString(R.string.file_icon_description),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Crop,
                 failure = placeholder(R.drawable.description_white_36dp),
                 loading = placeholder(R.drawable.description_white_36dp)
             )
@@ -131,7 +141,6 @@ class ItemList(private val activity: MainnActivity) {
         }
     }
 
-    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     private fun FolderCard(item: Item) {
         Row(
@@ -140,17 +149,14 @@ class ItemList(private val activity: MainnActivity) {
                 .padding(10.dp)
                 .clickable { openItem(item) }
         ) {
-            GlideImage(
+            Image(
                 modifier = Modifier
                     .size(64.dp)
                     .padding(5.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primary),
-                model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
-                contentDescription = activity.getString(R.string.file_icon_description),
-                contentScale = ContentScale.FillWidth,
-                failure = placeholder(R.drawable.folder_36dp),
-                loading = placeholder(R.drawable.folder_36dp)
+                painter = painterResource(R.drawable.folder_36dp),
+                contentDescription = activity.getString(R.string.file_folder_placeholder)
             )
             Column(
                 modifier = Modifier
@@ -183,8 +189,8 @@ class ItemList(private val activity: MainnActivity) {
                 Constants.IMAGE_TYPE,
                 Constants.VIDEO_TYPE,
                 Constants.AUDIO_TYPE -> {
-                    val mediaViewIntent = Intent(activity, MediaActivity::class.java)
-                    mediaViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+                    val mediaViewIntent = Intent(activity, MediaNActivity::class.java)
+                    mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, itemList.indexOf(item))
                     activity.startActivity(mediaViewIntent)
                 }
 

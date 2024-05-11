@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
@@ -22,6 +24,9 @@ object DataManager {
     // keep the "" , helps in loading the breadcrumbs initially
     var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
+
+    val itemStateList: SnapshotStateList<Item> = mutableStateListOf()
+    var baseItemList: List<Item> = itemStateList
 
     fun ready(app: Application): Int {
         application = app
@@ -57,7 +62,7 @@ object DataManager {
         return internalPath
     }
 
-    fun getItems(): ArrayList<Item> {
+    private fun getItems(): ArrayList<Item> {
 
         val dirPath = File(getInternalPath())
         var fileCount = ""
@@ -94,6 +99,47 @@ object DataManager {
 
         return tempItemsList
 
+    }
+
+    fun getSortedItems(sortBy: String, sortOrder: String) {
+
+        baseItemList = getItems()
+
+        // Ascending or descending
+        when (sortOrder) {
+            Constants.ASC -> {
+                // name, date or size
+                baseItemList = when (sortBy) {
+                    Constants.SIZE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenBy { it.size })
+
+                    Constants.DATE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenBy { it.lastModified })
+
+                    else -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenComparing { o1, o2 ->
+                            naturalCompareAscending(o1, o2)
+                        })
+                }
+            }
+
+            Constants.DESC -> {
+                // name, date or size
+                baseItemList = when (sortBy) {
+                    Constants.SIZE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenByDescending { it.size })
+
+                    Constants.DATE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenByDescending { it.lastModified })
+
+                    else -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenComparing { o1, o2 ->
+                            naturalCompareDescending(o1, o2)
+                        })
+
+                }
+            }
+        }
     }
 
     @Throws(SecurityException::class)

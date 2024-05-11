@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.mainn.ui
+package org.privacymatters.safespace.experimental.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -25,7 +25,7 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color(0xFF3F72AF),
 
     background = Color(0xFF000000),
-    onBackground = Color(0xFFF9F7F7 ),
+    onBackground = Color(0xFFF9F7F7 )
 )
 
 private val LightColorScheme = lightColorScheme(

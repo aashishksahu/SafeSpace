@@ -24,7 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.privacymatters.safespace.experimental.mainn.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.mainn.ui.ItemList
-import org.privacymatters.safespace.experimental.mainn.ui.SafeSpaceTheme
+import org.privacymatters.safespace.experimental.theme.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.mainn.ui.TopAppBar
 
 class MainnActivity : AppCompatActivity() {

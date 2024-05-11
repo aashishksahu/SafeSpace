@@ -17,6 +17,7 @@ class Constants {
 
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
+        const val INTENT_KEY_INDEX = "index"
 
         const val CAMERA_MODE = "CAMERA_MODE"
         const val PHOTO = "PHOTO"

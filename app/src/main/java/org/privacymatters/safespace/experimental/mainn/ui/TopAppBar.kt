@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -25,6 +26,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +36,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.mainn.MainnActivity
 import org.privacymatters.safespace.experimental.settings.SettingsActivity
@@ -94,14 +97,22 @@ class TopAppBar(private val activity: MainnActivity) {
     @Composable
     fun BreadCrumbs() {
         breadcrumbs = activity.viewModel.internalPathList
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
 
         LazyRow(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(10.dp),
+            state = listState
         ) {
+
+            coroutineScope.launch {
+                listState.animateScrollToItem(breadcrumbs.lastIndex)
+            }
+
             items(breadcrumbs) {
                 if (it == Constants.ROOT) {
                     Icon(
@@ -257,7 +268,7 @@ class TopAppBar(private val activity: MainnActivity) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    activity.viewModel.sortFiles(sortBy, sortOrder)
+                    activity.viewModel.sortItems(sortBy, sortOrder)
                     showSortDialog.value = false
                 }) {
                     Text(text = activity.getString(R.string.ok))

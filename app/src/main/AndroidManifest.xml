@@ -20,6 +20,11 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:name=".experimental.media.MediaNActivity"
+            android:exported="false"
+            android:label="@string/title_activity_media"
+            android:theme="@style/Theme.SafeSpace" />
+        <activity
             android:name=".experimental.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"

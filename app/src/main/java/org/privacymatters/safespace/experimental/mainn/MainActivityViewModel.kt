@@ -21,31 +21,35 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
     private var ops = DataManager
+    var itemList: List<Item> = ops.baseItemList
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
     var longPressAction = false
 
-    private val _itemList: SnapshotStateList<Item> = mutableStateListOf()
-    val itemList: List<Item> = _itemList
 
     private val _internalPathList: SnapshotStateList<String> = mutableStateListOf()
     val internalPathList: List<String> = _internalPathList
 
     init {
-        // Name, Date or Size
-        fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, Constants.NAME)!!
-
-        // Ascending or Descending
-        fileSortOrder = sharedPref.getString(Constants.FILE_SORT_ORDER, Constants.ASC)!!
-
         ops.ready(application)
         getItems()
         getInternalPath()
     }
 
     fun getItems() {
-        sortFiles(fileSortBy, fileSortOrder)
+        sortItems(fileSortBy, fileSortOrder)
+    }
+
+    fun sortItems(sortBy: String, sortOrder: String) {
+        ops.getSortedItems(fileSortBy, fileSortOrder)
+        ops.itemStateList.clear()
+        ops.itemStateList.addAll(ops.baseItemList)
+
+        sharedPref.edit()
+            .putString(Constants.FILE_SORT_BY, sortBy)
+            .putString(Constants.FILE_SORT_ORDER, sortOrder)
+            .apply()
     }
 
     fun getInternalPath() {
@@ -80,55 +84,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 false -> getItems()
             }
         }
-    }
-
-    fun sortFiles(sortBy: String, sortOrder: String) {
-
-        var tempItemList: List<Item> = ops.getItems()
-
-        // Ascending or descending
-        when (sortOrder) {
-            Constants.ASC -> {
-                // name, date or size
-                tempItemList = when (sortBy) {
-                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenBy { it.size })
-
-                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenBy { it.lastModified })
-
-                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenComparing { o1, o2 ->
-                            naturalCompareAscending(o1, o2)
-                        })
-                }
-            }
-
-            Constants.DESC -> {
-                // name, date or size
-                tempItemList = when (sortBy) {
-                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenByDescending { it.size })
-
-                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenByDescending { it.lastModified })
-
-                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenComparing { o1, o2 ->
-                            naturalCompareDescending(o1, o2)
-                        })
-
-                }
-            }
-        }
-        _itemList.clear()
-        _itemList.addAll(tempItemList)
-
-        sharedPref.edit()
-            .putString(Constants.FILE_SORT_BY, sortBy)
-            .putString(Constants.FILE_SORT_ORDER, sortOrder)
-            .apply()
-
     }
 
     fun moveToDestination() {
