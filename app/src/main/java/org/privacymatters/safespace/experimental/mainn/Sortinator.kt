@@ -45,7 +45,7 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
             Constants.ASC -> {
                 // name, date or size
                 return when (fileSortBy) {
-                    Constants.NAME -> files.sortedWith { o1, o2 -> naturalCompareAscending(o1, o2) }
+//                    Constants.NAME -> files.sortedWith { o1, o2 -> naturalCompareAscending(o1, o2) }
                     Constants.SIZE -> files.sortedBy { it.size }
                     Constants.DATE -> files.sortedBy { it.lastModified }
                     else -> files.sortedByDescending { it.name }
@@ -55,7 +55,7 @@ class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
             Constants.DESC -> {
                 // name, date or size
                 return when (fileSortBy) {
-                    Constants.NAME -> files.sortedWith { o1, o2 -> naturalCompareDescending(o1, o2) }
+//                    Constants.NAME -> files.sortedWith { o1, o2 -> naturalCompareDescending(o1, o2) }
                     Constants.SIZE -> files.sortedByDescending { it.size }
                     Constants.DATE -> files.sortedByDescending { it.lastModified }
                     else -> files.sortedByDescending { it.name }

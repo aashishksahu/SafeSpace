@@ -1,7 +1,9 @@
 package org.privacymatters.safespace.experimental.mainn
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +18,12 @@ import java.io.File
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
+    private var fileSortBy = Constants.NAME
+    private var fileSortOrder = Constants.ASC
     private var ops = DataManager
 
-    //    private val sharedPref: SharedPreferences =
-//        application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+    private val sharedPref: SharedPreferences =
+        application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
     var longPressAction = false
 
     private val _itemList: SnapshotStateList<Item> = mutableStateListOf()
@@ -29,14 +33,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val internalPathList: List<String> = _internalPathList
 
     init {
+        // Name, Date or Size
+        fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, Constants.NAME)!!
+
+        // Ascending or Descending
+        fileSortOrder = sharedPref.getString(Constants.FILE_SORT_ORDER, Constants.ASC)!!
+
         ops.ready(application)
         getItems()
         getInternalPath()
     }
 
     fun getItems() {
-        _itemList.clear()
-        _itemList.addAll(ops.getItems())
+        sortFiles(fileSortBy, fileSortOrder)
     }
 
     fun getInternalPath() {
@@ -71,6 +80,55 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 false -> getItems()
             }
         }
+    }
+
+    fun sortFiles(sortBy: String, sortOrder: String) {
+
+        var tempItemList: List<Item> = ops.getItems()
+
+        // Ascending or descending
+        when (sortOrder) {
+            Constants.ASC -> {
+                // name, date or size
+                tempItemList = when (sortBy) {
+                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenBy { it.size })
+
+                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenBy { it.lastModified })
+
+                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenComparing { o1, o2 ->
+                            naturalCompareAscending(o1, o2)
+                        })
+                }
+            }
+
+            Constants.DESC -> {
+                // name, date or size
+                tempItemList = when (sortBy) {
+                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenByDescending { it.size })
+
+                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenByDescending { it.lastModified })
+
+                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                        .thenComparing { o1, o2 ->
+                            naturalCompareDescending(o1, o2)
+                        })
+
+                }
+            }
+        }
+        _itemList.clear()
+        _itemList.addAll(tempItemList)
+
+        sharedPref.edit()
+            .putString(Constants.FILE_SORT_BY, sortBy)
+            .putString(Constants.FILE_SORT_ORDER, sortOrder)
+            .apply()
+
     }
 
     fun moveToDestination() {

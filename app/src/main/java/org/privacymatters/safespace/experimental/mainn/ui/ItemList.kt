@@ -85,20 +85,20 @@ class ItemList(private val activity: MainnActivity) {
                     .background(MaterialTheme.colorScheme.primary),
                 model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
                 contentDescription = activity.getString(R.string.file_icon_description),
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.FillWidth,
                 failure = placeholder(R.drawable.description_white_36dp),
                 loading = placeholder(R.drawable.description_white_36dp)
             )
             Column(
                 modifier = Modifier
-                    .padding(5.dp)
+                    .padding(10.dp)
             ) {
                 val (name, ext) = Utils.getFileNameAndExtension(item.name)
 
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Row(
@@ -148,15 +148,20 @@ class ItemList(private val activity: MainnActivity) {
                     .background(MaterialTheme.colorScheme.primary),
                 model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
                 contentDescription = activity.getString(R.string.file_icon_description),
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.FillWidth,
                 failure = placeholder(R.drawable.folder_36dp),
                 loading = placeholder(R.drawable.folder_36dp)
             )
             Column(
                 modifier = Modifier
-                    .padding(5.dp)
+                    .padding(10.dp)
             ) {
-                Text(text = item.name, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()

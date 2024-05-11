@@ -92,9 +92,6 @@ object DataManager {
             }
         }
 
-        // sort -> folders first -> ascending by name
-        tempItemsList.sortWith(compareByDescending<Item> { it.isDir }.thenBy { it.name })
-
         return tempItemsList
 
     }

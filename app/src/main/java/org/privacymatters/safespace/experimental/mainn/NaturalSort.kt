@@ -1,7 +1,5 @@
 package org.privacymatters.safespace.experimental.mainn
 
-import org.privacymatters.safespace.lib.fileManager.FileItem
-
 /*
     With Help From:
     https://github.com/ritwik12/NaturalSort/blob/master/NaturalSort.java
@@ -40,7 +38,7 @@ fun compareRight(s1: String, s2: String): Int {
     }
 }
 
-fun naturalCompareAscending(o1: FileItem, o2: FileItem): Int {
+fun naturalCompareAscending(o1: Item, o2: Item): Int {
     val s1 = o1.name
     val s2 = o2.name
 
@@ -141,7 +139,7 @@ fun compareLeft(s1: String, s2: String): Int {
     }
 }
 
-fun naturalCompareDescending(o1: FileItem, o2: FileItem): Int {
+fun naturalCompareDescending(o1: Item, o2: Item): Int {
     val s1 = o1.name
     val s2 = o2.name
 
@@ -212,4 +210,3 @@ fun naturalCompareDescending(o1: FileItem, o2: FileItem): Int {
 fun charAt(s: String, i: Int): Char {
     return if (i >= s.length) throw StringIndexOutOfBoundsException() else s[i]
 }
-
