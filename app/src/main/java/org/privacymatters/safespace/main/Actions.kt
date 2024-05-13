@@ -16,10 +16,10 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.CameraActivity
+import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.utils.Constants
 
 class Actions(
     private val extendedFab: ExtendedFloatingActionButton,

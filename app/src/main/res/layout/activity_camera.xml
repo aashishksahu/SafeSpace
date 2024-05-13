@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".CameraActivity">
+    tools:context=".camera.CameraActivity">
 
     <ImageButton
         android:id="@+id/flash_button"

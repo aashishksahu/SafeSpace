@@ -14,11 +14,11 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.experimental.mainn.MainnActivity
-import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.utils.EncPref
-import org.privacymatters.safespace.lib.utils.RootCheck
-import org.privacymatters.safespace.lib.utils.SetTheme
+import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.utils.RootCheck
+import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.main.MainActivity
 import java.util.concurrent.Executor
 

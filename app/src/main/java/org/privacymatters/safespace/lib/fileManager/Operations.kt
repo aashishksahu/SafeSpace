@@ -11,9 +11,9 @@ import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.experimental.mainn.FileHelper
-import org.privacymatters.safespace.experimental.mainn.FileTransferNotification
-import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.experimental.main.FileHelper
+import org.privacymatters.safespace.experimental.main.FileTransferNotification
+import org.privacymatters.safespace.utils.Constants
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream

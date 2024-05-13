@@ -21,9 +21,9 @@ import org.privacymatters.safespace.AboutActivity
 import org.privacymatters.safespace.AuthActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.utils.EncPref
-import org.privacymatters.safespace.lib.utils.SetTheme
+import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.utils.SetTheme
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
