@@ -34,7 +34,7 @@ class MediaActivity : AppCompatActivity() {
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        viewModel.setPosition(intent.extras?.getInt(Constants.INTENT_KEY_INDEX) ?: 0)
+        val firstPosition = intent.extras?.getInt(Constants.INTENT_KEY_INDEX) ?: 0
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         viewPager = findViewById(R.id.mediaPager)
@@ -44,7 +44,7 @@ class MediaActivity : AppCompatActivity() {
         viewPager.adapter = pagerAdapter
 
         viewPager.post {
-            viewPager.setCurrentItem(viewModel.getPosition(), false)
+            viewPager.setCurrentItem(firstPosition, false)
         }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

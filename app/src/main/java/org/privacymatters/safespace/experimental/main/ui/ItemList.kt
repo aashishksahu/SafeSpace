@@ -64,6 +64,7 @@ class ItemList(private val activity: MainnActivity) {
         ) {
 
             coroutineScope.launch {
+                // todo: Scroll after back press not working
                 listState.animateScrollToItem(currentIndex.intValue)
             }
 

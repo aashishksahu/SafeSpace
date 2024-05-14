@@ -59,7 +59,7 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     fun setPosition(pos: Int) {
         // set the index of currently open item in MediaView
         // Todo: return the actual index from the complete list
-//        ops.positionHistory.intValue = ops.baseItemList.indexOf(mediaList[pos])
+        ops.positionHistory.intValue = pos
     }
 
 }
