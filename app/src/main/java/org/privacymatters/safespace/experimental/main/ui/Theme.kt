@@ -18,27 +18,27 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFDBE2EF),
-    onPrimary = Color(0xFF112D4E),
+    primary = Color(0xFFF9F7F7),
+    onPrimary = Color(0xFF3F72AF),
 
-    secondary = Color(0xFFF9F7F7),
-    onSecondary = Color(0xFF3F72AF),
+    secondary = Color(0xFFDBE2EF),
+    onSecondary = Color(0xFF112D4E),
 
     background = Color(0xFF000000),
-    onBackground = Color(0xFFF9F7F7 )
+    onBackground = Color(0xFFF9F7F7)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF112D4E),
-    onPrimary = Color(0xFFDBE2EF),
+    primary = Color(0xFF3F72AF),
+    onPrimary = Color(0xFFF9F7F7),
 
-    secondary = Color(0xFF3F72AF),
-    onSecondary = Color(0xFFF9F7F7),
+    secondary = Color(0xFF112D4E),
+    onSecondary = Color(0xFFDBE2EF),
 
     background = Color(0xFFF9F7F7),
-    onBackground = Color(0xFF141414 ),
+    onBackground = Color(0xFF141414),
 
-)
+    )
 
 // Set of Material typography styles to start with
 private val DarkTypography = Typography(

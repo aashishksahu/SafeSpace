@@ -6,5 +6,5 @@ data class Item(
     val isDir: Boolean,
     val itemCount: String,
     val lastModified: String,
-    val isSelected: Boolean,
+    var isSelected: Boolean,
 )

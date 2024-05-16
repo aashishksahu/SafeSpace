@@ -3,12 +3,12 @@
     <style name="Theme.SafeSpace" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#112D4E</item>
-        <item name="colorOnPrimary">#DBE2EF</item>
+        <item name="colorPrimary">#3F72AF</item>
+        <item name="colorOnPrimary">#F9F7F7</item>
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#3F72AF</item>
-        <item name="colorOnSecondary">#F9F7F7</item>
+        <item name="colorSecondary">#112D4E</item>
+        <item name="colorOnSecondary">#DBE2EF</item>
 
         <item name="backgroundColor">#F9F7F7</item>
         <item name="colorOnBackground">#141414</item>

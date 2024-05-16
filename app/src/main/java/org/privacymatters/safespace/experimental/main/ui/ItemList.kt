@@ -1,9 +1,10 @@
 package org.privacymatters.safespace.experimental.main.ui
 
 import android.content.Intent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,7 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -35,14 +39,15 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.media.MediaActivity
-import org.privacymatters.safespace.document.PDFView
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.document.PDFView
 import org.privacymatters.safespace.document.TextDocumentView
+import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.Item
 import org.privacymatters.safespace.experimental.main.MainnActivity
-import org.privacymatters.safespace.utils.Utils
+import org.privacymatters.safespace.media.MediaActivity
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 import java.io.File
 
 class ItemList(private val activity: MainnActivity) {
@@ -60,14 +65,12 @@ class ItemList(private val activity: MainnActivity) {
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            state = listState
         ) {
-
             coroutineScope.launch {
-                // todo: Scroll after back press not working
-                listState.animateScrollToItem(currentIndex.intValue)
+                listState.scrollToItem(currentIndex.intValue)
             }
-
             items(itemList) { item ->
                 if (item.isDir) {
                     FolderCard(item)
@@ -77,18 +80,30 @@ class ItemList(private val activity: MainnActivity) {
                 if (item == itemList.last()) {
                     Spacer(modifier = Modifier.padding(innerPadding.calculateTopPadding()))
                 }
+                currentIndex.intValue = 0 // reset index
             }
         }
     }
 
-    @OptIn(ExperimentalGlideComposeApi::class)
+    @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
     @Composable
     private fun FileCard(item: Item) {
+        val haptics = LocalHapticFeedback.current
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(10.dp)
-                .clickable { openItem(item) }
+                .combinedClickable(
+                    onClick = {
+                        openItem(item)
+                    },
+                    onLongClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        activity.viewModel.appBarType.value = ActionBarType.LONG_PRESS
+                        activity.viewModel.setSelected(item)
+                    },
+                )
+                .background(if (item.isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         ) {
             GlideImage(
                 modifier = Modifier
@@ -125,14 +140,13 @@ class ItemList(private val activity: MainnActivity) {
 
                         Spacer(modifier = Modifier.padding(4.dp))
 
-
                         Text(
                             text = ext.uppercase(),
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(color = MaterialTheme.colorScheme.secondary)
+                                .background(color = MaterialTheme.colorScheme.primary)
                                 .padding(start = 2.dp, end = 2.dp),
-                            color = MaterialTheme.colorScheme.onSecondary,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.bodyMedium,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold
@@ -144,13 +158,25 @@ class ItemList(private val activity: MainnActivity) {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun FolderCard(item: Item) {
+        val haptics = LocalHapticFeedback.current
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(10.dp)
-                .clickable { openItem(item) }
+                .combinedClickable(
+                    onClick = {
+                        openItem(item)
+                    },
+                    onLongClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        activity.viewModel.appBarType.value = ActionBarType.LONG_PRESS
+                        activity.viewModel.setSelected(item)
+                    },
+                )
+                .background(if (item.isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         ) {
             Image(
                 modifier = Modifier
@@ -183,48 +209,56 @@ class ItemList(private val activity: MainnActivity) {
     }
 
     private fun openItem(item: Item) {
-        if (item.isDir) {
-            activity.viewModel.travelToLocation(item.name)
+        if (activity.viewModel.appBarType.value == ActionBarType.LONG_PRESS) {
+            if (item.isSelected)
+                activity.viewModel.setUnSelected(item)
+            else
+                activity.viewModel.setSelected(item)
         } else {
-            val filePath = activity.viewModel.getPath(item.name)
 
-            when (Utils.getFileType(item.name)) {
-                Constants.IMAGE_TYPE,
-                Constants.VIDEO_TYPE,
-                Constants.AUDIO_TYPE -> {
-                    val mediaViewIntent = Intent(activity, MediaActivity::class.java)
-                    mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, itemList.indexOf(item))
-                    activity.startActivity(mediaViewIntent)
-                }
+            if (item.isDir) {
+                activity.viewModel.travelToLocation(item.name)
+            } else {
+                val filePath = activity.viewModel.getPath(item.name)
 
-                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
-
-                    var documentViewIntent: Intent? = null
-
-                    if (filePath.split('.').last() == Constants.PDF) {
-                        documentViewIntent = Intent(activity, PDFView::class.java)
-
-                    } else if (filePath.split('.').last() in arrayOf(
-                            Constants.TXT,
-                            Constants.JSON,
-                            Constants.XML
-                        )
-                    ) {
-                        documentViewIntent = Intent(activity, TextDocumentView::class.java)
+                when (Utils.getFileType(item.name)) {
+                    Constants.IMAGE_TYPE,
+                    Constants.VIDEO_TYPE,
+                    Constants.AUDIO_TYPE -> {
+                        val mediaViewIntent = Intent(activity, MediaActivity::class.java)
+                        mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, itemList.indexOf(item))
+                        activity.startActivity(mediaViewIntent)
                     }
 
-                    if (documentViewIntent != null) {
-                        documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
-                        activity.startActivity(documentViewIntent)
+                    Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
+
+                        var documentViewIntent: Intent? = null
+
+                        if (filePath.split('.').last() == Constants.PDF) {
+                            documentViewIntent = Intent(activity, PDFView::class.java)
+
+                        } else if (filePath.split('.').last() in arrayOf(
+                                Constants.TXT,
+                                Constants.JSON,
+                                Constants.XML
+                            )
+                        ) {
+                            documentViewIntent = Intent(activity, TextDocumentView::class.java)
+                        }
+
+                        if (documentViewIntent != null) {
+                            documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+                            activity.startActivity(documentViewIntent)
+                        }
                     }
-                }
 
-                Constants.ZIP -> {
-                    activity.viewModel.extractZip(filePath)
-                }
+                    Constants.ZIP -> {
+                        activity.viewModel.extractZip(filePath)
+                    }
 
-                else -> {
-                    showMessage(activity.getString(R.string.unsupported_format))
+                    else -> {
+                        showMessage(activity.getString(R.string.unsupported_format))
+                    }
                 }
             }
         }

@@ -11,11 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -33,9 +34,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.document.TextDocumentView
+import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
@@ -194,7 +196,7 @@ class BottomAppBar(private val activity: MainnActivity) {
     }
 
     @Composable
-    private fun LongPressActionBar() {
+    fun LongPressActionBar() {
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -206,65 +208,106 @@ class BottomAppBar(private val activity: MainnActivity) {
                     shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
 
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = { activity.viewModel.deleteItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable { activity.viewModel.deleteItems() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
-                        contentDescription = activity.getString(R.string.context_menu_delete)
+                        contentDescription = activity.getString(R.string.context_menu_delete),
+                    )
+                    Text(
+                        text = activity.getString(R.string.context_menu_delete),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                IconButton(
-                    onClick = { activity.viewModel.moveItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable { activity.viewModel.moveItems() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.drive_file_move_black_24dp),
-                        contentDescription = activity.getString(R.string.context_menu_move)
+                        contentDescription = activity.getString(R.string.context_menu_move),
+                    )
+                    Text(
+                        text = activity.getString(R.string.context_menu_move),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                IconButton(
-                    onClick = { activity.viewModel.copyItems() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable { activity.viewModel.copyItems() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.file_copy_black_24dp),
-                        contentDescription = activity.getString(R.string.context_menu_copy)
+                        contentDescription = activity.getString(R.string.context_menu_copy),
+                    )
+                    Text(
+                        text = activity.getString(R.string.context_menu_copy),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                IconButton(
-                    onClick = { activity.viewModel.clearSelection() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable {
+                            activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                            activity.viewModel.clearSelection()
+                        }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.clear_all_black_24dp),
-                        contentDescription = activity.getString(R.string.multi_clear)
+                        contentDescription = activity.getString(R.string.multi_clear),
+                    )
+                    Text(
+                        text = activity.getString(R.string.multi_clear),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                IconButton(
-                    onClick = { activity.viewModel.exportSelection() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable { activity.viewModel.exportSelection() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
-                        contentDescription = activity.getString(R.string.multi_export)
+                        contentDescription = activity.getString(R.string.multi_export),
+                    )
+                    Text(
+                        text = activity.getString(R.string.multi_export),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                IconButton(
-                    onClick = { activity.viewModel.shareFiles() },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clickable { activity.viewModel.shareFiles() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
-                        contentDescription = activity.getString(R.string.context_menu_share)
+                        contentDescription = activity.getString(R.string.context_menu_share),
+                    )
+                    Text(
+                        text = activity.getString(R.string.context_menu_share),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -272,7 +315,7 @@ class BottomAppBar(private val activity: MainnActivity) {
     }
 
     @Composable
-    private fun MoveActionBar() {
+    fun MoveActionBar() {
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -283,7 +326,6 @@ class BottomAppBar(private val activity: MainnActivity) {
                     elevation = 3.dp,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { activity.viewModel.moveToDestination() }
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
@@ -292,13 +334,19 @@ class BottomAppBar(private val activity: MainnActivity) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = activity.getString(R.string.move_btn_text))
+                Button(onClick = { activity.viewModel.moveToDestination() }) {
+                    Text(text = activity.getString(R.string.move_btn_text))
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = activity.getString(R.string.cancel)
+                    )
+                }
             }
         }
     }
 
     @Composable
-    private fun CopyActionBar() {
+    fun CopyActionBar() {
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -316,9 +364,15 @@ class BottomAppBar(private val activity: MainnActivity) {
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = activity.getString(R.string.copy_file_title))
+                Button(onClick = { activity.viewModel.copyToDestination() }) {
+                    Text(text = activity.getString(R.string.context_menu_copy))
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = activity.getString(R.string.cancel)
+                    )
+                }
             }
         }
     }

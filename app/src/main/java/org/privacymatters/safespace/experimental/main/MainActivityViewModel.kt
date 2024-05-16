@@ -8,6 +8,7 @@ import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +16,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.utils.Constants
 import java.io.File
+
+enum class ActionBarType {
+    NORMAL, LONG_PRESS, MOVE, COPY
+}
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,7 +30,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
-    var longPressAction = false
+
+    // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
+    var appBarType = mutableStateOf(ActionBarType.NORMAL)
     var scrollToPosition = ops.positionHistory
 
 
@@ -103,10 +110,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     }
 
-    fun clearSelection() {
-
-    }
-
     fun copyItems() {
 
     }
@@ -178,14 +181,28 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         return ops.internalPath.size == 1 && ops.internalPath[0] == Constants.ROOT
     }
 
-//    fun getPosition(){
-//        // return the index of the item selected in main activity
-//        return ops.positionHistory
-//    }
+    fun setSelected(item: Item) {
 
-    fun setPosition(pos: Int){
-        // set the index of currently open item in MediaView
-        ops.positionHistory.intValue = pos
+        ops.baseItemList.find { it == item }?.isSelected = true
+
+        ops.itemStateList.clear()
+        ops.itemStateList.addAll(ops.baseItemList)
     }
 
+    fun setUnSelected(item: Item) {
+
+        ops.baseItemList.find { it == item }?.isSelected = false
+        ops.itemStateList.clear()
+        ops.itemStateList.addAll(ops.baseItemList)
+        if (ops.baseItemList.all { !it.isSelected }) {
+            appBarType.value = ActionBarType.NORMAL
+        }
+    }
+
+    fun clearSelection() {
+
+        ops.baseItemList.forEach { it.isSelected = false }
+        ops.itemStateList.clear()
+        ops.itemStateList.addAll(ops.baseItemList)
+    }
 }

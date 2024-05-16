@@ -95,6 +95,33 @@ class TopAppBar(private val activity: MainnActivity) {
     }
 
     @Composable
+    fun LongPressTopBar() {
+        androidx.compose.material3.TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                titleContentColor = MaterialTheme.colorScheme.onSecondary,
+            ),
+            title = {
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+            },
+            actions = {
+                IconButton(
+                    onClick = { activity.viewModel.shareFiles() }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
+                        contentDescription = activity.getString(R.string.context_menu_share),
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
+                }
+            }
+        )
+    }
+
+    @Composable
     fun BreadCrumbs() {
         breadcrumbs = activity.viewModel.internalPathList
         val listState = rememberLazyListState()

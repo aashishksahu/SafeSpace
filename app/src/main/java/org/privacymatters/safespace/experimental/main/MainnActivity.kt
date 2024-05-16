@@ -12,12 +12,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
@@ -85,20 +87,47 @@ class MainnActivity : AppCompatActivity() {
         SafeSpaceTheme {
             snackBarHostState = remember { SnackbarHostState() }
 
+            val appBarState by remember {
+                viewModel.appBarType
+            }
+
             Scaffold(
                 snackbarHost = {
                     SnackbarHost(hostState = snackBarHostState)
                 },
                 topBar = {
                     topAppBar = TopAppBar(this)
-                    topAppBar.NormalTopBar()
+
+                    when (appBarState) {
+                        ActionBarType.NORMAL -> topAppBar.NormalTopBar()
+                        ActionBarType.LONG_PRESS -> topAppBar.LongPressTopBar()
+                        ActionBarType.MOVE -> topAppBar.NormalTopBar()
+                        ActionBarType.COPY -> topAppBar.NormalTopBar()
+                    }
                 },
                 bottomBar = {
                     bottomAppBar = BottomAppBar(this)
-                    bottomAppBar.NormalActionBar()
-//                    LongPressActionBar()
-//                    MoveActionBar()
-//                    CopyActionBar()
+
+                    AnimatedContent(appBarState, label = "") { target ->
+
+                        when (target) {
+                            ActionBarType.NORMAL -> {
+                                bottomAppBar.NormalActionBar()
+                            }
+
+                            ActionBarType.LONG_PRESS -> {
+                                bottomAppBar.LongPressActionBar()
+                            }
+
+                            ActionBarType.MOVE -> {
+                                bottomAppBar.MoveActionBar()
+                            }
+
+                            ActionBarType.COPY -> {
+                                bottomAppBar.CopyActionBar()
+                            }
+                        }
+                    }
                 }
             ) { innerPadding ->
                 val lazyListDisplay = ItemList(this)
@@ -112,7 +141,6 @@ class MainnActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     private fun registerFilePickerListener() {
