@@ -390,8 +390,7 @@ class Operations(private val application: Application) {
     ): Boolean = withContext(Dispatchers.IO) {
 
         try {
-            val fileToExport =
-                File(getFilesDir() + File.separator + getInternalPath() + File.separator + selectedItem.name)
+            val fileToExport = File(getFilesDir() + File.separator + getInternalPath() + File.separator + selectedItem.name)
 
             val fis = FileInputStream(fileToExport)
 

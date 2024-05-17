@@ -8,9 +8,11 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.fileManager.FileItem
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
@@ -315,7 +317,70 @@ object DataManager {
         }
     }
 
-    /*
+    fun deleteFile(item: Item) {
+        try {
+            val fileToDelete = File(joinPath(getInternalPath(), item.name))
+
+            if (fileToDelete.exists()) {
+                if (item.isDir) {
+                    deleteDirectory(fileToDelete)
+                }
+                fileToDelete.delete()
+            }
+
+        } catch (e: Exception) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.deleteFile() ", e)
+        }
+    }
+
+    private fun deleteDirectory(dir: File) {
+        try {
+            val dirContents = dir.listFiles()
+            for (file in dirContents!!) {
+                if (file.isDirectory) {
+                    deleteDirectory(File(file.absolutePath))
+                } else {
+                    file.delete()
+                }
+            }
+            dir.delete()
+
+        } catch (e: Exception) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.deleteDirectory() ", e)
+        }
+    }
+
+    suspend fun exportItems(
+        exportUri: Uri,
+        selectedItem: Item
+    ) = withContext(Dispatchers.IO) {
+
+        try {
+            val fileToExport = File(joinPath(getInternalPath(), selectedItem.name))
+
+            val fis = FileInputStream(fileToExport)
+
+            val directory = DocumentFile.fromTreeUri(application, exportUri)
+            val file = directory!!.createFile("*", selectedItem.name)
+            val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
+            val fos = FileOutputStream(pfd!!.fileDescriptor)
+
+            copyFileWithProgressNotifications(
+                selectedItem.name, fis, fos,
+                FileTransferNotification.NotificationType.Export,
+                application.applicationContext
+            )
+
+            fos.close()
+            pfd.close()
+
+
+        } catch (e: Exception) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.exportItems() ", e)
+        }
+    }
+
+    /* // Boht mehnat lagi is me
         private fun getThumbsDir(): String {
             // thumbnails folder
             return joinPath(

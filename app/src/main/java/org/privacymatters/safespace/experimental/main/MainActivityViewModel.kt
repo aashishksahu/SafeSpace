@@ -5,20 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.FileUtils
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.utils.Constants
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 enum class ActionBarType {
     NORMAL, LONG_PRESS, MOVE, COPY
+}
+
+enum class FileOpCode {
+    SUCCESS, EXISTS, FAIL, SAME_PATH
 }
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,7 +46,10 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
     var scrollToPosition = ops.positionHistory
+    var selectedFileCount = mutableIntStateOf(0)
+    var selectedFolderCount = mutableIntStateOf(0)
 
+    private var fromPath = ""
 
     private val _internalPathList: SnapshotStateList<String> = mutableStateListOf()
     val internalPathList: List<String> = _internalPathList
@@ -94,32 +109,81 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun moveToDestination() {
+    fun moveToDestination(): FileOpCode {
+        var status = FileOpCode.SUCCESS
 
+        val toPath = ops.getInternalPath()
+
+        if (fromPath == toPath) {
+            return FileOpCode.SAME_PATH
+        }
+
+        try {
+            for (item in itemList) {
+                if (item.isSelected) {
+
+                    if (File(ops.joinPath(toPath, item.name)).exists()) {
+                        status = FileOpCode.EXISTS
+                    }
+
+                    Files.move(
+                        Paths.get(ops.joinPath(fromPath, item.name)),
+                        Paths.get(ops.joinPath(toPath, item.name)),
+                        StandardCopyOption.ATOMIC_MOVE
+                    )
+                }
+            }
+
+
+        } catch (e: Exception) {
+            status = FileOpCode.FAIL
+        }
+
+        return status
     }
 
-    fun copyToDestination() {
+    fun copyToDestination(): FileOpCode {
 
+        var status = FileOpCode.SUCCESS
+
+        val toPath = ops.getInternalPath()
+
+        if (fromPath == toPath) {
+            return FileOpCode.SAME_PATH
+        }
+        var sourceFileStream: FileInputStream? = null
+        var targetFileStream: FileOutputStream? = null
+
+        try {
+            for (item in itemList) {
+                if (item.isSelected) {
+                    sourceFileStream = FileInputStream(ops.joinPath(fromPath, item.name))
+                    targetFileStream = FileOutputStream(ops.joinPath(toPath, item.name))
+                    FileUtils.copy(sourceFileStream, targetFileStream)
+                }
+            }
+        } catch (e: Exception) {
+            status = FileOpCode.FAIL
+        } finally {
+            sourceFileStream?.close()
+            targetFileStream?.close()
+        }
+        return status
     }
 
     fun shareFiles() {
 
     }
 
-    fun exportSelection() {
-
-    }
-
-    fun copyItems() {
-
-    }
-
-    fun moveItems() {
-
-    }
-
     fun deleteItems() {
-
+        viewModelScope.launch {
+            for (item in itemList) {
+                if (item.isSelected) {
+                    ops.deleteFile(item)
+                }
+            }
+            getItems()
+        }
     }
 
     fun createTextNote(name: String): File {
@@ -183,6 +247,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun setSelected(item: Item) {
 
+        when (item.isDir) {
+            true -> selectedFolderCount.intValue += 1
+            false -> selectedFileCount.intValue += 1
+        }
+
         ops.baseItemList.find { it == item }?.isSelected = true
 
         ops.itemStateList.clear()
@@ -194,15 +263,39 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         ops.baseItemList.find { it == item }?.isSelected = false
         ops.itemStateList.clear()
         ops.itemStateList.addAll(ops.baseItemList)
+
+        when (item.isDir) {
+            true -> selectedFolderCount.intValue -= 1
+            false -> selectedFileCount.intValue -= 1
+        }
+
         if (ops.baseItemList.all { !it.isSelected }) {
             appBarType.value = ActionBarType.NORMAL
+            selectedFileCount.intValue = 0
+            selectedFolderCount.intValue = 0
         }
+
     }
 
     fun clearSelection() {
-
+        selectedFileCount.intValue = 0
+        selectedFolderCount.intValue = 0
         ops.baseItemList.forEach { it.isSelected = false }
         ops.itemStateList.clear()
         ops.itemStateList.addAll(ops.baseItemList)
+    }
+
+    fun exportItems(uri: Uri) {
+        viewModelScope.launch {
+            for (item in itemList) {
+                if (item.isSelected) {
+                    ops.exportItems(uri, item)
+                }
+            }
+        }
+    }
+
+    fun setFromPath() {
+        fromPath = ops.getInternalPath()
     }
 }

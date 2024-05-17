@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -24,6 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.main.ui.ItemList
 import org.privacymatters.safespace.experimental.main.ui.SafeSpaceTheme
@@ -36,7 +41,8 @@ class MainnActivity : AppCompatActivity() {
     private lateinit var bottomAppBar: BottomAppBar
 
     lateinit var snackBarHostState: SnackbarHostState
-    lateinit var selectFilesActivityResult: ActivityResultLauncher<Intent>
+    lateinit var selectItemsActivityResult: ActivityResultLauncher<Intent>
+    lateinit var exportItemsActivityResult: ActivityResultLauncher<Intent>
 
     val viewModel: MainActivityViewModel by viewModels()
 
@@ -44,12 +50,11 @@ class MainnActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         /* TODO:
-            * Add listener to viewModel.longPressAction changes and change the bottom bar
-              accordingly on long press
             * Improve getItems() performance
          */
 
         registerFilePickerListener()
+        selectExportDirActivityResult()
 
         // request notification permission for Android 13 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -98,11 +103,14 @@ class MainnActivity : AppCompatActivity() {
                 topBar = {
                     topAppBar = TopAppBar(this)
 
-                    when (appBarState) {
-                        ActionBarType.NORMAL -> topAppBar.NormalTopBar()
-                        ActionBarType.LONG_PRESS -> topAppBar.LongPressTopBar()
-                        ActionBarType.MOVE -> topAppBar.NormalTopBar()
-                        ActionBarType.COPY -> topAppBar.NormalTopBar()
+                    AnimatedContent(appBarState, label = "") { target ->
+
+                        when (target) {
+                            ActionBarType.NORMAL -> topAppBar.NormalTopBar()
+                            ActionBarType.LONG_PRESS -> topAppBar.LongPressTopBar()
+                            ActionBarType.MOVE -> topAppBar.NormalTopBar()
+                            ActionBarType.COPY -> topAppBar.NormalTopBar()
+                        }
                     }
                 },
                 bottomBar = {
@@ -145,9 +153,24 @@ class MainnActivity : AppCompatActivity() {
 
     private fun registerFilePickerListener() {
         // File picker result
-        selectFilesActivityResult =
+        selectItemsActivityResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 viewModel.importFiles(result)
+            }
+    }
+
+    private fun selectExportDirActivityResult() {
+        exportItemsActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+                    result.data.also { intent ->
+                        val uri = intent?.data
+                        if (uri != null) {
+                            viewModel.exportItems(uri)
+                        }
+                    }
+                }
             }
     }
 

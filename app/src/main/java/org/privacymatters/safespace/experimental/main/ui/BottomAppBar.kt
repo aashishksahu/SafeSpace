@@ -22,8 +22,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,7 @@ import org.privacymatters.safespace.R
 import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.document.TextDocumentView
 import org.privacymatters.safespace.experimental.main.ActionBarType
+import org.privacymatters.safespace.experimental.main.FileOpCode
 import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
@@ -217,11 +220,14 @@ class BottomAppBar(private val activity: MainnActivity) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                var displayDeleteConfirmation by remember { mutableStateOf(false) }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { activity.viewModel.deleteItems() }
+                        .clickable {
+                            displayDeleteConfirmation = true
+                        }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
@@ -236,7 +242,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { activity.viewModel.moveItems() }
+                        .clickable {
+                            activity.viewModel.setFromPath()
+                            activity.viewModel.appBarType.value = ActionBarType.MOVE
+                        }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.drive_file_move_black_24dp),
@@ -251,7 +260,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { activity.viewModel.copyItems() }
+                        .clickable {
+                            activity.viewModel.setFromPath()
+                            activity.viewModel.appBarType.value = ActionBarType.COPY
+                        }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.file_copy_black_24dp),
@@ -266,25 +278,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable {
-                            activity.viewModel.appBarType.value = ActionBarType.NORMAL
-                            activity.viewModel.clearSelection()
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.clear_all_black_24dp),
-                        contentDescription = activity.getString(R.string.multi_clear),
-                    )
-                    Text(
-                        text = activity.getString(R.string.multi_clear),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { activity.viewModel.exportSelection() }
+                        .clickable { exportFiles() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
@@ -295,19 +289,43 @@ class BottomAppBar(private val activity: MainnActivity) {
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { activity.viewModel.shareFiles() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
-                        contentDescription = activity.getString(R.string.context_menu_share),
-                    )
-                    Text(
-                        text = activity.getString(R.string.context_menu_share),
-                        color = MaterialTheme.colorScheme.onPrimary
+
+                if (displayDeleteConfirmation) {
+                    AlertDialog(
+                        icon = {
+                            Icon(
+                                Icons.Filled.Warning,
+                                contentDescription = activity.getString(R.string.context_menu_delete)
+                            )
+                        },
+                        title = {
+                            Text(text = activity.getString(R.string.context_menu_delete))
+                        },
+                        text = {
+                            Text(text = activity.getString(R.string.delete_confirmation))
+                        },
+                        onDismissRequest = {
+                            displayDeleteConfirmation = false
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    activity.viewModel.deleteItems()
+                                    activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                                }
+                            ) {
+                                Text(activity.getString(R.string.context_menu_delete))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    displayDeleteConfirmation = false
+                                }
+                            ) {
+                                Text(activity.getString(R.string.cancel))
+                            }
+                        }
                     )
                 }
             }
@@ -334,12 +352,19 @@ class BottomAppBar(private val activity: MainnActivity) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { activity.viewModel.moveToDestination() }) {
-                    Text(text = activity.getString(R.string.move_btn_text))
+                Button(onClick = {
+                    when (activity.viewModel.moveToDestination()) {
+                        FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
+                        FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
+                        FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
+                        FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                    }
+                }) {
                     Icon(
                         Icons.Filled.Close,
                         contentDescription = activity.getString(R.string.cancel)
                     )
+                    Text(text = activity.getString(R.string.move_btn_text))
                 }
             }
         }
@@ -357,7 +382,14 @@ class BottomAppBar(private val activity: MainnActivity) {
                     elevation = 3.dp,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { activity.viewModel.copyToDestination() }
+                .clickable {
+                    when (activity.viewModel.copyToDestination()) {
+                        FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
+                        FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
+                        FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
+                        FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                    }
+                }
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
@@ -367,11 +399,11 @@ class BottomAppBar(private val activity: MainnActivity) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(onClick = { activity.viewModel.copyToDestination() }) {
-                    Text(text = activity.getString(R.string.context_menu_copy))
                     Icon(
                         Icons.Filled.Close,
                         contentDescription = activity.getString(R.string.cancel)
                     )
+                    Text(text = activity.getString(R.string.context_menu_copy))
                 }
             }
         }
@@ -447,11 +479,17 @@ class BottomAppBar(private val activity: MainnActivity) {
     }
 
     private fun importFiles() {
-        showMessage(activity.getString(R.string.import_files_progress))
+//        showMessage(activity.getString(R.string.import_files_progress))
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.type = "*/*"
-        activity.selectFilesActivityResult.launch(intent)
+        activity.selectItemsActivityResult.launch(intent)
+    }
+
+    private fun exportFiles() {
+//        showMessage(activity.getString(R.string.import_files_progress))
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        activity.exportItemsActivityResult.launch(intent)
     }
 
     private fun showMessage(msg: String) {

@@ -92,7 +92,7 @@ class ItemList(private val activity: MainnActivity) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(top = 5.dp)
                 .combinedClickable(
                     onClick = {
                         openItem(item)
@@ -108,7 +108,7 @@ class ItemList(private val activity: MainnActivity) {
             GlideImage(
                 modifier = Modifier
                     .size(64.dp)
-                    .padding(5.dp)
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primary),
                 model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
@@ -165,7 +165,7 @@ class ItemList(private val activity: MainnActivity) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(top = 5.dp)
                 .combinedClickable(
                     onClick = {
                         openItem(item)
@@ -181,7 +181,7 @@ class ItemList(private val activity: MainnActivity) {
             Image(
                 modifier = Modifier
                     .size(64.dp)
-                    .padding(5.dp)
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primary),
                 painter = painterResource(R.drawable.folder_36dp),

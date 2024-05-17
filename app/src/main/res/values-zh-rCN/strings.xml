@@ -113,4 +113,5 @@
     <string name="biometric_toggle">使用生物识别技术解锁</string>
     <string name="title_activity_settings">设置</string>
     <string name="folder_already_exists">此文件夹已存在</string>
+    <string name="same_path">源和目标位置相同</string>
 </resources>

@@ -1,5 +1,6 @@
 package org.privacymatters.safespace.experimental.main.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,11 +21,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.experimental.settings.SettingsActivity
 import org.privacymatters.safespace.utils.Constants
@@ -94,28 +99,54 @@ class TopAppBar(private val activity: MainnActivity) {
         )
     }
 
+    @SuppressLint("PrivateResource")
     @Composable
     fun LongPressTopBar() {
+        val selectedFileCountState by remember { activity.viewModel.selectedFileCount }
+        val selectedFolderCountState by remember { activity.viewModel.selectedFolderCount }
+
         androidx.compose.material3.TopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                titleContentColor = MaterialTheme.colorScheme.onSecondary,
+                containerColor = MaterialTheme.colorScheme.background,
+                titleContentColor = MaterialTheme.colorScheme.primary,
             ),
             title = {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
+                OutlinedButton(
+                    onClick = {
+                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                        activity.viewModel.clearSelection()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = activity.getString(R.string.cancel),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.padding(5.dp))
+
+                    val selectedItemsCount =
+                        (selectedFileCountState + selectedFolderCountState).toString() + " " + stringResource(
+                            id = androidx.compose.ui.R.string.selected
+                        )
+                    Text(
+                        text = selectedItemsCount,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             },
             actions = {
-                IconButton(
-                    onClick = { activity.viewModel.shareFiles() }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
-                        contentDescription = activity.getString(R.string.context_menu_share),
-                        tint = MaterialTheme.colorScheme.onSecondary
-                    )
+
+                if (selectedFileCountState < 2 && selectedFolderCountState < 1) {
+                    IconButton(
+
+                        onClick = { activity.viewModel.shareFiles() }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
+                            contentDescription = activity.getString(R.string.context_menu_share),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         )

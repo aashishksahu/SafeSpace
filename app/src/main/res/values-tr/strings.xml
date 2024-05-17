@@ -112,4 +112,5 @@
     <string name="biometric_title">Biyometrik Kilit Açma</string>
     <string name="title_activity_settings">Ayarlar</string>
     <string name="folder_already_exists">Bu klasör zaten var</string>
+    <string name="same_path">Kaynak ve hedef konum aynıdır</string>
 </resources>
