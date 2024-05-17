@@ -54,6 +54,8 @@ class ItemList(private val activity: MainnActivity) {
 
     private lateinit var itemList: List<Item>
 
+    // Todo: List scrolls to top on item select
+
     @Composable
     fun LazyList(innerPadding: PaddingValues) {
         itemList = activity.viewModel.itemList
@@ -127,7 +129,8 @@ class ItemList(private val activity: MainnActivity) {
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -136,7 +139,10 @@ class ItemList(private val activity: MainnActivity) {
                         .padding(top = 10.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = item.size)
+                        Text(
+                            text = item.size,
+                            color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
+                        )
 
                         Spacer(modifier = Modifier.padding(4.dp))
 
@@ -146,13 +152,16 @@ class ItemList(private val activity: MainnActivity) {
                                 .clip(RoundedCornerShape(4.dp))
                                 .background(color = MaterialTheme.colorScheme.primary)
                                 .padding(start = 2.dp, end = 2.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.bodyMedium,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Text(text = item.lastModified)
+                    Text(
+                        text = item.lastModified,
+                        color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
+                    )
                 }
             }
         }
@@ -195,13 +204,15 @@ class ItemList(private val activity: MainnActivity) {
                     text = item.name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
-                    text = item.itemCount
+                    text = item.itemCount,
+                    color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
 
             }

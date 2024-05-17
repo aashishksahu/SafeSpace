@@ -42,7 +42,8 @@
             android:exported="false" />
         <activity
             android:name=".AuthActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.SafeSpace">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

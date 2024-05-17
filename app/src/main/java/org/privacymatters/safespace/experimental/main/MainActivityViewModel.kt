@@ -12,16 +12,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Constants
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
@@ -33,12 +36,13 @@ enum class FileOpCode {
     SUCCESS, EXISTS, FAIL, SAME_PATH
 }
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+class MainActivityViewModel(private val application: Application) : AndroidViewModel(application) {
 
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
     private var ops = DataManager
     var itemList: List<Item> = ops.baseItemList
+    var transferList: ArrayList<Item> = arrayListOf()
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
@@ -115,31 +119,43 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         val toPath = ops.getInternalPath()
 
         if (fromPath == toPath) {
+            transferList.clear()
             return FileOpCode.SAME_PATH
         }
 
         try {
-            for (item in itemList) {
+            for (item in transferList) {
                 if (item.isSelected) {
 
                     if (File(ops.joinPath(toPath, item.name)).exists()) {
                         status = FileOpCode.EXISTS
+                    } else {
+                        Files.move(
+                            Paths.get(ops.joinPath(fromPath, item.name)),
+                            Paths.get(ops.joinPath(toPath, item.name)),
+                            StandardCopyOption.ATOMIC_MOVE
+                        )
                     }
 
-                    Files.move(
-                        Paths.get(ops.joinPath(fromPath, item.name)),
-                        Paths.get(ops.joinPath(toPath, item.name)),
-                        StandardCopyOption.ATOMIC_MOVE
-                    )
                 }
             }
-
-
         } catch (e: Exception) {
             status = FileOpCode.FAIL
+        } finally {
+            getItems()
+            transferList.clear()
         }
 
         return status
+    }
+
+    private fun copyDir(src: Path, dest: Path) {
+        Files.walk(src).forEach {
+            Files.copy(
+                it, dest.resolve(src.relativize(it)),
+                StandardCopyOption.REPLACE_EXISTING
+            )
+        }
     }
 
     fun copyToDestination(): FileOpCode {
@@ -149,30 +165,78 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         val toPath = ops.getInternalPath()
 
         if (fromPath == toPath) {
+            transferList.clear()
             return FileOpCode.SAME_PATH
         }
-        var sourceFileStream: FileInputStream? = null
-        var targetFileStream: FileOutputStream? = null
 
         try {
-            for (item in itemList) {
+
+            var sourceFileStream: FileInputStream? = null
+            var targetFileStream: FileOutputStream? = null
+            for (item in transferList) {
                 if (item.isSelected) {
+                    if (item.isDir) {
+                        copyDir(
+                            Paths.get(ops.joinPath(fromPath, item.name)),
+                            Paths.get(ops.joinPath(toPath, item.name))
+                        )
+                        continue
+                    }
+
+                    if (File(ops.joinPath(toPath, item.name)).exists()) {
+                        status = FileOpCode.EXISTS
+                        continue
+                    }
+
                     sourceFileStream = FileInputStream(ops.joinPath(fromPath, item.name))
                     targetFileStream = FileOutputStream(ops.joinPath(toPath, item.name))
                     FileUtils.copy(sourceFileStream, targetFileStream)
+
                 }
             }
+            sourceFileStream?.close()
+            targetFileStream?.close()
         } catch (e: Exception) {
             status = FileOpCode.FAIL
         } finally {
-            sourceFileStream?.close()
-            targetFileStream?.close()
+            transferList.clear()
+            getItems()
         }
         return status
     }
 
-    fun shareFiles() {
+    fun shareFile(): Boolean {
 
+        val selectedFileName = itemList.find { it.isSelected }?.name
+
+        if (selectedFileName.isNullOrEmpty()) {
+            return false
+        }
+
+        val fileToShare = File(ops.joinPath(ops.getInternalPath(), selectedFileName))
+        val fileUri = FileProvider.getUriForFile(
+            application,
+            application.applicationContext.packageName + ".provider",
+            fileToShare
+        )
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = application.contentResolver.getType(fileUri)
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+
+        val chooser = Intent.createChooser(
+            intent,
+            application.getString(R.string.share_chooser_title)
+        )
+        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        application.startActivity(chooser)
+
+        transferList.clear()
+        clearSelection()
+        getItems()
+
+        return true
     }
 
     fun deleteItems() {
@@ -287,11 +351,16 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun exportItems(uri: Uri) {
         viewModelScope.launch {
-            for (item in itemList) {
+            for (item in transferList) {
                 if (item.isSelected) {
+
+                    // Todo: Folder export doesn't work
+
                     ops.exportItems(uri, item)
                 }
             }
+            clearSelection()
+            transferList.clear()
         }
     }
 

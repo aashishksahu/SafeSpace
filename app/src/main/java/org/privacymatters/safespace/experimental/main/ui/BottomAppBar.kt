@@ -6,18 +6,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -243,6 +244,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
+                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.MOVE
                         }
@@ -261,6 +263,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
+                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.COPY
                         }
@@ -278,7 +281,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable { exportFiles() }
+                        .clickable {
+                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
+                            exportFiles()
+                        }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
@@ -350,20 +356,34 @@ class BottomAppBar(private val activity: MainnActivity) {
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(onClick = {
-                    when (activity.viewModel.moveToDestination()) {
-                        FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
-                        FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
-                        FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
-                        FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                OutlinedButton(
+                    onClick = {
+                        activity.viewModel.clearSelection()
+                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
                     }
-                }) {
-                    Icon(
-                        Icons.Filled.Close,
-                        contentDescription = activity.getString(R.string.cancel)
+                ) {
+                    Text(
+                        text = activity.getString(R.string.cancel),
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
+                }
+
+                Spacer(modifier = Modifier.padding(10.dp))
+
+                Button(
+                    onClick = {
+                        when (activity.viewModel.moveToDestination()) {
+                            FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
+                            FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
+                            FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
+                            FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                        }
+                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                        activity.viewModel.clearSelection()
+                    },
+                ) {
                     Text(text = activity.getString(R.string.move_btn_text))
                 }
             }
@@ -382,31 +402,43 @@ class BottomAppBar(private val activity: MainnActivity) {
                     elevation = 3.dp,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable {
-                    when (activity.viewModel.copyToDestination()) {
-                        FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
-                        FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
-                        FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
-                        FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
-                    }
-                }
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(onClick = { activity.viewModel.copyToDestination() }) {
-                    Icon(
-                        Icons.Filled.Close,
-                        contentDescription = activity.getString(R.string.cancel)
+                OutlinedButton(
+                    onClick = {
+                        activity.viewModel.clearSelection()
+                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                    }
+                ) {
+                    Text(
+                        text = activity.getString(R.string.cancel),
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
-                    Text(text = activity.getString(R.string.context_menu_copy))
+                }
+
+                Spacer(modifier = Modifier.padding(10.dp))
+
+                Button(onClick = {
+                    when (activity.viewModel.copyToDestination()) {
+                        FileOpCode.SUCCESS -> showMessage(activity.getString(R.string.move_copy_file_success))
+                        FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
+                        FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
+                        FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                    }
+                    activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                    activity.viewModel.clearSelection()
+                }) {
+                    Text(text = activity.getString(R.string.copy_file_title))
                 }
             }
         }
+
     }
 
     @Composable
@@ -487,9 +519,9 @@ class BottomAppBar(private val activity: MainnActivity) {
     }
 
     private fun exportFiles() {
-//        showMessage(activity.getString(R.string.import_files_progress))
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         activity.exportItemsActivityResult.launch(intent)
+        activity.viewModel.appBarType.value = ActionBarType.NORMAL
     }
 
     private fun showMessage(msg: String) {

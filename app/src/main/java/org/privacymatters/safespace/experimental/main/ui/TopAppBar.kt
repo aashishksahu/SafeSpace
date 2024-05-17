@@ -15,6 +15,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -38,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -63,8 +66,8 @@ class TopAppBar(private val activity: MainnActivity) {
             title = {
                 Text(
                     text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
                 )
             },
             actions = {
@@ -76,7 +79,6 @@ class TopAppBar(private val activity: MainnActivity) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.sort_black_36dp),
                         contentDescription = activity.getString(R.string.sort),
-                        tint = MaterialTheme.colorScheme.primary
                     )
 
                     if (showDialog.value) {
@@ -92,7 +94,6 @@ class TopAppBar(private val activity: MainnActivity) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.settings_black_36dp),
                         contentDescription = activity.getString(R.string.title_activity_settings),
-                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -136,16 +137,59 @@ class TopAppBar(private val activity: MainnActivity) {
                 }
             },
             actions = {
+                var shareAlertState by remember { mutableStateOf(false) }
 
                 if (selectedFileCountState < 2 && selectedFolderCountState < 1) {
                     IconButton(
 
-                        onClick = { activity.viewModel.shareFiles() }) {
+                        onClick = {
+                            shareAlertState = true
+                        }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.share_black_36dp),
                             contentDescription = activity.getString(R.string.context_menu_share),
                             tint = MaterialTheme.colorScheme.primary
                         )
+
+                        if (shareAlertState) {
+                            AlertDialog(
+                                icon = {
+                                    Icon(
+                                        Icons.Filled.Warning,
+                                        contentDescription = activity.getString(R.string.share_dialog_title)
+                                    )
+                                },
+                                title = {
+                                    Text(text = activity.getString(R.string.share_dialog_title))
+                                },
+                                text = {
+                                    Text(text = activity.getString(R.string.share_dialog_description))
+                                },
+                                onDismissRequest = {
+                                    shareAlertState = false
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                                            activity.viewModel.shareFile()
+                                        }
+                                    ) {
+                                        Text(activity.getString(R.string.context_menu_share))
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            shareAlertState = false
+                                        }
+                                    ) {
+                                        Text(activity.getString(R.string.cancel))
+                                    }
+                                }
+                            )
+                        }
+
                     }
                 }
             }
