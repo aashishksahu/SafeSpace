@@ -12,15 +12,26 @@ import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.fileManager.FileItem
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+
+enum class FileOpCode {
+    SUCCESS, EXISTS, FAIL, SAME_PATH, NO_SPACE
+}
 
 object DataManager {
 
@@ -380,7 +391,143 @@ object DataManager {
         }
     }
 
-    /* // Boht mehnat lagi is me
+    @Throws(SecurityException::class)
+    fun importBackup(backupUri: Uri): Any {
+
+        try {
+
+            // byte array of source file
+            val sourceFileStream = application.contentResolver.openInputStream(backupUri)
+
+            val zis = ZipInputStream(sourceFileStream)
+
+            var zipEntry = zis.nextEntry
+
+            while (zipEntry != null) {
+                val newFile = File(getFilesDir(), zipEntry.name)
+
+                // https://support.google.com/faqs/answer/9294009
+                val canonicalPath = newFile.canonicalPath
+
+                if (!canonicalPath.startsWith(getFilesDir())) {
+                    throw SecurityException()
+                } else {
+                    if (zipEntry.isDirectory) {
+                        if (!newFile.isDirectory && !newFile.mkdirs()) {
+                            throw IOException("Failed to create directory $newFile")
+                        }
+                    } else {
+                        // fix for Windows-created archives
+                        val parent = newFile.parentFile
+                        if (parent != null) {
+                            if (!parent.isDirectory && !parent.mkdirs()) {
+                                throw IOException("Failed to create directory $parent")
+                            }
+                        }
+
+                        // write file content
+                        val fos = FileOutputStream(newFile)
+
+                        zis.copyTo(fos)
+
+                        fos.close()
+                    }
+                }
+                zipEntry = zis.nextEntry
+            }
+
+            zis.closeEntry()
+            zis.close()
+            sourceFileStream?.close()
+
+
+        } catch (e: IOException) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+            return if (e.message.toString().lowercase().contains("no space left")) {
+                FileOpCode.NO_SPACE
+            } else {
+                FileOpCode.FAIL
+            }
+        } catch (e: SecurityException) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+            return FileOpCode.FAIL
+        }
+
+        try {
+
+            // android 14 throws security exception if zip archive has files at / location
+            // therefore after extracting the zip files all files will be moved out of the first folder in the zip
+
+            val importDir = File(getFilesDir())
+
+            importDir.walkTopDown().forEach { file ->
+
+                val sourcePath = file.absolutePath
+                val targetPath = file.absolutePath.replaceFirst("/root", "")
+
+                if (file.isDirectory) {
+                    File(targetPath).mkdirs()
+                } else {
+                    Files.move(
+                        Paths.get(sourcePath),
+                        Paths.get(targetPath),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+            return FileOpCode.FAIL
+        } finally {
+            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
+        }
+
+        return FileOpCode.SUCCESS
+    }
+
+    fun exportBackup(exportUri: Uri): Int {
+
+        try {
+            val backupName =
+                "SafeSpace-" + SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+                    .format(System.currentTimeMillis()) + ".zip"
+
+            val directory = DocumentFile.fromTreeUri(application, exportUri)
+            val file = directory!!.createFile("application/zip", backupName)
+            val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
+
+            val inputDirectory = File(getFilesDir() + Constants.ROOT)
+
+            ZipOutputStream(BufferedOutputStream(FileOutputStream(pfd!!.fileDescriptor))).use { zos ->
+
+                inputDirectory.walkTopDown().forEach { file ->
+                    val zipFileName = Constants.ROOT +
+                            file.absolutePath.removePrefix(inputDirectory.absolutePath)
+
+                    val entry = ZipEntry("$zipFileName${(if (file.isDirectory) "/" else "")}")
+
+                    zos.putNextEntry(entry)
+
+                    if (file.isFile) {
+                        file.inputStream().use { fis -> fis.copyTo(zos) }
+                    }
+                }
+
+            }
+            pfd.close()
+
+        } catch (e: IOException) {
+//            e.printStackTrace()
+            return if (e.message.toString().lowercase().contains("no space left")) {
+                4
+            } else {
+                1
+            }
+        }
+        return 0
+    }
+
+    /*
         private fun getThumbsDir(): String {
             // thumbnails folder
             return joinPath(

@@ -32,15 +32,11 @@ enum class ActionBarType {
     NORMAL, LONG_PRESS, MOVE, COPY
 }
 
-enum class FileOpCode {
-    SUCCESS, EXISTS, FAIL, SAME_PATH
-}
-
 class MainActivityViewModel(private val application: Application) : AndroidViewModel(application) {
 
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
-    private var ops = DataManager
+    var ops = DataManager
     var itemList: List<Item> = ops.baseItemList
     var transferList: ArrayList<Item> = arrayListOf()
 
@@ -309,26 +305,31 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         return ops.internalPath.size == 1 && ops.internalPath[0] == Constants.ROOT
     }
 
-    fun setSelected(item: Item) {
+    fun setSelected(index: Int) {
+
+        val item = ops.itemStateList[index]
+        val isSelectedOld = item.isSelected
+
+        item.isSelected = true
+
+        ops.itemStateList[index] = item.copy(isSelected = !isSelectedOld)
+
+        ops.baseItemList[index].isSelected = true
 
         when (item.isDir) {
             true -> selectedFolderCount.intValue += 1
             false -> selectedFileCount.intValue += 1
         }
 
-        ops.baseItemList.find { it == item }?.isSelected = true
-
-        ops.itemStateList.clear()
-        ops.itemStateList.addAll(ops.baseItemList)
     }
 
-    fun setUnSelected(item: Item) {
+    fun setUnSelected(index: Int) {
 
-        ops.baseItemList.find { it == item }?.isSelected = false
+        itemList[index].isSelected = false
         ops.itemStateList.clear()
         ops.itemStateList.addAll(ops.baseItemList)
 
-        when (item.isDir) {
+        when (ops.baseItemList[index].isDir) {
             true -> selectedFolderCount.intValue -= 1
             false -> selectedFileCount.intValue -= 1
         }
@@ -353,9 +354,6 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         viewModelScope.launch {
             for (item in transferList) {
                 if (item.isSelected) {
-
-                    // Todo: Folder export doesn't work
-
                     ops.exportItems(uri, item)
                 }
             }

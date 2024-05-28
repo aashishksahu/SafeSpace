@@ -379,6 +379,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                             FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
                             FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
                             FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                            FileOpCode.NO_SPACE -> showMessage(activity.getString(R.string.backup_err_space))
                         }
                         activity.viewModel.appBarType.value = ActionBarType.NORMAL
                         activity.viewModel.clearSelection()
@@ -430,6 +431,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                         FileOpCode.FAIL -> showMessage(activity.getString(R.string.move_copy_file_failure))
                         FileOpCode.EXISTS -> showMessage(activity.getString(R.string.file_exists_error))
                         FileOpCode.SAME_PATH -> showMessage(activity.getString(R.string.same_path))
+                        FileOpCode.NO_SPACE -> showMessage(activity.getString(R.string.backup_err_space))
                     }
                     activity.viewModel.appBarType.value = ActionBarType.NORMAL
                     activity.viewModel.clearSelection()

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import org.privacymatters.safespace.AboutActivity
 import org.privacymatters.safespace.AuthActivity
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.fileManager.Operations
+import org.privacymatters.safespace.experimental.main.DataManager
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.SetTheme
@@ -30,12 +30,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var backupExportDirActivityResult: ActivityResultLauncher<Intent>
     private lateinit var importBackupActivityResult: ActivityResultLauncher<Intent>
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var ops: Operations
+    private lateinit var ops: DataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ops = Operations(requireActivity().application)
+        ops = DataManager
+
+        ops.ready(requireActivity().application)
 
         sharedPref =
             requireActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
