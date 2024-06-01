@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,48 +55,49 @@ class ItemList(private val activity: MainnActivity) {
 
     private lateinit var itemList: List<Item>
 
-    // Todo: List scrolls to top on item select
+    // Todo: Long press selection doesn't change background color
 
     @Composable
     fun LazyList(innerPadding: PaddingValues) {
-        itemList = activity.viewModel.itemList
-
+        itemList = remember { activity.viewModel.ops.itemStateList }
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
-
-        val currentIndex = remember { activity.viewModel.scrollToPosition }
+        val openedItem by remember { activity.viewModel.ops.positionHistory }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
             state = listState
         ) {
-            coroutineScope.launch {
-                listState.animateScrollToItem(currentIndex.intValue)
-            }
+            coroutineScope.launch { listState.animateScrollToItem(openedItem) }
             itemsIndexed(itemList, key = { _, item: Item -> item.hashCode() })
             { index, item ->
+                val backgroundColor =
+                    if (itemList[index].isSelected)
+                        MaterialTheme.colorScheme.secondary
+                    else
+                        Color.Transparent
+
                 if (item.isDir)
-                    FolderCard(index)
+                    FolderCard(index, backgroundColor)
                 else
-                    FileCard(index)
+                    FileCard(index, backgroundColor)
 
                 if (item == itemList.last()) {
                     Spacer(modifier = Modifier.padding(innerPadding.calculateTopPadding()))
                 }
 
-                currentIndex.intValue = 0 // reset index
+//                currentIndex.intValue = 0 // reset index
             }
         }
     }
 
     @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
     @Composable
-    private fun FileCard(index: Int) {
+    private fun FileCard(index: Int, backgroundColor: Color) {
 
         val haptics = LocalHapticFeedback.current
-        val selectionWatch by
-            remember { derivedStateOf { activity.viewModel.itemList[index].isSelected } }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -112,7 +112,8 @@ class ItemList(private val activity: MainnActivity) {
                         activity.viewModel.setSelected(index)
                     }
                 )
-                .background(if (activity.viewModel.itemList[index].isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent),
+//                .background(if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent),
+                .background(backgroundColor),
         ) {
             GlideImage(
                 modifier = Modifier
@@ -120,7 +121,7 @@ class ItemList(private val activity: MainnActivity) {
                     .padding(10.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primary),
-                        model = File (activity.viewModel.getIconPath(activity.viewModel.itemList[index].name)).canonicalPath,
+                model = File(activity.viewModel.getIconPath(activity.viewModel.ops.itemStateList[index].name)).canonicalPath,
                 contentDescription = activity.getString(R.string.file_icon_description),
                 contentScale = ContentScale.Crop,
                 failure = placeholder(R.drawable.description_white_36dp),
@@ -130,14 +131,14 @@ class ItemList(private val activity: MainnActivity) {
                 modifier = Modifier
                     .padding(10.dp)
             ) {
-                val (name, ext) = Utils.getFileNameAndExtension(activity.viewModel.itemList[index].name)
+                val (name, ext) = Utils.getFileNameAndExtension(activity.viewModel.ops.itemStateList[index].name)
 
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
+                    color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -147,8 +148,8 @@ class ItemList(private val activity: MainnActivity) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = activity.viewModel.itemList[index].size,
-                            color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
+                            text = activity.viewModel.ops.itemStateList[index].size,
+                            color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                         )
 
                         Spacer(modifier = Modifier.padding(4.dp))
@@ -159,15 +160,15 @@ class ItemList(private val activity: MainnActivity) {
                                 .clip(RoundedCornerShape(4.dp))
                                 .background(color = MaterialTheme.colorScheme.primary)
                                 .padding(start = 2.dp, end = 2.dp),
-                            color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
+                            color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.bodyMedium,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     Text(
-                        text = activity.viewModel.itemList[index].lastModified,
-                        color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
+                        text = activity.viewModel.ops.itemStateList[index].lastModified,
+                        color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }
@@ -176,9 +177,8 @@ class ItemList(private val activity: MainnActivity) {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    private fun FolderCard(index: Int) {
+    private fun FolderCard(index: Int, backgroundColor: Color) {
         val haptics = LocalHapticFeedback.current
-        val selectionWatch by remember { derivedStateOf { activity.viewModel.itemList[index].isSelected } }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -193,7 +193,8 @@ class ItemList(private val activity: MainnActivity) {
                         activity.viewModel.setSelected(index)
                     },
                 )
-                .background(if (selectionWatch) MaterialTheme.colorScheme.secondary else Color.Transparent)
+//                .background(if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
+                .background(backgroundColor)
         ) {
             Image(
                 modifier = Modifier
@@ -209,18 +210,18 @@ class ItemList(private val activity: MainnActivity) {
                     .padding(10.dp)
             ) {
                 Text(
-                    text = activity.viewModel.itemList[index].name,
+                    text = activity.viewModel.ops.itemStateList[index].name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
+                    color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp),
-                    text = activity.viewModel.itemList[index].itemCount,
-                    color = if (selectionWatch) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
+                    text = activity.viewModel.ops.itemStateList[index].itemCount,
+                    color = if (activity.viewModel.ops.itemStateList[index].isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
 
             }
@@ -229,24 +230,26 @@ class ItemList(private val activity: MainnActivity) {
 
     private fun openItem(index: Int) {
         if (activity.viewModel.appBarType.value == ActionBarType.LONG_PRESS) {
-            if (activity.viewModel.itemList[index].isSelected)
+            if (activity.viewModel.ops.itemStateList[index].isSelected)
                 activity.viewModel.setUnSelected(index)
             else
                 activity.viewModel.setSelected(index)
         } else {
 
-            if (activity.viewModel.itemList[index].isDir) {
-                activity.viewModel.travelToLocation(activity.viewModel.itemList[index].name)
+            if (activity.viewModel.ops.itemStateList[index].isDir) {
+                activity.viewModel.travelToLocation(activity.viewModel.ops.itemStateList[index].name)
             } else {
                 val filePath =
-                    activity.viewModel.getPath(activity.viewModel.itemList[index].name)
+                    activity.viewModel.getPath(activity.viewModel.ops.itemStateList[index].name)
 
-                when (Utils.getFileType(activity.viewModel.itemList[index].name)) {
+                when (Utils.getFileType(activity.viewModel.ops.itemStateList[index].name)) {
                     Constants.IMAGE_TYPE,
                     Constants.VIDEO_TYPE,
                     Constants.AUDIO_TYPE -> {
                         val mediaViewIntent = Intent(activity, MediaActivity::class.java)
-                        mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, index)
+//                        mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, index)
+                        activity.viewModel.ops.openedItem =
+                            activity.viewModel.ops.itemStateList[index]
                         activity.startActivity(mediaViewIntent)
                     }
 

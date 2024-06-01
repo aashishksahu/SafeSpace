@@ -1,7 +1,6 @@
 package org.privacymatters.safespace.media
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -12,7 +11,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Constants
 
 class MediaActivity : AppCompatActivity() {
 
@@ -34,7 +32,7 @@ class MediaActivity : AppCompatActivity() {
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        val firstPosition = intent.extras?.getInt(Constants.INTENT_KEY_INDEX) ?: 0
+//        val firstPosition = intent.extras?.getInt(Constants.INTENT_KEY_INDEX) ?: 0
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         viewPager = findViewById(R.id.mediaPager)
@@ -43,8 +41,10 @@ class MediaActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
+        val position = viewModel.currentPosition
+
         viewPager.post {
-            viewPager.setCurrentItem(firstPosition, false)
+            viewPager.setCurrentItem(position, false)
         }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -62,20 +62,17 @@ class MediaActivity : AppCompatActivity() {
                 viewModel.setPosition(position)
             }
         })
-
-        onBackPressedDispatcher.addCallback(this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    finish()
-                }
-            })
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = viewModel.mediaList.size
-
         override fun createFragment(position: Int): Fragment =
-            MediaFragment(viewModel.mediaList[position])
+            MediaFragment(
+                viewModel.ops.joinPath(
+                    viewModel.ops.getInternalPath(),
+                    viewModel.mediaList[position].name
+                )
+            )
 
     }
 }

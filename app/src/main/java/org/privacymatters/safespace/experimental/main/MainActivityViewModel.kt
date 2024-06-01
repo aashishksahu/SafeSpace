@@ -37,7 +37,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
     var ops = DataManager
-    var itemList: List<Item> = ops.baseItemList
+//    var itemList: List<Item> = ops.baseItemList
     var transferList: ArrayList<Item> = arrayListOf()
 
     private val sharedPref: SharedPreferences =
@@ -45,7 +45,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
-    var scrollToPosition = ops.positionHistory
+//    var scrollToPosition = ops.positionHistory
     var selectedFileCount = mutableIntStateOf(0)
     var selectedFolderCount = mutableIntStateOf(0)
 
@@ -66,8 +66,8 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun sortItems(sortBy: String, sortOrder: String) {
         ops.getSortedItems(fileSortBy, fileSortOrder)
-        ops.itemStateList.clear()
-        ops.itemStateList.addAll(ops.baseItemList)
+//        ops.itemStateList.clear()
+//        ops.itemStateList.addAll(ops.baseItemList)
 
         sharedPref.edit()
             .putString(Constants.FILE_SORT_BY, sortBy)
@@ -203,7 +203,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun shareFile(): Boolean {
 
-        val selectedFileName = itemList.find { it.isSelected }?.name
+        val selectedFileName = ops.itemStateList.find { it.isSelected }?.name
 
         if (selectedFileName.isNullOrEmpty()) {
             return false
@@ -237,7 +237,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun deleteItems() {
         viewModelScope.launch {
-            for (item in itemList) {
+            for (item in ops.itemStateList) {
                 if (item.isSelected) {
                     ops.deleteFile(item)
                 }
@@ -314,7 +314,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
         ops.itemStateList[index] = item.copy(isSelected = !isSelectedOld)
 
-        ops.baseItemList[index].isSelected = true
+//        ops.itemStateList[index].isSelected = true
 
         when (item.isDir) {
             true -> selectedFolderCount.intValue += 1
@@ -325,16 +325,16 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun setUnSelected(index: Int) {
 
-        itemList[index].isSelected = false
-        ops.itemStateList.clear()
-        ops.itemStateList.addAll(ops.baseItemList)
+        ops.itemStateList[index].isSelected = false
+//        ops.itemStateList.clear()
+//        ops.itemStateList.addAll(ops.baseItemList)
 
-        when (ops.baseItemList[index].isDir) {
+        when (ops.itemStateList[index].isDir) {
             true -> selectedFolderCount.intValue -= 1
             false -> selectedFileCount.intValue -= 1
         }
 
-        if (ops.baseItemList.all { !it.isSelected }) {
+        if (ops.itemStateList.all { !it.isSelected }) {
             appBarType.value = ActionBarType.NORMAL
             selectedFileCount.intValue = 0
             selectedFolderCount.intValue = 0
@@ -345,9 +345,9 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun clearSelection() {
         selectedFileCount.intValue = 0
         selectedFolderCount.intValue = 0
-        ops.baseItemList.forEach { it.isSelected = false }
-        ops.itemStateList.clear()
-        ops.itemStateList.addAll(ops.baseItemList)
+        ops.itemStateList.forEach { it.isSelected = false }
+//        ops.itemStateList.clear()
+//        ops.itemStateList.addAll(ops.baseItemList)
     }
 
     fun exportItems(uri: Uri) {

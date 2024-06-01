@@ -7,7 +7,6 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -39,10 +38,12 @@ object DataManager {
     var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
 
-    val itemStateList: SnapshotStateList<Item> = mutableStateListOf()
-    var baseItemList: List<Item> = itemStateList
+    val itemStateList = mutableStateListOf<Item>()
+//    var baseItemList: List<Item> = itemStateList
 
     var positionHistory = mutableIntStateOf(0)
+
+    var openedItem: Item? = null
 
     fun ready(app: Application): Int {
         application = app
@@ -119,20 +120,20 @@ object DataManager {
 
     fun getSortedItems(sortBy: String, sortOrder: String) {
 
-        baseItemList = getItems()
+        var tempItemList: List<Item> = getItems()
 
         // Ascending or descending
         when (sortOrder) {
             Constants.ASC -> {
                 // name, date or size
-                baseItemList = when (sortBy) {
-                    Constants.SIZE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                tempItemList = when (sortBy) {
+                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenBy { it.size })
 
-                    Constants.DATE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenBy { it.lastModified })
 
-                    else -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenComparing { o1, o2 ->
                             naturalCompareAscending(o1, o2)
                         })
@@ -141,14 +142,14 @@ object DataManager {
 
             Constants.DESC -> {
                 // name, date or size
-                baseItemList = when (sortBy) {
-                    Constants.SIZE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                tempItemList = when (sortBy) {
+                    Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenByDescending { it.size })
 
-                    Constants.DATE -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                    Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenByDescending { it.lastModified })
 
-                    else -> baseItemList.sortedWith(compareByDescending<Item> { it.isDir }
+                    else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenComparing { o1, o2 ->
                             naturalCompareDescending(o1, o2)
                         })
@@ -156,6 +157,9 @@ object DataManager {
                 }
             }
         }
+
+        itemStateList.clear()
+        itemStateList.addAll(tempItemList)
     }
 
     @Throws(SecurityException::class)

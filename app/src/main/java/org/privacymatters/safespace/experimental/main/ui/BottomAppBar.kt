@@ -244,7 +244,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
+                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.MOVE
                         }
@@ -263,7 +263,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
+                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.COPY
                         }
@@ -282,7 +282,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.itemList)
+                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
                             exportFiles()
                         }
                 ) {
