@@ -27,6 +27,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.util.UUID
 
 enum class ActionBarType {
     NORMAL, LONG_PRESS, MOVE, COPY
@@ -37,7 +38,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
     var ops = DataManager
-//    var itemList: List<Item> = ops.baseItemList
+
     var transferList: ArrayList<Item> = arrayListOf()
 
     private val sharedPref: SharedPreferences =
@@ -45,7 +46,8 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
-//    var scrollToPosition = ops.positionHistory
+
+    //    var scrollToPosition = ops.positionHistory
     var selectedFileCount = mutableIntStateOf(0)
     var selectedFolderCount = mutableIntStateOf(0)
 
@@ -203,7 +205,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun shareFile(): Boolean {
 
-        val selectedFileName = ops.itemStateList.find { it.isSelected }?.name
+        val selectedFileName = ops.itemListFlow.value.find { it.isSelected }?.name
 
         if (selectedFileName.isNullOrEmpty()) {
             return false
@@ -237,7 +239,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun deleteItems() {
         viewModelScope.launch {
-            for (item in ops.itemStateList) {
+            for (item in ops.itemListFlow.value) {
                 if (item.isSelected) {
                     ops.deleteFile(item)
                 }
@@ -305,49 +307,46 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         return ops.internalPath.size == 1 && ops.internalPath[0] == Constants.ROOT
     }
 
-    fun setSelected(index: Int) {
+    fun setSelected(id: UUID) {
 
-        val item = ops.itemStateList[index]
-        val isSelectedOld = item.isSelected
+        ops.selectItem(id)
 
-        item.isSelected = true
-
-        ops.itemStateList[index] = item.copy(isSelected = !isSelectedOld)
-
-//        ops.itemStateList[index].isSelected = true
-
-        when (item.isDir) {
+        when (ops.itemListFlow.value.find { it.id == id }?.isDir) {
             true -> selectedFolderCount.intValue += 1
             false -> selectedFileCount.intValue += 1
+            else -> {
+                selectedFolderCount.intValue = selectedFolderCount.intValue
+                selectedFileCount.intValue = selectedFileCount.intValue
+            }
         }
-
     }
 
-    fun setUnSelected(index: Int) {
+    fun setUnSelected(id: UUID) {
 
-        ops.itemStateList[index].isSelected = false
-//        ops.itemStateList.clear()
-//        ops.itemStateList.addAll(ops.baseItemList)
+        ops.unselectItem(id)
 
-        when (ops.itemStateList[index].isDir) {
+        when (ops.itemListFlow.value.find { it.id == id }?.isDir) {
             true -> selectedFolderCount.intValue -= 1
             false -> selectedFileCount.intValue -= 1
+            else -> {
+                selectedFolderCount.intValue = selectedFolderCount.intValue
+                selectedFileCount.intValue = selectedFileCount.intValue
+            }
         }
 
-        if (ops.itemStateList.all { !it.isSelected }) {
+        if (ops.itemListFlow.value.all { !it.isSelected }) {
             appBarType.value = ActionBarType.NORMAL
             selectedFileCount.intValue = 0
             selectedFolderCount.intValue = 0
         }
-
     }
+
 
     fun clearSelection() {
         selectedFileCount.intValue = 0
         selectedFolderCount.intValue = 0
-        ops.itemStateList.forEach { it.isSelected = false }
-//        ops.itemStateList.clear()
-//        ops.itemStateList.addAll(ops.baseItemList)
+
+        ops.clearSelection()
     }
 
     fun exportItems(uri: Uri) {

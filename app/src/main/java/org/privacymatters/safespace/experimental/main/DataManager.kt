@@ -9,6 +9,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Constants
@@ -24,6 +27,7 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.UUID
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -38,10 +42,12 @@ object DataManager {
     var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
 
-    val itemStateList = mutableStateListOf<Item>()
-//    var baseItemList: List<Item> = itemStateList
+//    val itemStateList = mutableStateListOf<Item>()
 
-    var positionHistory = mutableIntStateOf(0)
+    private val privateItemList = MutableStateFlow<List<Item>>(emptyList())
+    val itemListFlow = privateItemList.asStateFlow()
+
+    var positionHistory = mutableIntStateOf(-1)
 
     var openedItem: Item? = null
 
@@ -103,6 +109,7 @@ object DataManager {
 
                 tempItemsList.add(
                     Item(
+                        id = UUID.randomUUID(),
                         name = content.name,
                         size = Utils.getSize(content.length()),
                         isDir = content.isDirectory,
@@ -158,8 +165,10 @@ object DataManager {
             }
         }
 
-        itemStateList.clear()
-        itemStateList.addAll(tempItemList)
+        privateItemList.value = tempItemList
+
+//        itemStateList.clear()
+//        itemStateList.addAll(tempItemList)
     }
 
     @Throws(SecurityException::class)
@@ -529,6 +538,26 @@ object DataManager {
             }
         }
         return 0
+    }
+
+    fun selectItem(id: UUID) = privateItemList.update {
+        it.map { item ->
+            if (item.id == id) item.copy(isSelected = true)
+            else item
+        }
+    }
+
+    fun unselectItem(id: UUID) = privateItemList.update {
+        it.map { item ->
+            if (item.id == id) item.copy(isSelected = false)
+            else item
+        }
+    }
+
+    fun clearSelection() = privateItemList.update {
+        it.map { item ->
+            item.copy(isSelected = false)
+        }
     }
 
     /*

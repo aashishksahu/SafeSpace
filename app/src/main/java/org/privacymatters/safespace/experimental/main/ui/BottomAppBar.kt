@@ -35,13 +35,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.document.TextDocumentView
 import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.FileOpCode
+import org.privacymatters.safespace.experimental.main.Item
 import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
@@ -50,9 +53,12 @@ class BottomAppBar(private val activity: MainnActivity) {
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private var name: String = ""
+//    private lateinit var itemList: StateFlow<List<Item>>
 
     @Composable
     fun NormalActionBar() {
+//        itemList = activity.viewModel.itemList
+//        val itemList by activity.viewModel.ops.itemListFlow.collectAsStateWithLifecycle()
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -244,7 +250,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
+//                            activity.viewModel.transferList.addAll(itemList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.MOVE
                         }
@@ -263,7 +269,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
+//                            activity.viewModel.transferList.addAll(itemList)
                             activity.viewModel.setFromPath()
                             activity.viewModel.appBarType.value = ActionBarType.COPY
                         }
@@ -282,7 +288,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            activity.viewModel.transferList.addAll(activity.viewModel.ops.itemStateList)
+//                            activity.viewModel.transferList.addAll(itemList)
                             exportFiles()
                         }
                 ) {

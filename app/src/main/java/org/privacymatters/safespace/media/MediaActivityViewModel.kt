@@ -33,11 +33,13 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun getItems() {
-        if (ops.itemStateList.isEmpty()) {
+//        if (ops.itemStateList.isEmpty()) {
+        if (ops.itemListFlow.value.isEmpty()) {
             ops.getSortedItems(fileSortBy, fileSortOrder)
         }
 
-        mediaList = ops.itemStateList
+//        mediaList = ops.itemStateList
+        mediaList = ops.itemListFlow.value
             .filter { item ->
                 Utils.getFileType(item.name) in listOf(
                     Constants.IMAGE_TYPE,
@@ -46,7 +48,8 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
                 )
             }
 
-        currentPosition = mediaList.indexOf(ops.itemStateList.find { ops.openedItem == it })
+//        currentPosition = mediaList.indexOf(ops.itemStateList.find { ops.openedItem == it })
+        currentPosition = mediaList.indexOf(ops.itemListFlow.value.find { ops.openedItem == it })
 
 //        itemList.forEachIndexed { _, mediaItem ->
 //            mediaList.add(ops.joinPath(ops.getInternalPath(), mediaItem.name))
@@ -55,7 +58,8 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun setPosition(pos: Int) {
-        ops.positionHistory.intValue = ops.itemStateList.indexOf(mediaList[pos])
+//        ops.positionHistory.intValue = ops.itemStateList.indexOf(mediaList[pos])
+        ops.positionHistory.intValue = ops.itemListFlow.value.indexOf(mediaList[pos])
     }
 
 }
