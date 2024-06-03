@@ -131,7 +131,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
                         Files.move(
                             Paths.get(ops.joinPath(fromPath, item.name)),
                             Paths.get(ops.joinPath(toPath, item.name)),
-                            StandardCopyOption.ATOMIC_MOVE
+                            StandardCopyOption.REPLACE_EXISTING
                         )
                     }
 
@@ -311,28 +311,31 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
         ops.selectItem(id)
 
-        when (ops.itemListFlow.value.find { it.id == id }?.isDir) {
-            true -> selectedFolderCount.intValue += 1
-            false -> selectedFileCount.intValue += 1
-            else -> {
-                selectedFolderCount.intValue = selectedFolderCount.intValue
-                selectedFileCount.intValue = selectedFileCount.intValue
+        val item = ops.itemListFlow.value.find { it.id == id }
+
+        item?.let {
+            when (it.isDir) {
+                true -> selectedFolderCount.intValue += 1
+                false -> selectedFileCount.intValue += 1
             }
+            transferList.add(it)
         }
+
     }
 
     fun setUnSelected(id: UUID) {
 
         ops.unselectItem(id)
 
-        when (ops.itemListFlow.value.find { it.id == id }?.isDir) {
-            true -> selectedFolderCount.intValue -= 1
-            false -> selectedFileCount.intValue -= 1
-            else -> {
-                selectedFolderCount.intValue = selectedFolderCount.intValue
-                selectedFileCount.intValue = selectedFileCount.intValue
+        val item = ops.itemListFlow.value.find { it.id == id }
+
+        item?.let {
+            when (it.isDir) {
+                true -> selectedFolderCount.intValue -= 1
+                false -> selectedFileCount.intValue -= 1
             }
         }
+        transferList.removeIf{ it.id == item?.id }
 
         if (ops.itemListFlow.value.all { !it.isSelected }) {
             appBarType.value = ActionBarType.NORMAL
@@ -345,6 +348,8 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun clearSelection() {
         selectedFileCount.intValue = 0
         selectedFolderCount.intValue = 0
+
+        transferList.clear()
 
         ops.clearSelection()
     }

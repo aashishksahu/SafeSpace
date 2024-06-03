@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,16 +36,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.document.TextDocumentView
 import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.FileOpCode
-import org.privacymatters.safespace.experimental.main.Item
 import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
@@ -53,12 +51,10 @@ class BottomAppBar(private val activity: MainnActivity) {
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private var name: String = ""
-//    private lateinit var itemList: StateFlow<List<Item>>
 
     @Composable
     fun NormalActionBar() {
 //        itemList = activity.viewModel.itemList
-//        val itemList by activity.viewModel.ops.itemListFlow.collectAsStateWithLifecycle()
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -82,123 +78,136 @@ class BottomAppBar(private val activity: MainnActivity) {
 
             ) {
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable { openCamera() }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.photo_camera_black_24dp),
-                        contentDescription = activity.getString(R.string.open_camera),
-                    )
-                    Text(
-                        text = activity.getString(R.string.open_camera),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-                            importFiles()
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.add_fill0_wght400_grad0_opsz24),
-                        contentDescription = activity.getString(R.string.import_files)
-                    )
-                    Text(
-                        text = activity.getString(R.string.import_files),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-                            createFolderShowDialog.value = true
-                        }
-                ) {
-                    val showDialog = remember { createFolderShowDialog }
-
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.baseline_create_new_folder_24),
-                        contentDescription = activity.getString(R.string.create_folder)
-                    )
-                    Text(
-                        text = activity.getString(R.string.create_folder),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    if (showDialog.value) {
-                        Prompt(
-                            onDismiss = {
-                                name = ""
-                                createFolderShowDialog.value = false
-                            },
-                            onConfirmation = {
-                                if (name.isNotEmpty()) {
-                                    try {
-                                        activity.viewModel.createFolder(name)
-                                    } catch (e: Exception) {
-                                        showMessage(activity.getString(R.string.create_folder_invalid_error))
-                                    }
-                                    name = ""
-                                    createFolderShowDialog.value = false
-                                }
-                            },
-                            dialogTitle = activity.getString(R.string.create_folder)
+//                Button(onClick = { openCamera() }) {
+//                    Column(
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        verticalArrangement = Arrangement.Center,
+//                    ) {
+//
+//                        Icon(
+//                            imageVector = ImageVector.vectorResource(R.drawable.photo_camera_black_24dp),
+//                            contentDescription = activity.getString(R.string.open_camera),
+//                        )
+//                        Text(
+//                            text = activity.getString(R.string.open_camera),
+//                            color = MaterialTheme.colorScheme.onPrimary
+//                        )
+//                    }
+//                }
+                Button(onClick = { openCamera() }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.photo_camera_black_24dp),
+                            contentDescription = activity.getString(R.string.open_camera),
+                        )
+                        Text(
+                            text = activity.getString(R.string.open_camera),
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-                            createNoteShowDialog.value = true
+                Button(onClick = { importFiles() }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.add_fill0_wght400_grad0_opsz24),
+                            contentDescription = activity.getString(R.string.import_files)
+                        )
+                        Text(
+                            text = activity.getString(R.string.import_files),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+
+                Button(onClick = { createFolderShowDialog.value = true }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        val showDialog = remember { createFolderShowDialog }
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.baseline_create_new_folder_24),
+                            contentDescription = activity.getString(R.string.create_folder)
+                        )
+                        Text(
+                            text = activity.getString(R.string.create_folder),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        if (showDialog.value) {
+                            Prompt(
+                                onDismiss = {
+                                    name = ""
+                                    createFolderShowDialog.value = false
+                                },
+                                onConfirmation = {
+                                    if (name.isNotEmpty()) {
+                                        try {
+                                            activity.viewModel.createFolder(name)
+                                        } catch (e: Exception) {
+                                            showMessage(activity.getString(R.string.create_folder_invalid_error))
+                                        }
+                                        name = ""
+                                        createFolderShowDialog.value = false
+                                    }
+                                },
+                                dialogTitle = activity.getString(R.string.create_folder)
+                            )
                         }
-                ) {
-                    val showDialog = remember { createNoteShowDialog }
+                    }
+                }
 
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.edit_note_black_36dp),
-                        contentDescription = activity.getString(R.string.create_txt_menu)
-                    )
-                    Text(
-                        text = activity.getString(R.string.create_txt_menu),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    if (showDialog.value) {
-                        Prompt(
-                            onDismiss = {
-                                name = ""
-                                createNoteShowDialog.value = false
-                            },
-                            onConfirmation = {
-                                if (name.isNotEmpty()) {
-                                    val noteFile = activity.viewModel.createTextNote(name)
-                                    val documentViewIntent =
-                                        Intent(activity.application, TextDocumentView::class.java)
+                Button(onClick = { createNoteShowDialog.value = true }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        val showDialog = remember { createNoteShowDialog }
 
-                                    documentViewIntent.putExtra(
-                                        Constants.INTENT_KEY_PATH,
-                                        noteFile.canonicalPath
-                                    )
-
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.edit_note_black_36dp),
+                            contentDescription = activity.getString(R.string.create_txt_menu)
+                        )
+                        Text(
+                            text = activity.getString(R.string.create_txt_menu),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        if (showDialog.value) {
+                            Prompt(
+                                onDismiss = {
                                     name = ""
                                     createNoteShowDialog.value = false
+                                },
+                                onConfirmation = {
+                                    if (name.isNotEmpty()) {
+                                        val noteFile = activity.viewModel.createTextNote(name)
+                                        val documentViewIntent =
+                                            Intent(
+                                                activity.application,
+                                                TextDocumentView::class.java
+                                            )
 
-                                    activity.startActivity(documentViewIntent)
-                                }
-                            },
-                            dialogTitle = activity.getString(R.string.create_txt_menu)
-                        )
+                                        documentViewIntent.putExtra(
+                                            Constants.INTENT_KEY_PATH,
+                                            noteFile.canonicalPath
+                                        )
+
+                                        name = ""
+                                        createNoteShowDialog.value = false
+
+                                        activity.startActivity(documentViewIntent)
+                                    }
+                                },
+                                dialogTitle = activity.getString(R.string.create_txt_menu)
+                            )
+                        }
                     }
                 }
             }
@@ -228,78 +237,77 @@ class BottomAppBar(private val activity: MainnActivity) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var displayDeleteConfirmation by remember { mutableStateOf(false) }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-                            displayDeleteConfirmation = true
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
-                        contentDescription = activity.getString(R.string.context_menu_delete),
-                    )
-                    Text(
-                        text = activity.getString(R.string.context_menu_delete),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+
+                Button(onClick = { displayDeleteConfirmation = true }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
+                            contentDescription = activity.getString(R.string.context_menu_delete),
+                        )
+                        Text(
+                            text = activity.getString(R.string.context_menu_delete),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-//                            activity.viewModel.transferList.addAll(itemList)
-                            activity.viewModel.setFromPath()
-                            activity.viewModel.appBarType.value = ActionBarType.MOVE
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.drive_file_move_black_24dp),
-                        contentDescription = activity.getString(R.string.context_menu_move),
-                    )
-                    Text(
-                        text = activity.getString(R.string.context_menu_move),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+
+                Button(onClick = {
+                    activity.viewModel.setFromPath()
+                    activity.viewModel.appBarType.value = ActionBarType.MOVE
+                }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.drive_file_move_black_24dp),
+                            contentDescription = activity.getString(R.string.context_menu_move),
+                        )
+                        Text(
+                            text = activity.getString(R.string.context_menu_move),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-//                            activity.viewModel.transferList.addAll(itemList)
-                            activity.viewModel.setFromPath()
-                            activity.viewModel.appBarType.value = ActionBarType.COPY
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.file_copy_black_24dp),
-                        contentDescription = activity.getString(R.string.context_menu_copy),
-                    )
-                    Text(
-                        text = activity.getString(R.string.context_menu_copy),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                Button(onClick = {
+                    activity.viewModel.setFromPath()
+                    activity.viewModel.appBarType.value = ActionBarType.COPY
+                }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.file_copy_black_24dp),
+                            contentDescription = activity.getString(R.string.context_menu_copy),
+                        )
+                        Text(
+                            text = activity.getString(R.string.context_menu_copy),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-//                            activity.viewModel.transferList.addAll(itemList)
-                            exportFiles()
-                        }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
-                        contentDescription = activity.getString(R.string.multi_export),
-                    )
-                    Text(
-                        text = activity.getString(R.string.multi_export),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                Button(onClick = { exportFiles() }) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .clickable {
+                                exportFiles()
+                            }
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
+                            contentDescription = activity.getString(R.string.multi_export),
+                        )
+                        Text(
+                            text = activity.getString(R.string.multi_export),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
 
                 if (displayDeleteConfirmation) {

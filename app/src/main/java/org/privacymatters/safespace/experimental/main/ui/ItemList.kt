@@ -79,6 +79,7 @@ class ItemList(private val activity: MainnActivity) {
                 if (openedItemIndex > -1) listState.animateScrollToItem(
                     openedItemIndex
                 )
+                activity.viewModel.ops.positionHistory.intValue = -1
             }
 
             items(itemList) { item ->
@@ -91,8 +92,6 @@ class ItemList(private val activity: MainnActivity) {
                 if (item == itemList.last()) {
                     Spacer(modifier = Modifier.padding(innerPadding.calculateTopPadding()))
                 }
-
-//                currentIndex.intValue = 0 // reset index
             }
         }
     }
