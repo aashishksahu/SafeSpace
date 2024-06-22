@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -25,14 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.main.ui.ItemList
 import org.privacymatters.safespace.experimental.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.main.ui.TopAppBar
+import org.privacymatters.safespace.lib.Reload
 
 class MainnActivity : AppCompatActivity() {
 
@@ -49,12 +45,12 @@ class MainnActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /* TODO:
-            * Improve getItems() performance
-         */
-
         registerFilePickerListener()
         selectExportDirActivityResult()
+
+        // Todo: Migrate from Root folder
+        // migrate data from root folder to avoid issues with user created root folder inside
+        viewModel.migrateFromRoot()
 
         // request notification permission for Android 13 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -82,9 +78,12 @@ class MainnActivity : AppCompatActivity() {
 
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        viewModel.getItems()
+    override fun onResume() {
+        super.onResume()
+        if (Reload.value) {
+            viewModel.getItems()
+            Reload.value = false
+        }
     }
 
     @Composable

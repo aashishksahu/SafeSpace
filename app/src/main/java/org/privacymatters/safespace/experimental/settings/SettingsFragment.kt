@@ -21,6 +21,7 @@ import org.privacymatters.safespace.AboutActivity
 import org.privacymatters.safespace.AuthActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.experimental.main.FileOpCode
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.SetTheme
@@ -52,21 +53,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         if (uri != null) {
                             CoroutineScope(Dispatchers.IO).launch {
                                 when (ops.importBackup(uri)) {
-                                    0 -> {
+                                    FileOpCode.SUCCESS -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-//                                            updateRecyclerView()
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.export_backup_success),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
 
-                                    4 -> {
+                                    FileOpCode.FAIL -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(4)
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.backup_err_other),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
 
-                                    1 -> {
+                                    FileOpCode.NO_SPACE -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(1)
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.backup_err_space),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
                                 }
@@ -92,7 +105,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         if (uri != null) {
                             CoroutineScope(Dispatchers.IO).launch {
                                 when (ops.exportBackup(uri)) {
-                                    0 -> {
+                                    FileOpCode.SUCCESS -> {
                                         CoroutineScope(Dispatchers.Main).launch {
                                             Toast.makeText(
                                                 requireActivity().baseContext,
@@ -102,15 +115,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                         }
                                     }
 
-                                    4 -> {
+                                    FileOpCode.NO_SPACE -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(4)
+                                            Toast.makeText(
+                                                requireActivity().baseContext,
+                                                getString(R.string.backup_err_space),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
 
-                                    1 -> {
+                                    FileOpCode.FAIL -> {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            backupError(1)
+                                            Toast.makeText(
+                                                requireActivity().baseContext,
+                                                getString(R.string.backup_err_other),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
                                 }
@@ -256,14 +277,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
         alert.show()
     }
 
-    private fun backupError(errorCode: Int) {
-        val msg = when (errorCode) {
-            4 -> getString(R.string.backup_err_space)
-            1 -> getString(R.string.backup_err_other)
-            else -> getString(R.string.backup_err_other)
-        }
-
-        Toast.makeText(requireActivity().applicationContext, msg, Toast.LENGTH_SHORT).show()
-
-    }
 }

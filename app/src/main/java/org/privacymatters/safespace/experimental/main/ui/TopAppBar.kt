@@ -171,7 +171,8 @@ class TopAppBar(private val activity: MainnActivity) {
                                 confirmButton = {
                                     TextButton(
                                         onClick = {
-                                            activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                                            activity.viewModel.appBarType.value =
+                                                ActionBarType.NORMAL
                                             activity.viewModel.shareFile()
                                         }
                                     ) {
@@ -215,8 +216,10 @@ class TopAppBar(private val activity: MainnActivity) {
                 listState.animateScrollToItem(breadcrumbs.lastIndex)
             }
 
+            var rootIconDrawn = false
             items(breadcrumbs) {
-                if (it == Constants.ROOT) {
+                if (it == Constants.ROOT && !rootIconDrawn) {
+                    rootIconDrawn = true
                     Icon(
                         Icons.Filled.Home,
                         contentDescription = activity.getString(R.string.app_name)

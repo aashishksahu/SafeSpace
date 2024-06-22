@@ -35,14 +35,12 @@ enum class ActionBarType {
 
 class MainActivityViewModel(private val application: Application) : AndroidViewModel(application) {
 
-    private var fileSortBy = Constants.NAME
-    private var fileSortOrder = Constants.ASC
+    private val sharedPref: SharedPreferences =
+        application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+
     var ops = DataManager
 
     var transferList: ArrayList<Item> = arrayListOf()
-
-    private val sharedPref: SharedPreferences =
-        application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
     // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
@@ -63,13 +61,14 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     }
 
     fun getItems() {
+        val fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, Constants.NAME).toString()
+        val fileSortOrder =
+            sharedPref.getString(Constants.FILE_SORT_ORDER, Constants.ASC).toString()
         sortItems(fileSortBy, fileSortOrder)
     }
 
     fun sortItems(sortBy: String, sortOrder: String) {
-        ops.getSortedItems(fileSortBy, fileSortOrder)
-//        ops.itemStateList.clear()
-//        ops.itemStateList.addAll(ops.baseItemList)
+        ops.getSortedItems(sortBy, sortOrder)
 
         sharedPref.edit()
             .putString(Constants.FILE_SORT_BY, sortBy)
@@ -335,7 +334,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
                 false -> selectedFileCount.intValue -= 1
             }
         }
-        transferList.removeIf{ it.id == item?.id }
+        transferList.removeIf { it.id == item?.id }
 
         if (ops.itemListFlow.value.all { !it.isSelected }) {
             appBarType.value = ActionBarType.NORMAL
@@ -368,5 +367,11 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun setFromPath() {
         fromPath = ops.getInternalPath()
+    }
+
+    fun migrateFromRoot(){
+        viewModelScope.launch {
+            ops.migrateFromRoot()
+        }
     }
 }

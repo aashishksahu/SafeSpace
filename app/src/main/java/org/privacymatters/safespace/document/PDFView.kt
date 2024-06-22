@@ -3,13 +3,18 @@ package org.privacymatters.safespace.document
 import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.Reload
 import org.privacymatters.safespace.utils.Constants
 import java.io.File
 
@@ -19,13 +24,31 @@ class PDFView : AppCompatActivity() {
     private lateinit var pdfRecyclerViewAdapter: PdfAdapter
     private lateinit var renderer: PdfRenderer
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdfview)
+
+        // hide navigation and status bar
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            // Hide the status bar
+            hide(WindowInsetsCompat.Type.statusBars())
+            hide(WindowInsetsCompat.Type.navigationBars())
+            // Allow showing the status bar with swiping from top to bottom
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
+        // This switch ensures that only switching from activities of this app, the item list
+        // will reload (to prevent clearing of selected items during app switching)
+        Reload.value = true
 
         try {
             val path = File(intent.extras?.getString(Constants.INTENT_KEY_PATH)!!)
 
-            renderer = PdfRenderer(ParcelFileDescriptor.open(path, ParcelFileDescriptor.MODE_READ_ONLY))
+            renderer =
+                PdfRenderer(ParcelFileDescriptor.open(path, ParcelFileDescriptor.MODE_READ_ONLY))
 
             val mSnapHelper: SnapHelper = PagerSnapHelper()
 

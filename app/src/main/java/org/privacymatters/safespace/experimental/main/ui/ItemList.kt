@@ -54,13 +54,8 @@ import java.io.File
 
 class ItemList(private val activity: MainnActivity) {
 
-//    private lateinit var itemList: List<Item>
-
-    // Todo: Long press selection doesn't change background color
-
     @Composable
     fun LazyList(innerPadding: PaddingValues) {
-//        itemList = activity.viewModel.ops.itemListFlow.collectAsState()
         val itemList by activity.viewModel.ops.itemListFlow.collectAsStateWithLifecycle(
             lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
         )

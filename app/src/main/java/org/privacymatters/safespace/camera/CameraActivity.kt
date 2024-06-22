@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
@@ -31,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.lib.Reload
 import org.privacymatters.safespace.utils.Constants
 import java.io.File
 import java.text.SimpleDateFormat
@@ -106,10 +108,16 @@ class CameraActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
+        window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.black)
+
+        // This switch ensures that only switching from activities of this app, the item list
+        // will reload (to prevent clearing of selected items during app switching)
+        Reload.value = true
 
         ops.ready(application)
 

@@ -6,7 +6,6 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -466,39 +465,39 @@ object DataManager {
             return FileOpCode.FAIL
         }
 
-        try {
-
-            // android 14 throws security exception if zip archive has files at / location
-            // therefore after extracting the zip files all files will be moved out of the first folder in the zip
-
-            val importDir = File(getFilesDir())
-
-            importDir.walkTopDown().forEach { file ->
-
-                val sourcePath = file.absolutePath
-                val targetPath = file.absolutePath.replaceFirst("/root", "")
-
-                if (file.isDirectory) {
-                    File(targetPath).mkdirs()
-                } else {
-                    Files.move(
-                        Paths.get(sourcePath),
-                        Paths.get(targetPath),
-                        StandardCopyOption.REPLACE_EXISTING
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
-            return FileOpCode.FAIL
-        } finally {
-            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
-        }
+//        try {
+//
+//            // android 14 throws security exception if zip archive has files at / location
+//            // therefore after extracting the zip files all files will be moved out of the first folder in the zip
+//
+//            val importDir = File(getFilesDir())
+//
+//            importDir.walkTopDown().forEach { file ->
+//
+//                val sourcePath = file.absolutePath
+//                val targetPath = file.absolutePath.replaceFirst("/root", "")
+//
+//                if (file.isDirectory) {
+//                    File(targetPath).mkdirs()
+//                } else {
+//                    Files.move(
+//                        Paths.get(sourcePath),
+//                        Paths.get(targetPath),
+//                        StandardCopyOption.REPLACE_EXISTING
+//                    )
+//                }
+//            }
+//        } catch (e: Exception) {
+//            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+//            return FileOpCode.FAIL
+//        } finally {
+//            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
+//        }
 
         return FileOpCode.SUCCESS
     }
 
-    fun exportBackup(exportUri: Uri): Int {
+    fun exportBackup(exportUri: Uri): Any {
 
         try {
             val backupName =
@@ -532,12 +531,12 @@ object DataManager {
         } catch (e: IOException) {
 //            e.printStackTrace()
             return if (e.message.toString().lowercase().contains("no space left")) {
-                4
+                FileOpCode.NO_SPACE
             } else {
-                1
+                FileOpCode.FAIL
             }
         }
-        return 0
+        return FileOpCode.SUCCESS
     }
 
     fun selectItem(id: UUID) = privateItemList.update {
@@ -558,6 +557,45 @@ object DataManager {
         it.map { item ->
             item.copy(isSelected = false)
         }
+    }
+
+    fun migrateFromRoot(): Any {
+
+        try {
+
+            val oldRoot = File(getFilesDir() + "root")
+
+            oldRoot.listFiles().let {
+                if (it != null) {
+                    if (it.isEmpty()) {
+                        return FileOpCode.SUCCESS
+                    }
+                }
+            }
+
+            oldRoot.walkTopDown().forEach { file ->
+
+                val sourcePath = file.absolutePath
+                val targetPath = file.absolutePath.replaceFirst("/root", Constants.ROOT)
+
+                if (file.isDirectory) {
+                    File(targetPath).mkdirs()
+                } else {
+                    Files.move(
+                        Paths.get(sourcePath),
+                        Paths.get(targetPath),
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(Constants.TAG_ERROR, "@DataManager.migrateFromRoot() ", e)
+            return FileOpCode.FAIL
+        } finally {
+            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
+        }
+
+        return FileOpCode.SUCCESS
     }
 
     /*

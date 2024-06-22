@@ -17,7 +17,7 @@ class Constants {
 
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
-        const val INTENT_KEY_INDEX = "index"
+//        const val INTENT_KEY_INDEX = "index"
 
         const val CAMERA_MODE = "CAMERA_MODE"
         const val PHOTO = "PHOTO"
@@ -30,7 +30,8 @@ class Constants {
         const val ZIP = "zip"
         const val BIN = "BIN"
 
-        const val ROOT = "root"
+//        const val ROOT = "root"
+        const val ROOT = "zfx2a4i6wm"
         const val APP_FIRST_RUN = "FIRST_RUN"
         const val USE_BIOMETRIC = "USE_BIOMETRIC"
         const val USE_BIOMETRIC_BCKP = "USE_BIOMETRIC_BCKP"

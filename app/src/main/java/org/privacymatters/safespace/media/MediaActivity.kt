@@ -1,6 +1,7 @@
 package org.privacymatters.safespace.media
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.Reload
 
 class MediaActivity : AppCompatActivity() {
 
@@ -18,8 +20,13 @@ class MediaActivity : AppCompatActivity() {
     private val viewModel: MediaActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
+
+        // This switch ensures that only switching from activities of this app, the item list
+        // will reload (to prevent clearing of selected items during app switching)
+        Reload.value = true
 
         // hide navigation and status bar
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -27,12 +34,12 @@ class MediaActivity : AppCompatActivity() {
         WindowInsetsControllerCompat(window, window.decorView).apply {
             // Hide the status bar
             hide(WindowInsetsCompat.Type.statusBars())
+            hide(WindowInsetsCompat.Type.navigationBars())
             // Allow showing the status bar with swiping from top to bottom
             systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-//        val firstPosition = intent.extras?.getInt(Constants.INTENT_KEY_INDEX) ?: 0
 
         // Instantiate a ViewPager2 and a PagerAdapter.
         viewPager = findViewById(R.id.mediaPager)

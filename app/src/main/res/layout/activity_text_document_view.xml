@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundColor"
+    android:background="?attr/background"
     tools:context=".document.TextDocumentView">
 
     <EditText
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
-        android:background="?attr/backgroundColor"
+        android:background="?attr/background"
         android:fontFamily="monospace"
         android:gravity="start|top"
         android:hint="@string/textAreaHint"
@@ -31,8 +32,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="?attr/colorPrimary"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

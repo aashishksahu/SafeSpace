@@ -42,7 +42,7 @@ import org.privacymatters.safespace.document.TextDocumentView
 import org.privacymatters.safespace.lib.fileManager.FileItem
 import org.privacymatters.safespace.lib.fileManager.FolderItem
 import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.experimental.main.Sortinator
+import org.privacymatters.safespace.lib.Sortinator
 import org.privacymatters.safespace.utils.Utils
 import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
 import org.privacymatters.safespace.lib.recyclerView.FolderClickListener

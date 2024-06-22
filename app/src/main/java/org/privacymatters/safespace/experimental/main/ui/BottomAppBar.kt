@@ -3,6 +3,7 @@ package org.privacymatters.safespace.experimental.main.ui
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -31,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,7 +58,6 @@ class BottomAppBar(private val activity: MainnActivity) {
 
     @Composable
     fun NormalActionBar() {
-//        itemList = activity.viewModel.itemList
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -71,28 +75,13 @@ class BottomAppBar(private val activity: MainnActivity) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
 
-//                Button(onClick = { openCamera() }) {
-//                    Column(
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        verticalArrangement = Arrangement.Center,
-//                    ) {
-//
-//                        Icon(
-//                            imageVector = ImageVector.vectorResource(R.drawable.photo_camera_black_24dp),
-//                            contentDescription = activity.getString(R.string.open_camera),
-//                        )
-//                        Text(
-//                            text = activity.getString(R.string.open_camera),
-//                            color = MaterialTheme.colorScheme.onPrimary
-//                        )
-//                    }
-//                }
                 Button(onClick = { openCamera() }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -231,32 +220,51 @@ class BottomAppBar(private val activity: MainnActivity) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var displayDeleteConfirmation by remember { mutableStateOf(false) }
 
-                Button(onClick = { displayDeleteConfirmation = true }) {
+                Button(
+                    onClick = { displayDeleteConfirmation = true },
+                    colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = Color.Red,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.background(MaterialTheme.colorScheme.secondary)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
                             contentDescription = activity.getString(R.string.context_menu_delete),
-                        )
+
+                            )
                         Text(
                             text = activity.getString(R.string.context_menu_delete),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = Color.Red
                         )
                     }
                 }
 
-                Button(onClick = {
-                    activity.viewModel.setFromPath()
-                    activity.viewModel.appBarType.value = ActionBarType.MOVE
-                }) {
+                Button(
+                    onClick = {
+                        activity.viewModel.setFromPath()
+                        activity.viewModel.appBarType.value = ActionBarType.MOVE
+                    },
+                    colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -271,10 +279,17 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                     }
                 }
-                Button(onClick = {
-                    activity.viewModel.setFromPath()
-                    activity.viewModel.appBarType.value = ActionBarType.COPY
-                }) {
+                Button(
+                    onClick = {
+                        activity.viewModel.setFromPath()
+                        activity.viewModel.appBarType.value = ActionBarType.COPY
+                    }, colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -289,14 +304,18 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                     }
                 }
-                Button(onClick = { exportFiles() }) {
+                Button(
+                    onClick = { exportFiles() },
+                    colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .clickable {
-                                exportFiles()
-                            }
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),

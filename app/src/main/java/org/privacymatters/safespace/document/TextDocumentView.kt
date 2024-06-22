@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.lib.Reload
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.SetTheme
 import java.io.BufferedReader
@@ -34,6 +35,10 @@ class TextDocumentView : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
+
+        // This switch ensures that only switching from activities of this app, the item list
+        // will reload (to prevent clearing of selected items during app switching)
+        Reload.value = true
 
         textFileContentView = findViewById(R.id.textView)
 
@@ -94,12 +99,6 @@ class TextDocumentView : AppCompatActivity() {
             if (contentToSave?.isNotEmpty() == true && file != null) {
                 file.writeText(contentToSave)
             }
-
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.save_success),
-                Toast.LENGTH_LONG
-            ).show()
 
         } catch (e: Exception) {
             Toast.makeText(
