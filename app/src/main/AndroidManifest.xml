@@ -31,7 +31,6 @@
         <activity
             android:name=".media.MediaActivity"
             android:exported="false" />
-<!--            android:configChanges="keyboardHidden|orientation|screenSize"-->
         <activity
             android:name=".camera.CameraActivity"
             android:exported="false"
