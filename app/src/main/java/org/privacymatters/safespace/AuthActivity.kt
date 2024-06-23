@@ -19,7 +19,6 @@ import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
-import org.privacymatters.safespace.main.MainActivity
 import java.util.concurrent.Executor
 
 
@@ -158,7 +157,7 @@ class AuthActivity : AppCompatActivity() {
 
             blockBiometric(false, 0)
 
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, MainnActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
@@ -353,7 +352,7 @@ class AuthActivity : AppCompatActivity() {
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    val intent = Intent(applicationContext, MainnActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     finish()

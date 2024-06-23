@@ -113,4 +113,7 @@
     <string name="title_activity_settings">Ayarlar</string>
     <string name="folder_already_exists">Bu klasör zaten var</string>
     <string name="same_path">Kaynak ve hedef konum aynıdır</string>
+    <string name="only_files">Yalnızca dosyalar dışa aktarılacak</string>
+    <string name="migration_headline">Yeni bir şey!</string>
+    <string name="migration_content">Birkaç ay geçirdikten sonra karşınızda yeni ve geliştirilmiş bir tasarım! Umarım beğenmişsindir. Desteğiniz ve sevginiz için teşekkür ederiz.</string>
 </resources>

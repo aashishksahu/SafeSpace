@@ -40,7 +40,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     var ops = DataManager
 
-    var transferList: ArrayList<Item> = arrayListOf()
+    private var transferList: ArrayList<Item> = arrayListOf()
 
     // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
@@ -369,9 +369,17 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         fromPath = ops.getInternalPath()
     }
 
-    fun migrateFromRoot(){
+    fun migrateFromRoot() {
         viewModelScope.launch {
-            ops.migrateFromRoot()
+            if (ops.migrateFromRoot() == FileOpCode.SUCCESS) {
+                sharedPref.edit()
+                    .putBoolean(Constants.MIGRATION_COMPLETE, true)
+                    .apply()
+            }
         }
+    }
+
+    fun isMigrationComplete(): Boolean {
+        return sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
     }
 }

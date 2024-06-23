@@ -132,6 +132,9 @@
     <string name="biometric_toggle">Unlock Using Biometrics</string>
     <string name="biometric_title">Biometric Unlock</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="only_files">Only files will be exported</string>
+    <string name="migration_headline">Something new!!</string>
+    <string name="migration_content">After spending a few months, here\'s a new and improved design! I hope you like it. Thanks for all your support and love.</string>
 
 
 </resources>

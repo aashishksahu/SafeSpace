@@ -134,7 +134,7 @@ object DataManager {
                 // name, date or size
                 tempItemList = when (sortBy) {
                     Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenBy { it.size })
+                        .thenByDescending { it.size })
 
                     Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenBy { it.lastModified })
@@ -150,10 +150,10 @@ object DataManager {
                 // name, date or size
                 tempItemList = when (sortBy) {
                     Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenByDescending { it.size })
+                        .thenBy { it.size })
 
                     Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenByDescending { it.lastModified })
+                        .thenBy { it.lastModified })
 
                     else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenComparing { o1, o2 ->
@@ -465,35 +465,6 @@ object DataManager {
             return FileOpCode.FAIL
         }
 
-//        try {
-//
-//            // android 14 throws security exception if zip archive has files at / location
-//            // therefore after extracting the zip files all files will be moved out of the first folder in the zip
-//
-//            val importDir = File(getFilesDir())
-//
-//            importDir.walkTopDown().forEach { file ->
-//
-//                val sourcePath = file.absolutePath
-//                val targetPath = file.absolutePath.replaceFirst("/root", "")
-//
-//                if (file.isDirectory) {
-//                    File(targetPath).mkdirs()
-//                } else {
-//                    Files.move(
-//                        Paths.get(sourcePath),
-//                        Paths.get(targetPath),
-//                        StandardCopyOption.REPLACE_EXISTING
-//                    )
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
-//            return FileOpCode.FAIL
-//        } finally {
-//            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
-//        }
-
         return FileOpCode.SUCCESS
     }
 
@@ -576,7 +547,7 @@ object DataManager {
             oldRoot.walkTopDown().forEach { file ->
 
                 val sourcePath = file.absolutePath
-                val targetPath = file.absolutePath.replaceFirst("/root", Constants.ROOT)
+                val targetPath = file.absolutePath.replaceFirst("root", Constants.ROOT)
 
                 if (file.isDirectory) {
                     File(targetPath).mkdirs()
@@ -592,7 +563,7 @@ object DataManager {
             Log.e(Constants.TAG_ERROR, "@DataManager.migrateFromRoot() ", e)
             return FileOpCode.FAIL
         } finally {
-            File(joinPath(getFilesDir(), Constants.ROOT)).deleteRecursively()
+            File(joinPath(getFilesDir(), "root")).deleteRecursively()
         }
 
         return FileOpCode.SUCCESS

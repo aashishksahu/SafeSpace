@@ -93,56 +93,33 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-//private val DarkColorScheme = darkColorScheme(
-//    primary = Color(0xFF57BBE9),
-//    onPrimary = Color(0xFF151718),
-//
-//    secondary = Color(0xFFDADADA),
-//    onSecondary = Color(0xFF3D4549),
-//
-//    background = Color(0xFF000000),
-//    onBackground = Color(0xFFF9F7F7)
-//)
-//
-//private val LightColorScheme = lightColorScheme(
-//    primary = Color(0xFF151718),
-//    onPrimary = Color(0xFF57BBE9),
-//
-//    secondary = Color(0xFF3D4549),
-//    onSecondary = Color(0xFFDADADA),
-//
-//    background = Color(0xFFF9F7F7),
-//    onBackground = Color(0xFF141414),
-//
-//    )
-
 // Set of Material typography styles to start with
 private val DarkTypography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-        color = Color.White
-
-    ),
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
-        lineHeight = 48.sp,
-        letterSpacing = 0.sp,
-        color = Color.White
-    ),
-    titleMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.sp,
-        color = Color.White
-    )
+//    bodyLarge = TextStyle(
+//        fontFamily = FontFamily.Default,
+//        fontWeight = FontWeight.Normal,
+//        fontSize = 16.sp,
+//        lineHeight = 24.sp,
+//        letterSpacing = 0.5.sp,
+//        color = Color.White
+//
+//    ),
+//    titleLarge = TextStyle(
+//        fontFamily = FontFamily.Default,
+//        fontWeight = FontWeight.Bold,
+//        fontSize = 32.sp,
+//        lineHeight = 48.sp,
+//        letterSpacing = 0.sp,
+//        color = Color.White
+//    ),
+//    titleMedium = TextStyle(
+//        fontFamily = FontFamily.Default,
+//        fontWeight = FontWeight.Normal,
+//        fontSize = 20.sp,
+//        lineHeight = 24.sp,
+//        letterSpacing = 0.sp,
+//        color = Color.White
+//    )
 )
 
 private val LightTypography = Typography(

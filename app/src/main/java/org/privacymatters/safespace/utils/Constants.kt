@@ -3,6 +3,7 @@ package org.privacymatters.safespace.utils
 class Constants {
     companion object {
 
+        const val MIGRATION_COMPLETE = "root_migration"
         const val TAG_ERROR = "org.privacymatters.safespace:E"
         const val ALREADY_EXISTS = "ALREADY_EXISTS"
         const val TIME_TO_UNLOCK_DURATION = "TIME_TO_UNLOCK_DURATION"

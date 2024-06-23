@@ -219,8 +219,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
                         .apply()
 
-                    // restart application to set pin again
-                    requireActivity().finish()
+                    // requireActivity().finish() //causes memory leak
                     val intent =
                         Intent(requireActivity().applicationContext, AuthActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
