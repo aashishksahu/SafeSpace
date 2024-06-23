@@ -16,8 +16,8 @@ android {
         
         minSdk 29
         targetSdk 34
-        versionCode 23
-        versionName "1.4.9"
+        versionCode 30
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -69,7 +69,6 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.activity:activity-ktx:1.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-//    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
