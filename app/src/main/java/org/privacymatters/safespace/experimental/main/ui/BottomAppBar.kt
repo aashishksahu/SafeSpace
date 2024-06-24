@@ -2,15 +2,14 @@ package org.privacymatters.safespace.experimental.main.ui
 
 import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -73,14 +72,15 @@ class BottomAppBar(private val activity: MainnActivity) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .horizontalScroll(rememberScrollState()),
+                    .fillMaxHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
 
-                Button(onClick = { openCamera() }) {
+                Button(onClick = { openCamera() },
+                    contentPadding = PaddingValues(5.dp)
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -96,7 +96,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { importFiles() }) {
+                Button(onClick = { importFiles() },
+                    contentPadding = PaddingValues(5.dp)) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -112,7 +113,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { createFolderShowDialog.value = true }) {
+                Button(onClick = { createFolderShowDialog.value = true },
+                    contentPadding = PaddingValues(5.dp)) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -150,7 +152,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { createNoteShowDialog.value = true }) {
+                Button(onClick = { createNoteShowDialog.value = true },
+                    contentPadding = PaddingValues(5.dp)) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -218,8 +221,7 @@ class BottomAppBar(private val activity: MainnActivity) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .horizontalScroll(rememberScrollState()),
+                    .fillMaxHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -232,7 +234,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         contentColor = Color.Red,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
+                    ),
+                    contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -261,7 +264,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
+                    ),
+                    contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -286,7 +290,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
+                    ),
+                    contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -311,11 +316,13 @@ class BottomAppBar(private val activity: MainnActivity) {
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
+                    ),
+                    contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        verticalArrangement = Arrangement.Center
+//                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
