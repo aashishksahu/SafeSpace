@@ -1,0 +1,3 @@
+After spending a few months, here's a new design!
+
+Please restart the app after updating if you don't see your files, it will happen only once, because the parent folder of all files is being changed to avoid a name related bug.
