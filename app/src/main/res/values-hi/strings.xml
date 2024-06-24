@@ -3,8 +3,8 @@
     <string name="cancel">रद्द करें</string>
     <string name="create">बनाएं</string>
     <string name="ok">ठीक</string>
-    <string name="create_folder">फोल्डर बनायें</string>
-    <string name="import_files">फ़ाइलें आयात करें</string>
+    <string name="create_folder">फोल्डर</string>
+    <string name="import_files">फ़ाइल</string>
     <string name="export_backup">"फाइल समूह निर्यात करें  "</string>
     <string name="change_theme">थीम बदलें</string>
     <string name="dark_theme_text">अंधेरी थीम</string>
@@ -16,7 +16,7 @@
     <string name="import_backup">"फाइल समूह आयात करें  "</string>
     <string name="backup_err_other">अनपेक्षित समस्या, कृपया पुनः प्रयास करें</string>
     <string name="import_backup_msg">ज़िप संग्रह आयात करने में, बड़ी फ़ाइलों में समय लगेगा..</string>
-    <string name="open_camera">कैमरा चालू करें</string>
+    <string name="open_camera">कैमरा</string>
     <string name="photo">तस्वीर</string>
     <string name="video">वीडियो</string>
     <string name="video_quality">वीडियो क्वालिटी</string>
@@ -55,9 +55,9 @@
     <string name="copy_file_title">यहा रखें</string>
     <string name="copy_title">कॉपी</string>
     <string name="move_title">स्थानांतरण</string>
-    <string name="move_copy_btn_text">"कॉपी या स्थानांतरित करें "</string>
+    <string name="move_btn_text">"कॉपी या स्थानांतरित करें "</string>
     <string name="unsupported_format">फ़ाइल प्रारूप समर्थित नहीं है</string>
-    <string name="create_txt_menu">एक टिप्पणी बनाएं</string>
+    <string name="create_txt_menu">टिप्पणी</string>
     <string name="new_text_note">नई टिप्पणी</string>
     <string name="file_exists_error">यह फ़ाइल पहले से मौजूद है</string>
     <string name="nothing_here">यहाँ पे सब शांति-शांति है ¯\\_(ツ)_/¯</string>
@@ -111,4 +111,10 @@
     <string name="extract_zip">ZIP निकालें</string>
     <string name="biometric_title">बायोमेट्रिक अनलॉक</string>
     <string name="biometric_toggle">बायोमेट्रिक्स द्वारा अनलॉक करें</string>
+    <string name="title_activity_settings">सेटिंग्स</string>
+    <string name="folder_already_exists">यह फ़ोल्डर पहले से मौजूद है</string>
+    <string name="same_path">स्रोत और लक्ष्य स्थान समान हैं</string>
+    <string name="only_files">केवल फ़ाइलें ही निर्यात की जाएंगी</string>
+    <string name="migration_headline">कुछ नया!</string>
+    <string name="migration_content">कुछ महीने बिताने के बाद, यहाँ एक नया और बेहतर डिज़ाइन है! मुझे उम्मीद है कि आपको यह पसंद आएगा। आपके सभी समर्थन और प्यार के लिए धन्यवाद।</string>
 </resources>

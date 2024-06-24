@@ -6,26 +6,36 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".main.SafeSpaceApp"
+        android:name=".experimental.main.AppNotification"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
-        tools:replace="android:allowBackup"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SafeSpace"
+        tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
-            android:name=".MediaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".experimental.settings.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.SafeSpace" />
+        <activity
+            android:name=".experimental.main.MainnActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SafeSpace" />
+        <activity
+            android:name=".media.MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".CameraActivity"
+            android:name=".camera.CameraActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
@@ -34,7 +44,8 @@
             android:exported="false" />
         <activity
             android:name=".AuthActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.SafeSpace">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +53,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TextDocumentView"
+            android:name=".document.TextDocumentView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
-            android:name=".PDFView"
+            android:name=".document.PDFView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
@@ -63,7 +74,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>

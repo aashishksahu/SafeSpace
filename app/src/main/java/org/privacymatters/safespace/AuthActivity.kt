@@ -14,11 +14,11 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.lib.utils.Constants
-import org.privacymatters.safespace.lib.utils.EncPref
-import org.privacymatters.safespace.lib.utils.RootCheck
-import org.privacymatters.safespace.lib.utils.SetTheme
-import org.privacymatters.safespace.main.MainActivity
+import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.utils.RootCheck
+import org.privacymatters.safespace.utils.SetTheme
 import java.util.concurrent.Executor
 
 
@@ -71,6 +71,13 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+
+        // Experimental - Remove before release
+//        val intent = Intent(applicationContext, MainnActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//        startActivity(intent)
+//        finish()
+
 
         authTouch = findViewById(R.id.fingerprint)
         pinField = findViewById(R.id.editTextPassword)
@@ -150,7 +157,7 @@ class AuthActivity : AppCompatActivity() {
 
             blockBiometric(false, 0)
 
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, MainnActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
@@ -195,7 +202,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun blockBiometric(flag: Boolean, blockDuration: Long) {
-        if(flag){
+        if (flag) {
 
             val biometricBackup = sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
 
@@ -207,7 +214,7 @@ class AuthActivity : AppCompatActivity() {
                 )
                 .putBoolean(Constants.USE_BIOMETRIC, false)
                 .apply()
-        }else{
+        } else {
             val biometricRestore = sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
 
             sharedPref.edit().putBoolean(
@@ -345,7 +352,7 @@ class AuthActivity : AppCompatActivity() {
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    val intent = Intent(applicationContext, MainnActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     finish()

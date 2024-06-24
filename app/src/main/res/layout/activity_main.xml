@@ -7,314 +7,337 @@
     android:background="?attr/backgroundColor"
     tools:context=".main.MainActivity">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/backgroundColor">
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="?attr/backgroundColor">-->
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/backgroundColor"
-                android:textColor="?attr/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+<!--            <TextView-->
+<!--                android:id="@+id/app_title"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="10sp"-->
+<!--                android:layout_marginTop="20sp"-->
+<!--                android:layout_marginEnd="10sp"-->
+<!--                android:text="@string/app_name"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Display1"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/sortButton"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/topAppBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:textColor="?attr/colorPrimary"
-                    app:menu="@menu/actions"
-                    app:navigationIconTint="?attr/colorPrimary"
-                    app:popupTheme="@style/dialogThemeMenu"
-                    app:title="@string/app_name" />
+<!--            <Button-->
+<!--                android:id="@+id/sortButton"-->
+<!--                style="?attr/materialIconButtonStyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="20sp"-->
+<!--                android:layout_marginTop="20sp"-->
+<!--                android:layout_marginEnd="10sp"-->
+<!--                android:contentDescription="@string/sort"-->
+<!--                app:icon="@drawable/sort_black_36dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
+<!--&lt;!&ndash;            <com.google.android.material.appbar.AppBarLayout&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/appBarLayout"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:background="?attr/backgroundColor"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="?attr/colorPrimary"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
 
-            </com.google.android.material.appbar.AppBarLayout>
-
-            <TextView
-                android:id="@+id/nothingHere"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/transparent"
-                android:gravity="center"
-                android:text="@string/nothing_here"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-            <ImageButton
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                android:backgroundTint="@color/transparent"
-                android:contentDescription="@string/context_menu_delete"
-                android:textColor="@color/design_default_color_error"
-                android:visibility="gone"
-                app:iconTint="@color/design_default_color_error"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/delete_white_36dp" />
-
-            <ImageButton
-                android:id="@+id/moveBulkButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                android:backgroundTint="@color/transparent"
-                android:contentDescription="@string/context_menu_delete"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/copyBulkButton"
-                app:layout_constraintStart_toEndOf="@+id/deleteButton"
-                app:srcCompat="@drawable/drive_file_move_black_24dp" />
-
-            <ImageButton
-                android:id="@+id/copyBulkButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                android:backgroundTint="@color/transparent"
-                android:contentDescription="@string/context_menu_delete"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/file_copy_black_24dp" />
-
-            <ImageButton
-                android:id="@+id/clearButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                android:backgroundTint="@color/transparent"
-                android:contentDescription="@string/multi_clear"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/exportButton"
-                app:layout_constraintStart_toEndOf="@+id/copyBulkButton"
-                app:srcCompat="@drawable/clear_all_black_24dp" />
-
-            <ImageButton
-                android:id="@+id/exportButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                android:backgroundTint="@color/transparent"
-                android:contentDescription="@string/multi_export"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/file_download_black_24dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
-                android:layout_marginTop="10sp"
-                android:scrollbars="horizontal"
-                app:layoutManager="LinearLayoutManager"
-                app:layout_constraintEnd_toStartOf="@+id/sortButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filesRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="10sp"
-                android:scrollbars="vertical"
-                app:layoutManager="LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@+id/deleteButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/folderRecyclerView" />
+<!--&lt;!&ndash;                <com.google.android.material.appbar.MaterialToolbar&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/topAppBar"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_height="?attr/actionBarSize"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:textColor="?attr/colorPrimary"&ndash;&gt;-->
+<!--&lt;!&ndash;                    app:navigationIconTint="?attr/colorPrimary"&ndash;&gt;-->
+<!--&lt;!&ndash;                    app:popupTheme="@style/dialogThemeMenu"&ndash;&gt;-->
+<!--&lt;!&ndash;                    app:title="@string/app_name" />&ndash;&gt;-->
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10sp"
-                app:cardCornerRadius="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="@color/transparent"
-                app:strokeWidth="0dp">
+<!--&lt;!&ndash;            </com.google.android.material.appbar.AppBarLayout>&ndash;&gt;-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/moveCopyFileView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent">
+<!--            <TextView-->
+<!--                android:id="@+id/nothingHere"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:background="@color/transparent"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/nothing_here"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+<!--                android:visibility="visible"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />-->
 
-                    <TextView
-                        android:id="@+id/moveCopyFileOperation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20sp"
-                        android:ellipsize="marquee"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="?attr/colorPrimary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/deleteButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:backgroundTint="@color/transparent"-->
+<!--                android:contentDescription="@string/context_menu_delete"-->
+<!--                android:textColor="@color/design_default_color_error"-->
+<!--                android:visibility="gone"-->
+<!--                app:iconTint="@color/design_default_color_error"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:srcCompat="@drawable/delete_white_36dp" />-->
 
-                    <TextView
-                        android:id="@+id/moveCopyFileName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20sp"
-                        android:layout_marginTop="5sp"
-                        android:layout_marginEnd="20sp"
-                        android:ellipsize="marquee"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="?attr/colorPrimary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileOperation" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/moveBulkButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:backgroundTint="@color/transparent"-->
+<!--                android:contentDescription="@string/context_menu_delete"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/copyBulkButton"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/deleteButton"-->
+<!--                app:srcCompat="@drawable/drive_file_move_black_24dp" />-->
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/moveCopyFileButton"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10sp"
-                        android:contentDescription="@string/move_copy_btn_text"
-                        android:textAlignment="textEnd"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/copyBulkButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:backgroundTint="@color/transparent"-->
+<!--                android:contentDescription="@string/context_menu_delete"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:srcCompat="@drawable/file_copy_black_24dp" />-->
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/moveCopyFileButtonCancel"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10sp"
-                        android:contentDescription="@string/move_copy_btn_text"
-                        android:text="@string/cancel"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+<!--            <ImageButton-->
+<!--                android:id="@+id/clearButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:backgroundTint="@color/transparent"-->
+<!--                android:contentDescription="@string/multi_clear"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/exportButton"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/copyBulkButton"-->
+<!--                app:srcCompat="@drawable/clear_all_black_24dp" />-->
 
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/exportButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:backgroundTint="@color/transparent"-->
+<!--                android:contentDescription="@string/multi_export"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:srcCompat="@drawable/file_download_black_24dp" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/folderRecyclerView"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:scrollbars="horizontal"-->
+<!--                app:layoutManager="LinearLayoutManager"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/app_title" />-->
 
-            <Button
-                android:id="@+id/sortButton"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5sp"
-                android:text="@string/sort"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="?attr/colorPrimary"
-                app:icon="@drawable/sort_black_36dp"
-                app:layout_constraintBottom_toTopOf="@+id/filesRecyclerView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/filesRecyclerView"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_margin="10sp"-->
+<!--                android:scrollbars="vertical"-->
+<!--                app:layoutManager="LinearLayoutManager"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/deleteButton"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="1.0"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/folderRecyclerView" />-->
 
 
-        <LinearLayout
-            android:id="@+id/fabArea"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/translucent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10sp"-->
+<!--                app:cardCornerRadius="20dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:strokeColor="@color/transparent"-->
+<!--                app:strokeWidth="0dp">-->
 
-    </FrameLayout>
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/moveCopyFileView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="5sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.0"-->
+<!--                    app:layout_constraintStart_toStartOf="parent">-->
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/extended_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:icon="@drawable/add_black_36dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/moveCopyFileOperation"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="20sp"-->
+<!--                        android:ellipsize="marquee"-->
+<!--                        android:marqueeRepeatLimit="marquee_forever"-->
+<!--                        android:scrollHorizontally="true"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+<!--                        android:textColor="?attr/colorPrimary"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/camera_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/open_camera"
-        app:backgroundTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/extended_fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/photo_camera_black_24dp" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/moveCopyFileName"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="20sp"-->
+<!--                        android:layout_marginTop="5sp"-->
+<!--                        android:layout_marginEnd="20sp"-->
+<!--                        android:ellipsize="marquee"-->
+<!--                        android:marqueeRepeatLimit="marquee_forever"-->
+<!--                        android:scrollHorizontally="true"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+<!--                        android:textColor="?attr/colorPrimary"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileOperation" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/import_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/import_files"
-        app:backgroundTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/camera_fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/add_fill0_wght400_grad0_opsz24" />
+<!--                    <com.google.android.material.button.MaterialButton-->
+<!--                        android:id="@+id/moveCopyFileButton"-->
+<!--                        style="@style/Widget.Material3.Button.TonalButton"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="10sp"-->
+<!--                        android:contentDescription="@string/move_btn_text"-->
+<!--                        android:textAlignment="textEnd"-->
+<!--                        android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/create_dir_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/create_folder"
-        app:backgroundTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/import_fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_create_new_folder_24" />
+<!--                    <com.google.android.material.button.MaterialButton-->
+<!--                        android:id="@+id/moveCopyFileButtonCancel"-->
+<!--                        style="@style/Widget.Material3.Button.OutlinedButton"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="10sp"-->
+<!--                        android:contentDescription="@string/move_btn_text"-->
+<!--                        android:text="@string/cancel"-->
+<!--                        android:textAlignment="center"-->
+<!--                        android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/note_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/create_txt_menu"
-        app:backgroundTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/create_dir_fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/edit_note_black_36dp" />
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/moveCopyFileName" />-->
+
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--&lt;!&ndash;            <ImageButton&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/sortButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                style="@style/Widget.Material3.Button.IconButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_margin="20sp"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:icon="@drawable/sort_black_36dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="@string/sort"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textAppearance="@style/TextAppearance.AppCompat.Small"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="?attr/colorPrimary"&ndash;&gt;-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/fabArea"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@color/translucent"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    </FrameLayout>-->
+
+<!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+<!--        android:id="@+id/extended_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        app:icon="@drawable/add_black_36dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/camera_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="@string/open_camera"-->
+<!--        app:backgroundTint="?attr/colorSecondary"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/extended_fab"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/photo_camera_black_24dp" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/import_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="@string/import_files"-->
+<!--        app:backgroundTint="?attr/colorSecondary"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/camera_fab"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/add_fill0_wght400_grad0_opsz24" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/create_dir_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="@string/create_folder"-->
+<!--        app:backgroundTint="?attr/colorSecondary"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/import_fab"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/baseline_create_new_folder_24" />-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/note_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="@string/create_txt_menu"-->
+<!--        app:backgroundTint="?attr/colorSecondary"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/create_dir_fab"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/edit_note_black_36dp" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,8 +2,8 @@
     <string name="cancel">İptal</string>
     <string name="create">Oluştur</string>
     <string name="ok">Tamam</string>
-    <string name="create_folder">Klasör Oluştur</string>
-    <string name="import_files">Dosyaları İçe Aktar</string>
+    <string name="create_folder">Dosya</string>
+    <string name="import_files">veri</string>
     <string name="export_backup">Zip Yedeklemesini Dışa Aktar</string>
     <string name="change_theme">Temayı Değiştir</string>
     <string name="dark_theme_text">Koyu</string>
@@ -15,7 +15,7 @@
     <string name="import_backup">Zip Yedeklemesini İçe Aktar</string>
     <string name="backup_err_other">Beklenmeyen Hata, Lütfen tekrar deneyin</string>
     <string name="import_backup_msg">ZIP arşivi arka planda içe aktarılıyor, büyük dosyalar zaman alacak..</string>
-    <string name="open_camera">Kamerayı Aç</string>
+    <string name="open_camera">kamera</string>
     <string name="photo">Fotoğraf</string>
     <string name="video">Video</string>
     <string name="video_quality">Video Kalitesi</string>
@@ -54,9 +54,9 @@
     <string name="copy_file_title">Buraya Kopyala</string>
     <string name="copy_title">Kopyala</string>
     <string name="move_title">Taşı</string>
-    <string name="move_copy_btn_text">Buraya taşı veya kopyala</string>
+    <string name="move_btn_text">Buraya taşı veya kopyala</string>
     <string name="unsupported_format">Dosya biçimi desteklenmiyor</string>
-    <string name="create_txt_menu">Metin Notu Oluştur</string>
+    <string name="create_txt_menu">Not</string>
     <string name="new_text_note">Yeni Metin Notu</string>
     <string name="file_exists_error">Bu Dosya Zaten Var</string>
     <string name="nothing_here">Burada hiçbir şey ¯\\_(ツ )_/¯</string>
@@ -76,7 +76,6 @@
     <string name="auth_no_biometric_msg">Verilerinizi güvende tutmak için bir PIN veya Şifre kullanmanız önerilir</string>
     <string name="auth_stuck">Burada takılı kalırsanız ekranınızı kilitleyin ve kilidini açın.</string>
     <string name="about_text">Hakkında</string>
-    <string name="about_title" translatable="false">Safe Space</string>
     <string name="about_sub_title1">Tüm önemli dijital eşyalarınız için Güvenli Alan.</string>
     <string name="about_sub_title2">Dosyaları depolamak için uygulamaya özel depolama kullanır, bu dosyalar şifrelenir ve diğer uygulamalar tarafından görülemez ve telefon kilitlendiğinde erişilemez.</string>
     <string name="about_foss">Kullanılan kütüphaneler ve varlıklar:</string>
@@ -111,4 +110,10 @@
     <string name="extract_zip">Zip dosyasını ayıkla</string>
     <string name="biometric_toggle">Biyometriyi Kullanarak Kilidi Aç</string>
     <string name="biometric_title">Biyometrik Kilit Açma</string>
+    <string name="title_activity_settings">Ayarlar</string>
+    <string name="folder_already_exists">Bu klasör zaten var</string>
+    <string name="same_path">Kaynak ve hedef konum aynıdır</string>
+    <string name="only_files">Yalnızca dosyalar dışa aktarılacak</string>
+    <string name="migration_headline">Yeni bir şey!</string>
+    <string name="migration_content">Birkaç ay geçirdikten sonra karşınızda yeni ve geliştirilmiş bir tasarım! Umarım beğenmişsindir. Desteğiniz ve sevginiz için teşekkür ederiz.</string>
 </resources>

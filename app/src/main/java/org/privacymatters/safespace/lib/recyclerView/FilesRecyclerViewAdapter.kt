@@ -11,8 +11,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.lib.fileManager.FileItem
 import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.lib.fileManager.Utils
-import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.utils.Utils
+import org.privacymatters.safespace.utils.Constants
 
 
 class FilesRecyclerViewAdapter(

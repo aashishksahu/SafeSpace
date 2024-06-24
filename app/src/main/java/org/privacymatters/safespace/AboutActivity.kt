@@ -8,11 +8,16 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.privacymatters.safespace.lib.Reload
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+
+        // This switch ensures that only switching from activities of this app, the item list
+        // will reload (to prevent clearing of selected items during app switching)
+        Reload.value = true
 
         val libRV = findViewById<RecyclerView>(R.id.librariesRV)
         val libRVAdapter = LibRVAdapter()

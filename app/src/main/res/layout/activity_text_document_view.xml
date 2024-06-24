@@ -4,33 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundColor"
-    tools:context=".TextDocumentView">
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/saveButton"
-        style="@style/Widget.Material3.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:contentDescription="@string/save"
-        android:src="@drawable/save_white_24dp"
-        app:backgroundTint="?attr/colorSecondaryVariant"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorPrimary" />
+    android:background="?attr/background"
+    tools:context=".document.TextDocumentView">
 
     <EditText
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:inputType="textMultiLine"
         android:layout_height="0dp"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
-        android:background="?attr/backgroundColor"
+        android:background="?attr/background"
         android:fontFamily="monospace"
         android:gravity="start|top"
         android:hint="@string/textAreaHint"
+        android:inputType="textMultiLine"
         android:padding="10sp"
         android:scrollbars="vertical"
         android:textAlignment="viewStart"
@@ -38,18 +25,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveButton" />
+        app:layout_constraintTop_toBottomOf="@+id/mode" />
 
     <TextView
         android:id="@+id/mode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:layout_marginEnd="66dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="?attr/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toStartOf="@+id/saveButton"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

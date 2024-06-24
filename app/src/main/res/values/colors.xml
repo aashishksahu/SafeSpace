@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="transparent">#00FFFFFF</color>
+    <color name="transparent">#00F5F5F5</color>
     <color name="black">#FF000000</color>
-    <color name="white">#EBE7ED</color>
+    <color name="white">#F5F5F5</color>
     <color name="dark_background">#000000</color>
-    <color name="primary_500">#FFFFFF</color>
+    <color name="primary_500">#F5F5F5</color>
     <color name="primary_700">#E0DDCF</color>
     <color name="card_background_light">#FFFFFF</color>
     <color name="secondary_500">#242331</color>

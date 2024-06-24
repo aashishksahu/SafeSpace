@@ -11,7 +11,9 @@ import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.utils.Constants
+import org.privacymatters.safespace.experimental.main.FileHelper
+import org.privacymatters.safespace.experimental.main.FileTransferNotification
+import org.privacymatters.safespace.utils.Constants
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -388,8 +390,7 @@ class Operations(private val application: Application) {
     ): Boolean = withContext(Dispatchers.IO) {
 
         try {
-            val fileToExport =
-                File(getFilesDir() + File.separator + getInternalPath() + File.separator + selectedItem.name)
+            val fileToExport = File(getFilesDir() + File.separator + getInternalPath() + File.separator + selectedItem.name)
 
             val fis = FileInputStream(fileToExport)
 
