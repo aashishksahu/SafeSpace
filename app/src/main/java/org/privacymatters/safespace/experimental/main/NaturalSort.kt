@@ -5,7 +5,10 @@ package org.privacymatters.safespace.experimental.main
     https://github.com/ritwik12/NaturalSort/blob/master/NaturalSort.java
  */
 
-fun compareRight(s1: String, s2: String): Int {
+fun compareRight(str1: String, str2: String): Int {
+    val s1 = "$str1."
+    val s2 = "$str2."
+
     var temp = 0
     var strIndex1 = 0
     var strIndex2 = 0
@@ -106,7 +109,10 @@ fun naturalCompareAscending(o1: Item, o2: Item): Int {
 }
 
 
-fun compareLeft(s1: String, s2: String): Int {
+fun compareLeft(str1: String, str2: String): Int {
+    val s1 = "$str1."
+    val s2 = "$str2."
+
     var temp = 0
     var strIndex1 = 0
     var strIndex2 = 0
