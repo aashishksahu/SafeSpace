@@ -6,11 +6,13 @@
 ![License](https://img.shields.io/github/license/aashishksahu/SafeSpace.svg)
 ![Downloads](https://img.shields.io/github/downloads/aashishksahu/SafeSpace/total?labelColor=%23102C57&color=%23F8F0E5)
 
-[Screenshot 1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png)
-[Screenshot 2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png)
-[Screenshot 3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png)
-[Screenshot 4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png)
-[Screenshot 5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png)
+<p float="left">
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" />
+</p>
 
 ## Installation
 
