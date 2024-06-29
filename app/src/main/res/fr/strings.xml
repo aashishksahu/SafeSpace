@@ -1,0 +1,140 @@
+<resources>
+    <string name="app_name" translatable="false">Espace sécurisé</string>
+    <string name="cancel">Annuler</string>
+    <string name="create">Créer</string>
+    <string name="ok">OK</string>
+    <string name="create_folder">Dossier</string>
+    <string name="import_files">Fichier</string>
+    <string name="export_backup">Exporter la sauvegarde Zip</string>
+    <string name="change_theme">Change le thème</string>
+    <string name="dark_theme_text">Sombre</string>
+    <string name="light_theme_text">Lumineux</string>
+    <string name="amoled_theme_text">Amoled sombre</string>
+    <string name="export_backup_msg">Exportation d'une archive zip en arrière-plan, les fichiers volumineux prendront du temps..</string>
+    <string name="export_backup_success">Exportation terminée</string>
+    <string name="backup_err_space">Pas assez de stockage disponible</string>
+    <string name="import_backup">Importer une sauvegarde Zip</string>
+    <string name="backup_err_other">Erreur inattendue, veuillez réessayer</string>
+    <string name="import_backup_msg">Importation d'une archive zip en arrière-plan, les fichiers volumineux prendront du temps..</string>
+    <string name="open_camera">Camera</string>
+    <string name="photo">Photo</string>
+    <string name="video">Vidéo</string>
+    <string name="q1080p" translatable="false">1080p</string>
+    <string name="q720p" translatable="false">720p</string>
+    <string name="q480p" translatable="false">480p</string>
+    <string name="video_quality">Qualité vidéo</string>
+    <string name="switch_camera">Changer de caméra</string>
+    <string name="flash_toggle">Flash</string>
+    <string name="start_capture">Commencer la capture</string>
+    <string name="video_error">Erreur interne, impossible d'enregistrer la vidéo</string>
+    <string name="video_timer" translatable="false">00:00</string>
+    <string name="permission_denied">Demande d'autorisation refusée</string>
+    <string name="import_files_error">Certains fichiers n'ont pas été importés, veuillez réessayer</string>
+    <string name="create_folder_invalid_error">Seuls les lettres et les chiffres sont autorisés </string>
+    <string name="folder_already_exists">Ce dossier existe déjà</string>
+    <string name="file_icon_description">Icône de fichier ou de dossier</string>
+    <string name="context_menu_rename">Renommer</string>
+    <string name="context_menu_rename_hint">Saisir le nom</string>
+    <string name="context_menu_delete">Supprimer</string>
+    <string name="multi_clear">Clear</string>
+    <string name="multi_export">Exporter</string>
+    <string name="context_menu_move">Déplacer</string>
+    <string name="context_menu_copy">Copier</string>
+    <string name="context_menu_share">Partager</string>
+    <string name="generic_error">Quelque chose s'est mal passé. Veuillez réessayer</string>
+    <string name="delete_confirmation">Êtes-vous sûr de vouloir supprimer ceci ?</string>
+    <string name="share_dialog_title">Avertissement!</string>
+    <string name="share_dialog_description">Vous partagez ce fichier avec une application tierce, assurez-vous de faire confiance à l'application.</string>
+    <string name="share_chooser_title">Partager avec…</string>
+    <string name="directory_indicator">Dossier</string>
+    <string name="file_indicator">Fichier</chaîne>
+    <string name="import_files_progress">Importation en arrière-plan, veuillez patienter…</string>
+    <string name="media_view_desc">Vue des médias</string>
+    <string name="textAreaHint">Écris quelque chose</string>
+    <string name="save">Sauver</string>
+    <string name="save_success">Fichier sauvé!</string>
+    <string name="save_error">Erreur lors de l'enregistrement du fichier !</string>
+    <string name="move_file_title">Déplacer ici</string>
+    <string name="move_copy_file_failure">L'action n'a pas abouti</string>
+    <string name="move_copy_file_success">Fichier(s) déplacé(s)/copié(s) avec succès</string>
+    <string name="copy_file_title">Copier ici</string>
+    <string name="copy_title">Copier</string>
+    <string name="move_title">Déplacer</string>
+    <string name="move_btn_text">Déplacer ici</string>
+    <string name="unsupported_format">Format de fichier non pris en charge</string>
+    <string name="create_txt_menu">Note</string>
+    <string name="new_text_note">Nouvelle note</string>
+    <string name="file_exists_error">Ce fichier existe déjà</string>
+    <string name="same_path">L'emplacement de la source et celui de la cible sont identiques</string>
+    <string name="nothing_here">Il n'y a rien ici ¯\\_(ツ)_/¯</string>
+    <string name="file_folder_placeholder">Dossier</string>
+    <string name="items">Articles</string>
+    <string name="item">Article</string>
+    <string name="pdf_exception_title">Impossible d'ouvrir le document</string>
+    <string name="pdf_exception_subtitle">Le document présente des problèmes. S'il s'agit d'un document protégé par mot de passe, ils ne sont pas encore pris en charge.</string>
+    <string name="text_exception_title">Pas trouvé</string>
+    <string name="text_exception_subtitle">Ce document texte n'existe pas. Il a probablement été supprimé.</string>
+    <string name="text_exception_IO">Impossible d'ouvrir le texte de la note</string>
+    <string name="export_in_progress">Exportation en arrière-plan, veuillez patienter… </string>
+
+    <string name="auth_fail">Authentification échouée!</string>
+    <string name="auth_login">Connexion</string>
+
+    <string name="auth_alert">Pas de données biométriques ni de code PIN</string>
+    <string name="auth_alert_update">Veuillez mettre à jour votre téléphone et réessayer</string>
+    <string name="auth_no_biometric_msg">Il est recommandé d'utiliser un code PIN ou un mot de passe pour sécuriser vos données.</string>
+    <string name="auth_stuck">Verrouillez et déverrouillez votre écran si vous êtes bloqué ici.</string>
+
+    <string name="about_text">À propos</string>
+    <string name="about_title" translatable="false">Espace sécurisé</string>
+    <string name="about_sub_title1">Un espace sûr pour tous vos contenus numériques importants.</string>
+    <string name="about_sub_title2">Utilise un stockage spécifique à l'application pour stocker des fichiers. Ces fichiers sont cryptés et ne sont pas visibles par d'autres applications et ne sont pas accessibles lorsque le téléphone est verrouillé.</string>
+    <string name="about_foss">Bibliothèques et ressources utilisées :</string>
+
+    <string name="glide" translatable="false">Glisser</string>
+    <string name="androidx" translatable="false">AndroidX</string>
+    <string name="camerax" translatable="false">CameraX</string>
+    <string name="photoview" translatable="false">PhotoView par Chris banes</string>
+    <string name="exo" translatable="false">Exo player</string>
+    <string name="material" translatable="false">Google Material 3</string>
+
+    <string name="root_check_title">Contrôle Root</string>
+    <string name="root_check_subtitle">Il n'est pas recommandé d'utiliser cette application sur un téléphone rooté. L'application va maintenant se fermer.</string>
+
+    <string name="System">Système</string>
+    <string name="Light">Lumineux</string>
+    <string name="Dark">Sombre</string>
+    <string name="sort">Trier</string>
+
+    <string name="name">Nom</string>
+    <string name="size">Taille</string>
+    <string name="date">Date</string>
+    <string name="asc">Ascendant</string>
+    <string name="desc">Descendant</string>
+    <string name="sort_by_title_file">Trier les fichiers par</string>
+    <string name="sort_by_title_folder">Trier les dossiers par nom</string>
+    <string name="sort_by_order">Ordre</string>
+    <string name="pin_text_box">Entrer le code Pin</string>
+    <string name="set_pin_text">Configuer le code PIN</string>
+    <string name="confirm_pin_text">Confirmer le code PIN</string>
+    <string name="pin_error">Le code PIN ne peut pas être vide</string>
+    <string name="pin_error2">Le code PIN doit comporter au moins 4 caractères</string>
+    <string name="pin_error4">Le code PIN ne correspond pas</string>
+    <string name="pin_error5">Code PIN incorrect</string>
+    <string name="pin_error6">Trop de mauvaises tentatives, réessayez plus tard</string>
+    <string name="multi_move">Déplacer les fichiers sélectionnés</string>
+    <string name="multi_copy">Copier les fichiers sélectionnés</string>
+    <string name="change_pin">Changer le code PIN</string>
+    <string name="current_pin">Code PIN actuel</string>
+    <string name="pin_lost_warning">IMPORTANT : N'oubliez PAS votre code PIN. Gardez toujours une sauvegarde de vos données.</string>
+    <string name="compress_folder">Compresser</string>
+    <string name="extract_zip">Extraire le fichier Zip</string>
+    <string name="biometric_toggle">Déverrouiller à l'aide de la biométrie</string>
+    <string name="biometric_title">Déverrouillage biométrique</string>
+    <string name="title_activity_settings">Réglages</string>
+    <string name="only_files">Seuls les fichiers seront exportés</string>
+    <string name="migration_headline">Quelque chose de nouveau!!</string>
+    <string name="migration_content">Après avoir passé quelques mois, voici un nouveau design amélioré ! J'espère que tu aimes. Merci pour tout votre soutien et votre amour.</string>
+
+
+</resources>
