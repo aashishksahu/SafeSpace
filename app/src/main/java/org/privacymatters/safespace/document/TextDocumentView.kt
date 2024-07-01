@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.Reload
+import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.depracated.lib.Reload
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.SetTheme
+import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
@@ -22,6 +24,7 @@ class TextDocumentView : AppCompatActivity() {
 
     private lateinit var textFileContentView: EditText
     private lateinit var file: File
+    private val ops = DataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -35,6 +38,8 @@ class TextDocumentView : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
+
+        ops.ready(application)
 
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
@@ -61,6 +66,9 @@ class TextDocumentView : AppCompatActivity() {
             buffer.close()
 
         } catch (e: FileNotFoundException) {
+
+            Utils.exportToLog(application,"@TextDocumentView.onCreate()", e)
+
             val builder = MaterialAlertDialogBuilder(textFileContentView.context)
 
             builder.setTitle(getString(R.string.text_exception_title))
@@ -73,6 +81,7 @@ class TextDocumentView : AppCompatActivity() {
             val alert = builder.create()
             alert.show()
         } catch (e: IOException) {
+            Utils.exportToLog(application,"@TextDocumentView.onCreate()", e)
             val builder = MaterialAlertDialogBuilder(textFileContentView.context)
 
             builder.setTitle(getString(R.string.text_exception_IO))
@@ -101,6 +110,9 @@ class TextDocumentView : AppCompatActivity() {
             }
 
         } catch (e: Exception) {
+
+            Utils.exportToLog(application,"@TextDocumentView.saveFile()", e)
+
             Toast.makeText(
                 applicationContext,
                 getString(R.string.save_error),

@@ -3,7 +3,7 @@ package org.privacymatters.safespace.experimental.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.Reload
+import org.privacymatters.safespace.depracated.lib.Reload
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

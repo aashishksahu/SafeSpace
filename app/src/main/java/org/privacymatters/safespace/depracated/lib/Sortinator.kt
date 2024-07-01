@@ -1,25 +1,27 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.depracated.lib
 
 import android.content.SharedPreferences
 import android.view.View
 import android.widget.RadioGroup
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.fileManager.FileItem
-import org.privacymatters.safespace.lib.fileManager.Operations
+import org.privacymatters.safespace.depracated.lib.fileManager.FileItem
+//import org.privacymatters.safespace.depracated.lib.fileManager.Operations
 import org.privacymatters.safespace.utils.Constants
 
-class Sortinator(sharedPref: SharedPreferences, ops: Operations) {
+class Sortinator(sharedPref: SharedPreferences,
+//                 ops: Operations
+) {
 
     private var fileSortBy: String? = null
     private var fileSortOrder: String? = null
-    private var ops: Operations? = null
+//    private var ops: Operations? = null
     private var sortByGroup: RadioGroup? = null
     private var sortOrderGroup: RadioGroup? = null
     private var sharedPref: SharedPreferences
 
     init {
 
-        this.ops = ops
+//        this.ops = ops
         this.sharedPref = sharedPref
 
         fileSortBy = sharedPref.getString(Constants.FILE_SORT_BY, Constants.NAME) // Name, Date or Size

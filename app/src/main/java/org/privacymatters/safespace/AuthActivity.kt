@@ -19,6 +19,7 @@ import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
+import org.privacymatters.safespace.utils.Utils
 import java.util.concurrent.Executor
 
 
@@ -71,12 +72,6 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-
-        // Experimental - Remove before release
-//        val intent = Intent(applicationContext, MainnActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(intent)
-//        finish()
 
 
         authTouch = findViewById(R.id.fingerprint)

@@ -117,4 +117,5 @@
     <string name="only_files">仅导出文件</string>
     <string name="migration_headline">新鲜玩意！</string>
     <string name="migration_content">经过几个月的等待，终于有了全新的改进设计！希望大家喜欢。感谢大家的支持和喜爱。</string>
+    <string name="logs">日志</string>
 </resources>

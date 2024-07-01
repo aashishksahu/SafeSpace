@@ -32,8 +32,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.DataManager
-import org.privacymatters.safespace.lib.Reload
+import org.privacymatters.safespace.depracated.lib.Reload
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -383,8 +384,8 @@ class CameraActivity : AppCompatActivity() {
                     this, cameraSelector, preview, imageCapture, videoCapture
                 )
 
-            } catch (_: Exception) {
-
+            } catch (e: Exception) {
+                Utils.exportToLog(application, "@CameraActivity.startCamera()", e)
             }
 
         }, ContextCompat.getMainExecutor(applicationContext))

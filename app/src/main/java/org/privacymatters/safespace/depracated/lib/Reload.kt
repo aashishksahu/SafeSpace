@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib
+package org.privacymatters.safespace.depracated.lib
 
 class Reload {
     companion object {

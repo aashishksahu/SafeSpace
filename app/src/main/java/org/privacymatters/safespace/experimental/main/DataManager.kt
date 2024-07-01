@@ -60,6 +60,7 @@ object DataManager {
                 rootDir.mkdirs()
             }
         } catch (e: FileSystemException) {
+            Utils.exportToLog(application, "@ DataManager.ready() ", e)
             Log.e(Constants.TAG_ERROR, "@ DataManager.ready() ", e)
             return 0
         }
@@ -222,9 +223,11 @@ object DataManager {
             zis.close()
             sourceFileStream.close()
         } catch (e: IOException) {
+            Utils.exportToLog(application, "@ DataManager.extractZip() ", e)
             Log.e(Constants.TAG_ERROR, "@ DataManager.extractZip() ", e)
             return false
         } catch (sec: SecurityException) {
+            Utils.exportToLog(application, "@ DataManager.extractZip() ", sec)
             return false
 
         }
@@ -275,6 +278,7 @@ object DataManager {
                 targetFileStream.close()
 
             } catch (e: Exception) {
+                Utils.exportToLog(application, "@ DataManager.importFile() ", e)
                 Log.e(Constants.TAG_ERROR, "@DataManager.importFile() ", e)
             }
 
@@ -335,6 +339,7 @@ object DataManager {
             )
 
         } catch (exception: Exception) {
+            Utils.exportToLog(application, "@ DataManager.copyFileWithProgressNotification() ", exception)
             exception.printStackTrace()
             fileTransferNotification.showFailureNotification(sourceFileName, exception)
         }
@@ -352,6 +357,7 @@ object DataManager {
             }
 
         } catch (e: Exception) {
+            Utils.exportToLog(application, "@ DataManager.deleteFile() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.deleteFile() ", e)
         }
     }
@@ -369,6 +375,7 @@ object DataManager {
             dir.delete()
 
         } catch (e: Exception) {
+            Utils.exportToLog(application, "@ DataManager.deleteDirectory() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.deleteDirectory() ", e)
         }
     }
@@ -399,6 +406,7 @@ object DataManager {
 
 
         } catch (e: Exception) {
+            Utils.exportToLog(application, "@ DataManager.exportItems() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.exportItems() ", e)
         }
     }
@@ -454,6 +462,7 @@ object DataManager {
 
 
         } catch (e: IOException) {
+            Utils.exportToLog(application, "@ DataManager.importBackup() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
             return if (e.message.toString().lowercase().contains("no space left")) {
                 FileOpCode.NO_SPACE
@@ -461,6 +470,7 @@ object DataManager {
                 FileOpCode.FAIL
             }
         } catch (e: SecurityException) {
+            Utils.exportToLog(application, "@ DataManager.importBackup() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
             return FileOpCode.FAIL
         }
@@ -500,7 +510,7 @@ object DataManager {
             pfd.close()
 
         } catch (e: IOException) {
-//            e.printStackTrace()
+            Utils.exportToLog(application, "@ DataManager.exportBackup() ", e)
             return if (e.message.toString().lowercase().contains("no space left")) {
                 FileOpCode.NO_SPACE
             } else {
@@ -560,6 +570,7 @@ object DataManager {
                 }
             }
         } catch (e: Exception) {
+            Utils.exportToLog(application, "@ DataManager.migrateFromRoot() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.migrateFromRoot() ", e)
             return FileOpCode.FAIL
         } finally {

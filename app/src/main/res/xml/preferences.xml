@@ -28,6 +28,11 @@
         app:title="@string/export_backup" />
 
     <Preference
+        app:icon="@drawable/adb_40dp"
+        app:key="logs"
+        app:title="@string/logs" />
+
+    <Preference
         app:icon="@drawable/info_black_36dp"
         app:key="about"
         app:title="@string/about_text" />

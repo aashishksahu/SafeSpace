@@ -39,7 +39,7 @@ import org.privacymatters.safespace.experimental.main.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.main.ui.ItemList
 import org.privacymatters.safespace.experimental.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.main.ui.TopAppBar
-import org.privacymatters.safespace.lib.Reload
+import org.privacymatters.safespace.depracated.lib.Reload
 
 class MainnActivity : AppCompatActivity() {
 

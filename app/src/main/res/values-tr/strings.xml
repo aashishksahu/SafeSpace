@@ -116,4 +116,5 @@
     <string name="only_files">Yalnızca dosyalar dışa aktarılacak</string>
     <string name="migration_headline">Yeni bir şey!</string>
     <string name="migration_content">Birkaç ay geçirdikten sonra karşınızda yeni ve geliştirilmiş bir tasarım! Umarım beğenmişsindir. Desteğiniz ve sevginiz için teşekkür ederiz.</string>
+    <string name="logs">Kütükler</string>
 </resources>

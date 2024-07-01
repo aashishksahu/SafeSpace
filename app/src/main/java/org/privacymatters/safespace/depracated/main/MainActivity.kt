@@ -1,54 +1,43 @@
-package org.privacymatters.safespace.main
+package org.privacymatters.safespace.depracated.main
 
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
-import org.privacymatters.safespace.lib.Sortinator
-import org.privacymatters.safespace.lib.fileManager.FileItem
-import org.privacymatters.safespace.lib.fileManager.Operations
-import org.privacymatters.safespace.lib.recyclerView.FilesRecyclerViewAdapter
-import org.privacymatters.safespace.lib.recyclerView.FolderRecyclerViewAdapter
+//import org.privacymatters.safespace.depracated.lib.fileManager.Operations
+//import org.privacymatters.safespace.depracated.lib.recyclerView.FilesRecyclerViewAdapter
 
 
 class MainActivity : AppCompatActivity()
 //    ItemClickListener, FolderClickListener
 {
 
-    private lateinit var ops: Operations
+//    private lateinit var ops: Operations
 
-    private lateinit var nothingHereText: TextView
-    private lateinit var filesRecyclerView: RecyclerView
-    private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
-    private lateinit var folderRecyclerView: RecyclerView
-    private lateinit var folderRecyclerViewAdapter: FolderRecyclerViewAdapter
-    private lateinit var deleteButton: ImageButton
-    private lateinit var clearButton: ImageButton
-    private lateinit var exportButton: ImageButton
-    private lateinit var moveBulkButton: ImageButton
-    private lateinit var copyBulkButton: ImageButton
-    private var moveCopyBulkFrom = ""
-    private var selectedItems = ArrayList<FileItem>()
-    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
-    private lateinit var fileMoveCopyView: ConstraintLayout
-    private lateinit var fileMoveCopyName: TextView
-    private lateinit var fileMoveCopyOperation: TextView
-    private lateinit var fileMoveCopyButton: MaterialButton
-    private lateinit var sharedPref: SharedPreferences
-    private lateinit var topAppBar: MaterialToolbar
-    private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var sortinator: Sortinator
-    private lateinit var actions: Actions
-    private val notificationPermissionRequestCode = 100
+//    private lateinit var nothingHereText: TextView
+//    private lateinit var filesRecyclerView: RecyclerView
+////    private lateinit var filesRecyclerViewAdapter: FilesRecyclerViewAdapter
+//    private lateinit var folderRecyclerView: RecyclerView
+//    private lateinit var folderRecyclerViewAdapter: FolderRecyclerViewAdapter
+//    private lateinit var deleteButton: ImageButton
+//    private lateinit var clearButton: ImageButton
+//    private lateinit var exportButton: ImageButton
+//    private lateinit var moveBulkButton: ImageButton
+//    private lateinit var copyBulkButton: ImageButton
+//    private var moveCopyBulkFrom = ""
+//    private var selectedItems = ArrayList<FileItem>()
+//    private val folderNamePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
+//    private lateinit var fileMoveCopyView: ConstraintLayout
+//    private lateinit var fileMoveCopyName: TextView
+//    private lateinit var fileMoveCopyOperation: TextView
+//    private lateinit var fileMoveCopyButton: MaterialButton
+//    private lateinit var sharedPref: SharedPreferences
+//    private lateinit var topAppBar: MaterialToolbar
+//    private lateinit var selectExportDirActivityResult: ActivityResultLauncher<Intent>
+//    private lateinit var sortinator: Sortinator
+//    private lateinit var actions: Actions
+//    private val notificationPermissionRequestCode = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 //        // set theme on app launch
 //        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 //
@@ -58,7 +47,6 @@ class MainActivity : AppCompatActivity()
 //            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
 //        )
 //
-//        super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_main)
 //
 //        // initialize things on activity start

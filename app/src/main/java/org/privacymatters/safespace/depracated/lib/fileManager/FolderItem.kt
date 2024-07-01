@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib.fileManager
+package org.privacymatters.safespace.depracated.lib.fileManager
 
 class FolderItem(
     name: String,

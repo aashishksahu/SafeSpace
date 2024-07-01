@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.lib.recyclerView
+package org.privacymatters.safespace.depracated.lib.recyclerView
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.fileManager.FolderItem
+import org.privacymatters.safespace.depracated.lib.fileManager.FolderItem
 
 class FolderRecyclerViewAdapter(
     private val folderClickListener: FolderClickListener,

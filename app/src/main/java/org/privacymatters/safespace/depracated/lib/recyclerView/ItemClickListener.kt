@@ -1,7 +1,7 @@
-package org.privacymatters.safespace.lib.recyclerView
+package org.privacymatters.safespace.depracated.lib.recyclerView
 
 import android.view.View
-import org.privacymatters.safespace.lib.fileManager.FileItem
+import org.privacymatters.safespace.depracated.lib.fileManager.FileItem
 
 interface ItemClickListener {
     fun onClick(data: FileItem)

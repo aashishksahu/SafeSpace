@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.AboutActivity
 import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.LogActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.experimental.main.DataManager
 import org.privacymatters.safespace.experimental.main.FileOpCode
@@ -155,6 +156,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("change_pin")
             ?.setOnPreferenceClickListener {
                 context?.let { changePin(it) }
+                true // Return true if the click is handled.
+            }
+
+        findPreference<Preference>("logs")
+            ?.setOnPreferenceClickListener {
+                context?.let {
+                    val intent = Intent(context, LogActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
                 true // Return true if the click is handled.
             }
 

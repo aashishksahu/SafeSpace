@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.main
+package org.privacymatters.safespace.depracated.main
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton

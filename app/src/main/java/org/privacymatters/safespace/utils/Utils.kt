@@ -1,6 +1,8 @@
 package org.privacymatters.safespace.utils
 
 import android.annotation.SuppressLint
+import android.app.Application
+import android.util.Log
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -123,6 +125,37 @@ class Utils {
             }
 
             return Pair(path, file)
+
+        }
+
+        fun clearLogs(application: Application) {
+            try {
+                val logsFolder = File(application.filesDir.canonicalPath + File.separator + "logs")
+                val logFile = File(logsFolder.canonicalPath + File.separator + "safe_space_log.txt")
+
+                logFile.delete()
+
+            } catch (_: Exception) {
+            }
+        }
+
+        fun exportToLog(application: Application, msg: String, exception: Exception) {
+            try {
+                val logsFolder = File(application.filesDir.canonicalPath + File.separator + "logs")
+                if (!logsFolder.exists()) {
+                    logsFolder.mkdirs()
+                }
+
+                val logFile = File(logsFolder.canonicalPath + File.separator + "safe_space_log.txt")
+                if (!logFile.exists()) {
+                    logFile.createNewFile()
+                }
+                val metaData =
+                    Constants.NEXT_LINE + convertLongToTime(System.currentTimeMillis()) + " " + msg + "\n"
+                logFile.appendText(metaData + exception.stackTraceToString())
+            } catch (e: Exception) {
+                Log.e(Constants.TAG_ERROR, "@ DataManager.exportToLog() ", e)
+            }
 
         }
     }

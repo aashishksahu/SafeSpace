@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -137,6 +138,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
                 }
             }
         } catch (e: Exception) {
+            Utils.exportToLog(application,"@DataManager.moveToDestination()", e)
             status = FileOpCode.FAIL
         } finally {
             getItems()
@@ -194,6 +196,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
             sourceFileStream?.close()
             targetFileStream?.close()
         } catch (e: Exception) {
+            Utils.exportToLog(application,"@DataManager.copyToDestination()", e)
             status = FileOpCode.FAIL
         } finally {
             transferList.clear()
@@ -381,5 +384,9 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun isMigrationComplete(): Boolean {
         return sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
+    }
+
+    fun exportToLog(msg: String, e: Exception) {
+        Utils.exportToLog(application,msg, e)
     }
 }

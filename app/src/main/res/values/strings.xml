@@ -135,6 +135,7 @@
     <string name="only_files">Only files will be exported</string>
     <string name="migration_headline">Something new!!</string>
     <string name="migration_content">After spending a few months, here\'s a new and improved design! I hope you like it. Thanks for all your support and love.</string>
+    <string name="logs">Logs</string>
 
 
 </resources>
