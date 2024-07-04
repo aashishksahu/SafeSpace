@@ -1,0 +1,2 @@
+Added French and Spanish translations
+Added option to see crash logs in settings
