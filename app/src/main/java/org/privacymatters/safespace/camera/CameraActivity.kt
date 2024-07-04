@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -31,9 +30,10 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.depracated.lib.Reload
 import org.privacymatters.safespace.experimental.main.DataManager
-import org.privacymatters.safespace.lib.Reload
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -341,7 +341,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Preview
             preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+//                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
@@ -368,7 +368,7 @@ class CameraActivity : AppCompatActivity() {
             // image capture
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+//                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
 
             try {
@@ -383,8 +383,8 @@ class CameraActivity : AppCompatActivity() {
                     this, cameraSelector, preview, imageCapture, videoCapture
                 )
 
-            } catch (_: Exception) {
-
+            } catch (e: Exception) {
+                Utils.exportToLog(application, "@CameraActivity.startCamera()", e)
             }
 
         }, ContextCompat.getMainExecutor(applicationContext))
@@ -414,7 +414,7 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(applicationContext),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-//                    exc.printStackTrace()
+                    Utils.exportToLog(application, "@CameraActivity.takePhoto()", exc)
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -465,6 +465,11 @@ class CameraActivity : AppCompatActivity() {
                         }
 
                         if (event.hasError()) {
+                            Utils.exportToLog(
+                                application,
+                                "@CameraActivity.captureVideo()\n${event.error} - ${event.cause}",
+                                null
+                            )
                             Toast.makeText(
                                 shutterButton.context,
                                 getString(R.string.video_error),

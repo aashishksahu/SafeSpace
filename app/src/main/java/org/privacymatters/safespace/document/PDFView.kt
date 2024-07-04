@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.lib.Reload
+import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.depracated.lib.Reload
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 import java.io.File
 
 
@@ -23,10 +25,14 @@ class PDFView : AppCompatActivity() {
     private lateinit var pdfRecyclerView: RecyclerView
     private lateinit var pdfRecyclerViewAdapter: PdfAdapter
     private lateinit var renderer: PdfRenderer
+    private val ops = DataManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdfview)
+
+        ops.ready(application)
 
         // hide navigation and status bar
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -59,7 +65,9 @@ class PDFView : AppCompatActivity() {
             pdfRecyclerView.layoutManager = LinearLayoutManager(this)
             pdfRecyclerView.adapter = pdfRecyclerViewAdapter
 
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Utils.exportToLog(application, "@PDFView.onCreate()", e)
+
             val builder = MaterialAlertDialogBuilder(pdfRecyclerView.context)
 
             builder.setTitle(getString(R.string.pdf_exception_title))

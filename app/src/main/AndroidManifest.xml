@@ -23,6 +23,10 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:name=".LogActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SafeSpace" />
+        <activity
             android:name=".experimental.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
@@ -59,10 +63,6 @@
         <activity
             android:name=".document.PDFView"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".main.MainActivity"
-            android:configChanges="keyboardHidden|screenSize"
             android:exported="false" />
 
         <provider

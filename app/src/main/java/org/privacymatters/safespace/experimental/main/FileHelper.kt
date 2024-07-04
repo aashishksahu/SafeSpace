@@ -77,6 +77,7 @@ object FileHelper {
                 else -> INVALID_FILE_SIZE
             }
         } catch (exception: NoSuchFieldException) {
+
             INVALID_FILE_SIZE
         } catch (exception: IllegalAccessException) {
             INVALID_FILE_SIZE

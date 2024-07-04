@@ -48,7 +48,7 @@ import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
 class BottomAppBar(private val activity: MainnActivity) {
-//Todo: Make bottom app bar fixed width, reduce the gap
+    //Todo: Make bottom app bar fixed width, reduce the gap
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private var name: String = ""
@@ -78,7 +78,8 @@ class BottomAppBar(private val activity: MainnActivity) {
 
             ) {
 
-                Button(onClick = { openCamera() },
+                Button(
+                    onClick = { openCamera() },
                     contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
@@ -96,8 +97,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { importFiles() },
-                    contentPadding = PaddingValues(5.dp)) {
+                Button(
+                    onClick = { importFiles() },
+                    contentPadding = PaddingValues(5.dp)
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -113,8 +116,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { createFolderShowDialog.value = true },
-                    contentPadding = PaddingValues(5.dp)) {
+                Button(
+                    onClick = { createFolderShowDialog.value = true },
+                    contentPadding = PaddingValues(5.dp)
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -140,6 +145,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                                         try {
                                             activity.viewModel.createFolder(name)
                                         } catch (e: Exception) {
+                                            activity.viewModel.exportToLog(
+                                                "@BottomAppBar.NormalActionBar()",
+                                                e
+                                            )
                                             showMessage(activity.getString(R.string.create_folder_invalid_error))
                                         }
                                         name = ""
@@ -152,8 +161,10 @@ class BottomAppBar(private val activity: MainnActivity) {
                     }
                 }
 
-                Button(onClick = { createNoteShowDialog.value = true },
-                    contentPadding = PaddingValues(5.dp)) {
+                Button(
+                    onClick = { createNoteShowDialog.value = true },
+                    contentPadding = PaddingValues(5.dp)
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center

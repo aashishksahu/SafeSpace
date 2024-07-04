@@ -115,6 +115,7 @@
     <string name="folder_already_exists">यह फ़ोल्डर पहले से मौजूद है</string>
     <string name="same_path">स्रोत और लक्ष्य स्थान समान हैं</string>
     <string name="only_files">केवल फ़ाइलें ही निर्यात की जाएंगी</string>
-    <string name="migration_headline">कुछ नया!</string>
-    <string name="migration_content">कुछ महीने बिताने के बाद, यहाँ एक नया और बेहतर डिज़ाइन है! मुझे उम्मीद है कि आपको यह पसंद आएगा। आपके सभी समर्थन और प्यार के लिए धन्यवाद।</string>
+    <string name="migration_headline">परिवर्तन लॉग</string>
+    <string name="migration_content">क्रैश लॉग देखने का विकल्प जोड़ा गया है, अगर आपको कोई समस्या आती है तो कृपया उसे मेरे साथ साझा करें। वे सेटिंग्स -> लॉग में हैं।</string>
+    <string name="logs">लॉग्स</string>
 </resources>

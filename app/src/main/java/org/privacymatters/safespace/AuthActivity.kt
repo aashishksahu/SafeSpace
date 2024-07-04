@@ -72,12 +72,6 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        // Experimental - Remove before release
-//        val intent = Intent(applicationContext, MainnActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(intent)
-//        finish()
-
 
         authTouch = findViewById(R.id.fingerprint)
         pinField = findViewById(R.id.editTextPassword)

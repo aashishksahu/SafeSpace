@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import org.privacymatters.safespace.main.MainActivity
+import org.privacymatters.safespace.depracated.main.MainActivity
 
 /**
  * Class to handle file transfer notifications

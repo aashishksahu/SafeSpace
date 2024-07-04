@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
-    tools:context=".main.MainActivity">
+    tools:context=".depracated.main.MainActivity">
 
 <!--    <FrameLayout-->
 <!--        android:layout_width="match_parent"-->
