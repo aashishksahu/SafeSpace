@@ -114,7 +114,7 @@
     <string name="folder_already_exists">Bu klasör zaten var</string>
     <string name="same_path">Kaynak ve hedef konum aynıdır</string>
     <string name="only_files">Yalnızca dosyalar dışa aktarılacak</string>
-    <string name="migration_headline">Yeni bir şey!</string>
-    <string name="migration_content">Birkaç ay geçirdikten sonra karşınızda yeni ve geliştirilmiş bir tasarım! Umarım beğenmişsindir. Desteğiniz ve sevginiz için teşekkür ederiz.</string>
+    <string name="migration_headline">Değişiklik Günlüğü</string>
+    <string name="migration_content">Çökme günlüklerini görme seçeneği eklendi, herhangi bir sorun bulursanız lütfen bunları benimle paylaşın. Bunlar ayarlar -> günlükler bölümündedir</string>
     <string name="logs">Kütükler</string>
 </resources>

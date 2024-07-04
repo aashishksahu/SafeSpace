@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Espace sécurisé</string>
     <string name="cancel">Annuler</string>
     <string name="create">Créer</string>
     <string name="ok">OK</string>
@@ -133,8 +132,9 @@
     <string name="biometric_title">Déverrouillage biométrique</string>
     <string name="title_activity_settings">Réglages</string>
     <string name="only_files">Seuls les fichiers seront exportés</string>
-    <string name="migration_headline">Quelque chose de nouveau!!</string>
-    <string name="migration_content">Après avoir passé quelques mois, voici un nouveau design amélioré ! J\'espère que tu aimes. Merci pour tout votre soutien et votre amour.</string>
+    <string name="migration_headline">Journal des modifications</string>
+    <string name="migration_content">Ajout d\'une option pour voir les journaux de plantage, veuillez les partager avec moi si vous rencontrez des problèmes. Ils se trouvent dans les paramètres -> journaux.</string>
+    <string name="logs">Journaux</string>
 
 
 </resources>

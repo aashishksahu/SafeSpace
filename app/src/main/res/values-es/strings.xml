@@ -120,6 +120,7 @@
     <string name="biometric_title">Desbloquo biométrico</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="only_files">Solo se exportarán los archivos</string>
-    <string name="migration_headline">¡Novedades!</string>
-    <string name="migration_content">Después de pasar unos meses, ¡aquí tiene un diseño nuevo y mejorado! Espero que les guste. Gracias por todo su apoyo y cariño.</string>
+    <string name="migration_headline">Registro de cambios</string>
+    <string name="migration_content">Se agregó la opción de ver los registros de fallas. Compártelos conmigo si encuentras algún problema. Están en configuración -> registros.</string>
+    <string name="logs">Registros</string>
 </resources>
