@@ -139,7 +139,7 @@ class Utils {
             }
         }
 
-        fun exportToLog(application: Application, msg: String, exception: Exception) {
+        fun exportToLog(application: Application, msg: String, exception: Exception?) {
             try {
                 val logsFolder = File(application.filesDir.canonicalPath + File.separator + "logs")
                 if (!logsFolder.exists()) {
@@ -152,7 +152,7 @@ class Utils {
                 }
                 val metaData =
                     Constants.NEXT_LINE + convertLongToTime(System.currentTimeMillis()) + " " + msg + "\n"
-                logFile.appendText(metaData + exception.stackTraceToString())
+                logFile.appendText(metaData + exception?.stackTraceToString())
             } catch (e: Exception) {
                 Log.e(Constants.TAG_ERROR, "@ DataManager.exportToLog() ", e)
             }

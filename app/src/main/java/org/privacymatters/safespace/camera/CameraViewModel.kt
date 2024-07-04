@@ -25,7 +25,7 @@ class CameraViewModel(application: Application, private val initialTimerText: St
         timer = Timer()
         viewModelScope.launch(Dispatchers.Main) {
 
-            timer?.scheduleAtFixedRate(timerTask {
+            timer?.schedule(timerTask {
                 timerCounter += 1u
                 timerCounterText.postValue(
                     (timerCounter / 60u).toString()
