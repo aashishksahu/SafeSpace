@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,21 +71,23 @@ class LogActivity : ComponentActivity() {
                             )
                         }
                     }) { innerPadding ->
-                    Text(
-                        text = content.toString(),
-                        modifier = Modifier
-                            .padding(
-                                PaddingValues(
-                                    top = innerPadding.calculateTopPadding(),
-                                    bottom = innerPadding.calculateBottomPadding(),
-                                    start = 5.dp,
-                                    end = 5.dp
+                    SelectionContainer {
+                        Text(
+                            text = content.toString(),
+                            modifier = Modifier
+                                .padding(
+                                    PaddingValues(
+                                        top = innerPadding.calculateTopPadding(),
+                                        bottom = innerPadding.calculateBottomPadding(),
+                                        start = 5.dp,
+                                        end = 5.dp
+                                    )
                                 )
-                            )
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .horizontalScroll(rememberScrollState())
-                    )
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .horizontalScroll(rememberScrollState())
+                        )
+                    }
                 }
             }
         }
