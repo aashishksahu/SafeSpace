@@ -41,8 +41,6 @@ object DataManager {
     var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
 
-//    val itemStateList = mutableStateListOf<Item>()
-
     private val privateItemList = MutableStateFlow<List<Item>>(emptyList())
     val itemListFlow = privateItemList.asStateFlow()
 

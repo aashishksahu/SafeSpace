@@ -73,13 +73,16 @@ class MediaActivity : AppCompatActivity() {
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = viewModel.mediaList.size
-        override fun createFragment(position: Int): Fragment =
-            MediaFragment(
+        override fun createFragment(position: Int): Fragment {
+            viewModel.setMediaPath(
                 viewModel.ops.joinPath(
                     viewModel.ops.getInternalPath(),
                     viewModel.mediaList[position].name
                 )
             )
+            return MediaFragment()
+        }
+
 
     }
 }

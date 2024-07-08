@@ -47,7 +47,7 @@ import org.privacymatters.safespace.document.TextDocumentView
 import org.privacymatters.safespace.experimental.main.ActionBarType
 import org.privacymatters.safespace.experimental.main.Item
 import org.privacymatters.safespace.experimental.main.MainnActivity
-import org.privacymatters.safespace.media.MediaActivity
+import org.privacymatters.safespace.experimental.media.MediaActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 import java.io.File

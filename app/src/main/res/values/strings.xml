@@ -136,6 +136,7 @@
     <string name="migration_headline">Change Log</string>
     <string name="migration_content">Added option to see crash logs, please share those with me if you find any issues. They are in settings -> logs.</string>
     <string name="logs">Logs</string>
+    <string name="title_activity_media">MediaActivity</string>
 
 
 </resources>

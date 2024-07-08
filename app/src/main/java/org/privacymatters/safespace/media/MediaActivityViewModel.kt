@@ -14,6 +14,7 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     private var fileSortBy = Constants.NAME
     private var fileSortOrder = Constants.ASC
     var ops = DataManager
+    private lateinit var mediaPath: String
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
@@ -60,6 +61,11 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     fun setPosition(pos: Int) {
 //        ops.positionHistory.intValue = ops.itemStateList.indexOf(mediaList[pos])
         ops.positionHistory.intValue = ops.itemListFlow.value.indexOf(mediaList[pos])
+    }
+
+    fun getMediaPath(): String = mediaPath
+    fun setMediaPath(path: String) {
+        mediaPath = path
     }
 
 }
