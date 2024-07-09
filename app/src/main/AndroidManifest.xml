@@ -23,11 +23,6 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
-            android:name=".experimental.media.MediaActivity"
-            android:exported="false"
-            android:label="@string/title_activity_media"
-            android:theme="@style/Theme.SafeSpace" />
-        <activity
             android:name=".LogActivity"
             android:exported="false"
             android:theme="@style/Theme.SafeSpace" />
@@ -42,6 +37,7 @@
             android:theme="@style/Theme.SafeSpace" />
         <activity
             android:name=".media.MediaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
             android:name=".camera.CameraActivity"

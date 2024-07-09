@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -16,11 +15,10 @@ import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 
-class MediaFragment : Fragment() {
+class MediaFragment(private val mediaPath: String) : Fragment() {
 
     private lateinit var photoView: PhotoView
     private lateinit var playerView: PlayerView
-    private val viewModel: MediaActivityViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,37 +44,37 @@ class MediaFragment : Fragment() {
         photoView = view.findViewById(R.id.imageView)
         playerView = view.findViewById(R.id.video_view)
 
-        playMedia(viewModel.getMediaPath())
+        playMedia(mediaPath)
 
         return view
     }
 
-    private fun playMedia(path: String) {
-        when (Utils.getFileType(path)) {
-            Constants.IMAGE_TYPE -> setToPhotoView(path, photoView, playerView)
+    private fun playMedia(mediaPath: String) {
+        when (Utils.getFileType(mediaPath)) {
+            Constants.IMAGE_TYPE -> setToPhotoView(mediaPath, photoView, playerView)
 
             Constants.VIDEO_TYPE,
-            Constants.AUDIO_TYPE -> setToPlayerView(path, photoView, playerView)
+            Constants.AUDIO_TYPE -> setToPlayerView(mediaPath, photoView, playerView)
         }
     }
 
-    private fun setToPhotoView(path: String, photoView: PhotoView, playerView: PlayerView) {
+    private fun setToPhotoView(mediaPath: String, photoView: PhotoView, playerView: PlayerView) {
         photoView.visibility = View.VISIBLE
         playerView.visibility = View.GONE
 
-        Glide.with(requireContext()).load(path).into(photoView)
+        Glide.with(requireContext()).load(mediaPath).into(photoView)
     }
 
-    private fun setToPlayerView(path: String, photoView: PhotoView, playerView: PlayerView) {
+    private fun setToPlayerView(mediaPath: String, photoView: PhotoView, playerView: PlayerView) {
         photoView.visibility = View.GONE
         playerView.visibility = View.VISIBLE
 
-        initializePlayer(path)
+        initializePlayer(mediaPath)
     }
 
     override fun onResume() {
         super.onResume()
-        playMedia(viewModel.getMediaPath())
+        playMedia(mediaPath)
     }
 
     override fun onStop() {

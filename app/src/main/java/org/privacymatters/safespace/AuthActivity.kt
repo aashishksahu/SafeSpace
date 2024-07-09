@@ -15,7 +15,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.experimental.main.MainnActivity
-import org.privacymatters.safespace.experimental.media.MediaActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.RootCheck
@@ -72,11 +71,6 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-
-        // Todo: Experimental - remove before release build
-        val intent = Intent(applicationContext, MainnActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
 
         authTouch = findViewById(R.id.fingerprint)
         pinField = findViewById(R.id.editTextPassword)
