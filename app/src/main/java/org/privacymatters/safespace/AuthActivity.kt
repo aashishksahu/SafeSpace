@@ -1,11 +1,13 @@
 package org.privacymatters.safespace
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -48,6 +50,7 @@ class AuthActivity : AppCompatActivity() {
     private var attemptCount = 0
     private lateinit var loginBlockMsg: TextView
     private lateinit var loginBlockTimer: TextView
+    private lateinit var okBtn: Button
     private var loginBlockedTime: Long = Constants.DEF_NUM_FLAG
 
 
@@ -79,6 +82,8 @@ class AuthActivity : AppCompatActivity() {
         loginBlockTimer = findViewById(R.id.loginBlockTimer)
         loginBlockedTime =
             sharedPref.getLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
+
+        okBtn = findViewById(R.id.okBtn)
 
         // check if user is blocked from login
         val isLoginUnlocked = checkLoginUnlocked() // returns a pair(is blocked?, for how long)
@@ -121,6 +126,15 @@ class AuthActivity : AppCompatActivity() {
             }
 
         }
+
+        okBtn.setOnClickListener {
+            if (!isHardPinSet) {
+                setUpHardPin()
+            } else {
+                authenticateUsingHardPin()
+            }
+        }
+
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
@@ -140,6 +154,7 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun authenticateUsingHardPin() {
         if (pinField.text.toString() == EncPref.getString(
                 Constants.HARD_PIN,
@@ -219,6 +234,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun blockLogin(blockDuration: Long) {
         setLoginBlockMsg()
+        okBtn.isEnabled = false
 
         biometricPossible = false
 
@@ -227,6 +243,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun unlockLogin() {
         removeLoginBlockMsg()
+        okBtn.isEnabled = true
         sharedPref.edit()
             .putLong(Constants.TIME_TO_UNLOCK_DURATION, Constants.DEF_NUM_FLAG)
             .putLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
@@ -269,6 +286,7 @@ class AuthActivity : AppCompatActivity() {
                 loginBlockTimer.text = remainingTime
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onFinish() {
                 unlockLogin()
                 loginBlockTimer.text = ""
@@ -283,12 +301,14 @@ class AuthActivity : AppCompatActivity() {
         authTouch.isEnabled = false
     }
 
+    @SuppressLint("SetTextI18n")
     private fun removeLoginBlockMsg() {
         loginBlockMsg.text = ""
         pinField.isEnabled = true
         authTouch.isEnabled = true
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUpHardPin() {
 
         pinField.hint = getString(R.string.set_pin_text)
