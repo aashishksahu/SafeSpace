@@ -51,6 +51,7 @@ class BottomAppBar(private val activity: MainnActivity) {
     //Todo: Make bottom app bar fixed width, reduce the gap
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
+    private val renameShowDialog = mutableStateOf(false)
     private var name: String = ""
 
     @Composable
@@ -62,8 +63,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
+                    elevation = 3.dp, shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
@@ -79,8 +79,7 @@ class BottomAppBar(private val activity: MainnActivity) {
             ) {
 
                 Button(
-                    onClick = { openCamera() },
-                    contentPadding = PaddingValues(5.dp)
+                    onClick = { openCamera() }, contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,14 +91,14 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.open_camera),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                     }
                 }
 
                 Button(
-                    onClick = { importFiles() },
-                    contentPadding = PaddingValues(5.dp)
+                    onClick = { importFiles() }, contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +110,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.import_files),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                     }
                 }
@@ -132,22 +132,18 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.create_folder),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                         if (showDialog.value) {
                             Prompt(
-                                onDismiss = {
-                                    name = ""
-                                    createFolderShowDialog.value = false
-                                },
                                 onConfirmation = {
                                     if (name.isNotEmpty()) {
                                         try {
                                             activity.viewModel.createFolder(name)
                                         } catch (e: Exception) {
                                             activity.viewModel.exportToLog(
-                                                "@BottomAppBar.NormalActionBar()",
-                                                e
+                                                "@BottomAppBar.NormalActionBar()", e
                                             )
                                             showMessage(activity.getString(R.string.create_folder_invalid_error))
                                         }
@@ -155,7 +151,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                                         createFolderShowDialog.value = false
                                     }
                                 },
-                                dialogTitle = activity.getString(R.string.create_folder)
+                                onDismiss = {
+                                    name = ""
+                                    createFolderShowDialog.value = false
+                                },
+                                dialogTitle = activity.getString(R.string.create_folder),
+                                okBtnText = activity.getString(R.string.create)
                             )
                         }
                     }
@@ -177,26 +178,20 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.create_txt_menu),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                         if (showDialog.value) {
                             Prompt(
-                                onDismiss = {
-                                    name = ""
-                                    createNoteShowDialog.value = false
-                                },
                                 onConfirmation = {
                                     if (name.isNotEmpty()) {
                                         val noteFile = activity.viewModel.createTextNote(name)
-                                        val documentViewIntent =
-                                            Intent(
-                                                activity.application,
-                                                TextDocumentView::class.java
-                                            )
+                                        val documentViewIntent = Intent(
+                                            activity.application, TextDocumentView::class.java
+                                        )
 
                                         documentViewIntent.putExtra(
-                                            Constants.INTENT_KEY_PATH,
-                                            noteFile.canonicalPath
+                                            Constants.INTENT_KEY_PATH, noteFile.canonicalPath
                                         )
 
                                         name = ""
@@ -205,7 +200,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                                         activity.startActivity(documentViewIntent)
                                     }
                                 },
-                                dialogTitle = activity.getString(R.string.create_txt_menu)
+                                onDismiss = {
+                                    name = ""
+                                    createNoteShowDialog.value = false
+                                },
+                                dialogTitle = activity.getString(R.string.create_txt_menu),
+                                okBtnText = activity.getString(R.string.create)
                             )
                         }
                     }
@@ -216,6 +216,9 @@ class BottomAppBar(private val activity: MainnActivity) {
 
     @Composable
     fun LongPressActionBar() {
+        val selectedFileCount = remember { activity.viewModel.selectedFileCount }
+        val selectedFolderCount = remember { activity.viewModel.selectedFolderCount }
+
         BottomAppBar(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -223,8 +226,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
+                    elevation = 3.dp, shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
 
@@ -239,14 +241,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                 var displayDeleteConfirmation by remember { mutableStateOf(false) }
 
                 Button(
-                    onClick = { displayDeleteConfirmation = true },
-                    colors = ButtonColors(
+                    onClick = { displayDeleteConfirmation = true }, colors = ButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = Color.Red,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    contentPadding = PaddingValues(5.dp)
+                    ), contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -260,8 +260,59 @@ class BottomAppBar(private val activity: MainnActivity) {
                             )
                         Text(
                             text = activity.getString(R.string.context_menu_delete),
-                            color = Color.Red
+                            color = Color.Red,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
+                    }
+                }
+
+
+                if (selectedFileCount.intValue + selectedFolderCount.intValue <= 1) {
+                    Button(
+                        onClick = {
+                            renameShowDialog.value = true
+                        }, colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        ), contentPadding = PaddingValues(5.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            val showDialog = remember { renameShowDialog }
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.drive_file_rename_outline_32dp_5f6368),
+                                contentDescription = activity.getString(R.string.context_menu_rename),
+                            )
+                            Text(
+                                text = activity.getString(R.string.context_menu_rename),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.padding(start = 2.dp, end = 2.dp)
+                            )
+                            if (showDialog.value) {
+                                Prompt(
+                                    onConfirmation = {
+                                        if (name.isNotEmpty()) {
+
+                                            if (!activity.viewModel.renameFile(name)) {
+                                                showMessage(activity.getString(R.string.generic_error))
+                                            }
+                                            name = ""
+                                            renameShowDialog.value = false
+                                        }
+                                    },
+                                    onDismiss = {
+                                        name = ""
+                                        renameShowDialog.value = false
+                                    },
+                                    dialogTitle = activity.getString(R.string.context_menu_rename),
+                                    okBtnText = activity.getString(R.string.context_menu_rename)
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -269,14 +320,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                     onClick = {
                         activity.viewModel.setFromPath()
                         activity.viewModel.appBarType.value = ActionBarType.MOVE
-                    },
-                    colors = ButtonColors(
+                    }, colors = ButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    contentPadding = PaddingValues(5.dp)
+                    ), contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -288,10 +337,12 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.context_menu_move),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                     }
                 }
+
                 Button(
                     onClick = {
                         activity.viewModel.setFromPath()
@@ -301,8 +352,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    contentPadding = PaddingValues(5.dp)
+                    ), contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -314,26 +364,24 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.context_menu_copy),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                     }
                 }
                 Button(
                     onClick = {
                         exportFiles()
-                    },
-                    colors = ButtonColors(
+                    }, colors = ButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary,
                         disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    contentPadding = PaddingValues(5.dp)
+                    ), contentPadding = PaddingValues(5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
-//                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.file_download_black_24dp),
@@ -341,48 +389,38 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         Text(
                             text = activity.getString(R.string.multi_export),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(start = 2.dp, end = 2.dp)
                         )
                     }
                 }
 
                 if (displayDeleteConfirmation) {
-                    AlertDialog(
-                        icon = {
-                            Icon(
-                                Icons.Filled.Warning,
-                                contentDescription = activity.getString(R.string.context_menu_delete)
-                            )
-                        },
-                        title = {
-                            Text(text = activity.getString(R.string.context_menu_delete))
-                        },
-                        text = {
-                            Text(text = activity.getString(R.string.delete_confirmation))
-                        },
-                        onDismissRequest = {
-                            displayDeleteConfirmation = false
-                        },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    activity.viewModel.deleteItems()
-                                    activity.viewModel.appBarType.value = ActionBarType.NORMAL
-                                }
-                            ) {
-                                Text(activity.getString(R.string.context_menu_delete))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    displayDeleteConfirmation = false
-                                }
-                            ) {
-                                Text(activity.getString(R.string.cancel))
-                            }
+                    AlertDialog(icon = {
+                        Icon(
+                            Icons.Filled.Warning,
+                            contentDescription = activity.getString(R.string.context_menu_delete)
+                        )
+                    }, title = {
+                        Text(text = activity.getString(R.string.context_menu_delete))
+                    }, text = {
+                        Text(text = activity.getString(R.string.delete_confirmation))
+                    }, onDismissRequest = {
+                        displayDeleteConfirmation = false
+                    }, confirmButton = {
+                        TextButton(onClick = {
+                            activity.viewModel.deleteItems()
+                            activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                        }) {
+                            Text(activity.getString(R.string.context_menu_delete))
                         }
-                    )
+                    }, dismissButton = {
+                        TextButton(onClick = {
+                            displayDeleteConfirmation = false
+                        }) {
+                            Text(activity.getString(R.string.cancel))
+                        }
+                    })
                 }
             }
         }
@@ -397,23 +435,19 @@ class BottomAppBar(private val activity: MainnActivity) {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
+                    elevation = 3.dp, shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                OutlinedButton(
-                    onClick = {
-                        activity.viewModel.clearSelection()
-                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
-                    }
-                ) {
+                OutlinedButton(onClick = {
+                    activity.viewModel.clearSelection()
+                    activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                }) {
                     Text(
                         text = activity.getString(R.string.cancel),
                         color = MaterialTheme.colorScheme.onSecondary
@@ -450,23 +484,19 @@ class BottomAppBar(private val activity: MainnActivity) {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp)
+                    elevation = 3.dp, shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.background)
 
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                OutlinedButton(
-                    onClick = {
-                        activity.viewModel.clearSelection()
-                        activity.viewModel.appBarType.value = ActionBarType.NORMAL
-                    }
-                ) {
+                OutlinedButton(onClick = {
+                    activity.viewModel.clearSelection()
+                    activity.viewModel.appBarType.value = ActionBarType.NORMAL
+                }) {
                     Text(
                         text = activity.getString(R.string.cancel),
                         color = MaterialTheme.colorScheme.onSecondary
@@ -495,66 +525,58 @@ class BottomAppBar(private val activity: MainnActivity) {
 
     @Composable
     fun Prompt(
-        onConfirmation: () -> Unit,
-        onDismiss: () -> Unit,
-        dialogTitle: String
+        onConfirmation: () -> Unit, onDismiss: () -> Unit, dialogTitle: String, okBtnText: String
     ) {
         val textFieldContent = remember { mutableStateOf(TextFieldValue(name)) }
         val isValid = remember { mutableStateOf(true) }
         val namePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
 
-        AlertDialog(
-            title = {
-                Text(text = dialogTitle)
-            },
-            text = {
+        AlertDialog(title = {
+            Text(text = dialogTitle)
+        }, text = {
 
-                OutlinedTextField(
-                    label = { Text(activity.getString(R.string.name)) },
-                    value = textFieldContent.value,
-                    onValueChange = {
-                        textFieldContent.value = it
-                        if (namePattern.containsMatchIn(textFieldContent.value.text)) {
-                            isValid.value = false
-                        } else {
-                            isValid.value = true
-                            name = textFieldContent.value.text
-                        }
-                    },
-                    isError = !isValid.value,
-                    supportingText = {
-                        if (!isValid.value) {
-                            Text(
-                                text = activity.getString(R.string.create_folder_invalid_error),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (!isValid.value)
-                            Icon(
-                                Icons.Filled.Warning,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                    },
-                )
-            },
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(text = activity.getString(R.string.cancel))
-                }
-                textFieldContent.value = TextFieldValue("")
-            },
-            onDismissRequest = {
-                onDismiss()
-                textFieldContent.value = TextFieldValue("")
-            },
-            confirmButton = {
-                TextButton(onClick = { onConfirmation() }) {
-                    Text(text = activity.getString(R.string.create))
-                }
-            })
+            OutlinedTextField(
+                label = { Text(activity.getString(R.string.name)) },
+                value = textFieldContent.value,
+                onValueChange = {
+                    textFieldContent.value = it
+                    if (namePattern.containsMatchIn(textFieldContent.value.text)) {
+                        isValid.value = false
+                    } else {
+                        isValid.value = true
+                        name = textFieldContent.value.text
+                    }
+                },
+                isError = !isValid.value,
+                supportingText = {
+                    if (!isValid.value) {
+                        Text(
+                            text = activity.getString(R.string.create_folder_invalid_error),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                trailingIcon = {
+                    if (!isValid.value) Icon(
+                        Icons.Filled.Warning,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+            )
+        }, dismissButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text(text = activity.getString(R.string.cancel))
+            }
+            textFieldContent.value = TextFieldValue("")
+        }, onDismissRequest = {
+            onDismiss()
+            textFieldContent.value = TextFieldValue("")
+        }, confirmButton = {
+            TextButton(onClick = { onConfirmation() }) {
+                Text(text = okBtnText)
+            }
+        })
     }
 
     private fun openCamera() {

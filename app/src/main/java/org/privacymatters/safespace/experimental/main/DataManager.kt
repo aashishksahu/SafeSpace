@@ -41,8 +41,6 @@ object DataManager {
     var internalPath: ArrayList<String> = arrayListOf(Constants.ROOT)
     private lateinit var application: Application
 
-//    val itemStateList = mutableStateListOf<Item>()
-
     private val privateItemList = MutableStateFlow<List<Item>>(emptyList())
     val itemListFlow = privateItemList.asStateFlow()
 
@@ -339,7 +337,11 @@ object DataManager {
             )
 
         } catch (exception: Exception) {
-            Utils.exportToLog(application, "@ DataManager.copyFileWithProgressNotification() ", exception)
+            Utils.exportToLog(
+                application,
+                "@ DataManager.copyFileWithProgressNotification() ",
+                exception
+            )
             exception.printStackTrace()
             fileTransferNotification.showFailureNotification(sourceFileName, exception)
         }
@@ -578,6 +580,31 @@ object DataManager {
         }
 
         return FileOpCode.SUCCESS
+    }
+
+    fun renameFile(item: Item, newName: String): Boolean {
+
+        try {
+            val absolutePath = joinPath(getInternalPath(), File.separator)
+
+            val absoluteFilePathOld = File(absolutePath + item.name)
+
+            val newNameWithExt = if (item.isDir) {
+                newName
+            } else {
+                "$newName.${item.name.substringAfterLast('.')}"
+            }
+
+            val absoluteFilePathNew = File(absolutePath + newNameWithExt)
+
+            absoluteFilePathOld.renameTo(absoluteFilePathNew)
+
+        } catch (e: Exception) {
+            Utils.exportToLog(application, "@DataManager.renameFile()", e)
+            return false
+        }
+
+        return true
     }
 
     /*

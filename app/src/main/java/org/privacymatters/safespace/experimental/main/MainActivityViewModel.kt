@@ -138,7 +138,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
                 }
             }
         } catch (e: Exception) {
-            Utils.exportToLog(application,"@DataManager.moveToDestination()", e)
+            Utils.exportToLog(application, "@DataManager.moveToDestination()", e)
             status = FileOpCode.FAIL
         } finally {
             getItems()
@@ -196,7 +196,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
             sourceFileStream?.close()
             targetFileStream?.close()
         } catch (e: Exception) {
-            Utils.exportToLog(application,"@DataManager.copyToDestination()", e)
+            Utils.exportToLog(application, "@DataManager.copyToDestination()", e)
             status = FileOpCode.FAIL
         } finally {
             transferList.clear()
@@ -340,9 +340,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         transferList.removeIf { it.id == item?.id }
 
         if (ops.itemListFlow.value.all { !it.isSelected }) {
-            appBarType.value = ActionBarType.NORMAL
-            selectedFileCount.intValue = 0
-            selectedFolderCount.intValue = 0
+            clearSelection()
         }
     }
 
@@ -350,7 +348,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun clearSelection() {
         selectedFileCount.intValue = 0
         selectedFolderCount.intValue = 0
-
+        appBarType.value = ActionBarType.NORMAL
         transferList.clear()
 
         ops.clearSelection()
@@ -387,6 +385,18 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     }
 
     fun exportToLog(msg: String, e: Exception) {
-        Utils.exportToLog(application,msg, e)
+        Utils.exportToLog(application, msg, e)
+    }
+
+    fun renameFile(newName: String): Boolean {
+
+        val item = ops.itemListFlow.value.find { it.isSelected }
+
+        if (item != null && ops.renameFile(item, newName)) {
+            clearSelection()
+            getItems()
+            return true
+        }
+        return false
     }
 }

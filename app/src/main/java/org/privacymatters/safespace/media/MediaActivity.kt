@@ -48,10 +48,8 @@ class MediaActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
-        val position = viewModel.currentPosition
-
         viewPager.post {
-            viewPager.setCurrentItem(position, false)
+            viewPager.setCurrentItem(viewModel.currentPosition, false)
         }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -73,13 +71,15 @@ class MediaActivity : AppCompatActivity() {
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = viewModel.mediaList.size
-        override fun createFragment(position: Int): Fragment =
-            MediaFragment(
+        override fun createFragment(position: Int): Fragment {
+
+            return MediaFragment(
                 viewModel.ops.joinPath(
                     viewModel.ops.getInternalPath(),
                     viewModel.mediaList[position].name
                 )
             )
+        }
 
     }
 }

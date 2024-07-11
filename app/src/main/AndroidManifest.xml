@@ -37,6 +37,7 @@
             android:theme="@style/Theme.SafeSpace" />
         <activity
             android:name=".media.MediaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
             android:name=".camera.CameraActivity"

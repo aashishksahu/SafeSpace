@@ -6,8 +6,8 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import org.privacymatters.safespace.experimental.main.DataManager
 import org.privacymatters.safespace.experimental.main.Item
-import org.privacymatters.safespace.utils.Utils
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 
 class MediaActivityViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,12 +33,10 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun getItems() {
-//        if (ops.itemStateList.isEmpty()) {
         if (ops.itemListFlow.value.isEmpty()) {
             ops.getSortedItems(fileSortBy, fileSortOrder)
         }
 
-//        mediaList = ops.itemStateList
         mediaList = ops.itemListFlow.value
             .filter { item ->
                 Utils.getFileType(item.name) in listOf(
@@ -48,17 +46,11 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
                 )
             }
 
-//        currentPosition = mediaList.indexOf(ops.itemStateList.find { ops.openedItem == it })
         currentPosition = mediaList.indexOf(ops.itemListFlow.value.find { ops.openedItem == it })
-
-//        itemList.forEachIndexed { _, mediaItem ->
-//            mediaList.add(ops.joinPath(ops.getInternalPath(), mediaItem.name))
-//        }
 
     }
 
     fun setPosition(pos: Int) {
-//        ops.positionHistory.intValue = ops.itemStateList.indexOf(mediaList[pos])
         ops.positionHistory.intValue = ops.itemListFlow.value.indexOf(mediaList[pos])
     }
 
