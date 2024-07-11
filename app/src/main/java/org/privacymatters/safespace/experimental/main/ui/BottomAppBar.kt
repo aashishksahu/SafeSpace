@@ -267,7 +267,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                 }
 
 
-                if (!(selectedFileCount.intValue > 1 || selectedFolderCount.intValue > 1)) {
+                if (selectedFileCount.intValue + selectedFolderCount.intValue <= 1) {
                     Button(
                         onClick = {
                             renameShowDialog.value = true
