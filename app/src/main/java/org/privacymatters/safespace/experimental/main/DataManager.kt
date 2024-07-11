@@ -589,7 +589,13 @@ object DataManager {
 
             val absoluteFilePathOld = File(absolutePath + item.name)
 
-            val absoluteFilePathNew = File(absolutePath + newName)
+            val newNameWithExt = if (item.isDir) {
+                newName
+            } else {
+                "$newName.${item.name.substringAfterLast('.')}"
+            }
+
+            val absoluteFilePathNew = File(absolutePath + newNameWithExt)
 
             absoluteFilePathOld.renameTo(absoluteFilePathNew)
 
