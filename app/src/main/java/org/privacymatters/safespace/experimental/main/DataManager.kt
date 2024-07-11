@@ -337,7 +337,11 @@ object DataManager {
             )
 
         } catch (exception: Exception) {
-            Utils.exportToLog(application, "@ DataManager.copyFileWithProgressNotification() ", exception)
+            Utils.exportToLog(
+                application,
+                "@ DataManager.copyFileWithProgressNotification() ",
+                exception
+            )
             exception.printStackTrace()
             fileTransferNotification.showFailureNotification(sourceFileName, exception)
         }
@@ -576,6 +580,25 @@ object DataManager {
         }
 
         return FileOpCode.SUCCESS
+    }
+
+    fun renameFile(item: Item, newName: String): Boolean {
+
+        try {
+            val absolutePath = joinPath(getInternalPath(), File.separator)
+
+            val absoluteFilePathOld = File(absolutePath + item.name)
+
+            val absoluteFilePathNew = File(absolutePath + newName)
+
+            absoluteFilePathOld.renameTo(absoluteFilePathNew)
+
+        } catch (e: Exception) {
+            Utils.exportToLog(application, "@DataManager.renameFile()", e)
+            return false
+        }
+
+        return true
     }
 
     /*
