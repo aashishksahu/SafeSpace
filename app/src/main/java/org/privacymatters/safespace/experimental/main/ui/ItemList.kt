@@ -145,7 +145,7 @@ class ItemList(private val activity: MainnActivity) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = item.size,
+                            text = Utils.getSize(item.size),
                             color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                         )
 
@@ -164,7 +164,7 @@ class ItemList(private val activity: MainnActivity) {
                         )
                     }
                     Text(
-                        text = item.lastModified,
+                        text = Utils.convertLongToDate(item.lastModified),
                         color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
                     )
                 }
