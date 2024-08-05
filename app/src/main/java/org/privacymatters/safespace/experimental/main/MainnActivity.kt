@@ -15,31 +15,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.depracated.lib.Reload
 import org.privacymatters.safespace.experimental.main.ui.BottomAppBar
 import org.privacymatters.safespace.experimental.main.ui.ItemList
 import org.privacymatters.safespace.experimental.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.experimental.main.ui.TopAppBar
-import org.privacymatters.safespace.depracated.lib.Reload
 
 class MainnActivity : AppCompatActivity() {
 
@@ -146,9 +138,9 @@ class MainnActivity : AppCompatActivity() {
             ) { innerPadding ->
                 val lazyListDisplay = ItemList(this)
                 // migrate data from root folder to avoid issues with user created root folder inside
-                if (!viewModel.isMigrationComplete()) {
-                    ShowChangeLog()
-                }
+//                if (!viewModel.isMigrationComplete()) {
+//                    ShowChangeLog()
+//                }
 
                 Column(
                     modifier = Modifier
@@ -211,40 +203,40 @@ class MainnActivity : AppCompatActivity() {
         }
     }
 
-    @Composable
-    private fun ShowChangeLog() {
-        var migrationMsg by remember { mutableStateOf(true) }
-        if (migrationMsg) {
-            AlertDialog(
-                icon = {
-                    Icon(
-                        Icons.Filled.Favorite,
-                        contentDescription = getString(R.string.migration_headline)
-                    )
-                },
-                title = {
-                    Text(text = getString(R.string.migration_headline))
-                },
-                text = {
-                    Text(text = getString(R.string.migration_content))
-                },
-                onDismissRequest = {
-                    migrationMsg = false
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            viewModel.migrateFromRoot()
-                            migrationMsg = false
-                        }
-                    ) {
-                        Text(getString(R.string.ok))
-                    }
-                }
-            )
-
-        }
-    }
+//    @Composable
+//    private fun ShowChangeLog() {
+//        var migrationMsg by remember { mutableStateOf(true) }
+//        if (migrationMsg) {
+//            AlertDialog(
+//                icon = {
+//                    Icon(
+//                        Icons.Filled.Favorite,
+//                        contentDescription = getString(R.string.migration_headline)
+//                    )
+//                },
+//                title = {
+//                    Text(text = getString(R.string.migration_headline))
+//                },
+//                text = {
+//                    Text(text = getString(R.string.migration_content))
+//                },
+//                onDismissRequest = {
+//                    migrationMsg = false
+//                },
+//                confirmButton = {
+//                    TextButton(
+//                        onClick = {
+//                            viewModel.migrateFromRoot()
+//                            migrationMsg = false
+//                        }
+//                    ) {
+//                        Text(getString(R.string.ok))
+//                    }
+//                }
+//            )
+//
+//        }
+//    }
 }
 
 
