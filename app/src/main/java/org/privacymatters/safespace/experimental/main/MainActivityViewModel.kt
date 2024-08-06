@@ -380,9 +380,9 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         }
     }
 
-    fun isMigrationComplete(): Boolean {
-        return sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
-    }
+//    fun isMigrationComplete(): Boolean {
+//        return sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
+//    }
 
     fun exportToLog(msg: String, e: Exception) {
         Utils.exportToLog(application, msg, e)

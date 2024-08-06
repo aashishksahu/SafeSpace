@@ -109,10 +109,10 @@ object DataManager {
                     Item(
                         id = UUID.randomUUID(),
                         name = content.name,
-                        size = Utils.getSize(content.length()),
+                        size = content.length(),
                         isDir = content.isDirectory,
                         itemCount = fileCount,
-                        lastModified = Utils.convertLongToDate(content.lastModified()),
+                        lastModified = content.lastModified(),
                         isSelected = false
                     )
                 )
@@ -133,7 +133,7 @@ object DataManager {
                 // name, date or size
                 tempItemList = when (sortBy) {
                     Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenByDescending { it.size })
+                        .thenBy { it.size })
 
                     Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenBy { it.lastModified })
@@ -149,10 +149,10 @@ object DataManager {
                 // name, date or size
                 tempItemList = when (sortBy) {
                     Constants.SIZE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenBy { it.size })
+                        .thenByDescending { it.size })
 
                     Constants.DATE -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
-                        .thenBy { it.lastModified })
+                        .thenByDescending { it.lastModified })
 
                     else -> tempItemList.sortedWith(compareByDescending<Item> { it.isDir }
                         .thenComparing { o1, o2 ->
@@ -164,9 +164,6 @@ object DataManager {
         }
 
         privateItemList.value = tempItemList
-
-//        itemStateList.clear()
-//        itemStateList.addAll(tempItemList)
     }
 
     @Throws(SecurityException::class)
