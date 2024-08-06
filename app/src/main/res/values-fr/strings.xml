@@ -7,7 +7,7 @@
     <string name="export_backup">Exporter la sauvegarde Zip</string>
     <string name="change_theme">Change le thème</string>
     <string name="dark_theme_text">Sombre</string>
-    <string name="light_theme_text">Lumineux</string>
+    <string name="light_theme_text">Clair</string>
     <string name="amoled_theme_text">Amoled sombre</string>
     <string name="export_backup_msg">Exportation d\'une archive zip en arrière-plan, les fichiers volumineux prendront du temps..</string>
     <string name="export_backup_success">Exportation terminée</string>
