@@ -69,6 +69,12 @@ class AuthActivity : AppCompatActivity() {
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
+        // for debug builds only, REMOVE BEFORE RELEASE BUILD
+//        val intent = Intent(applicationContext, MainnActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//        startActivity(intent)
+//        finish()
+
         // check if app pin is set
         isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
 

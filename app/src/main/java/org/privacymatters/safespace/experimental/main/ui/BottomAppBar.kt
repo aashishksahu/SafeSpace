@@ -48,7 +48,7 @@ import org.privacymatters.safespace.experimental.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
 class BottomAppBar(private val activity: MainnActivity) {
-    //Todo: Make bottom app bar fixed width, reduce the gap
+
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private val renameShowDialog = mutableStateOf(false)
