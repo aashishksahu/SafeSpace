@@ -21,6 +21,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -412,21 +413,34 @@ object DataManager {
 
     @Throws(SecurityException::class)
     fun importBackup(backupUri: Uri): Any {
+        val uniqueNotificationId = backupUri.toString().hashCode()
+        val fileTransferNotification =
+            FileTransferNotification(application.applicationContext, uniqueNotificationId)
+        val notificationTag = "Backup"
 
         try {
-
             // byte array of source file
             val sourceFileStream = application.contentResolver.openInputStream(backupUri)
+                ?: throw IOException("Failed to open input stream")
 
-            val zis = ZipInputStream(sourceFileStream)
+            val zis = ZipInputStream(sourceFileStream.buffered())
 
             var zipEntry = zis.nextEntry
+            var totalEntryCount = 1 // to avoid division by zero error
+            var entryCount = 0
 
             while (zipEntry != null) {
                 val newFile = File(getFilesDir(), zipEntry.name)
-
                 // https://support.google.com/faqs/answer/9294009
                 val canonicalPath = newFile.canonicalPath
+
+                // Get total entry count from metadata.txt
+                if (zipEntry.name == Constants.BACKUP_METADATA) {
+                    val metadata = zis.readBytes().toString(StandardCharsets.UTF_8).split("\n")
+                    totalEntryCount = metadata[0].substringAfter("=").toInt()
+                    zipEntry = zis.nextEntry
+                    continue
+                }
 
                 if (!canonicalPath.startsWith(getFilesDir())) {
                     throw SecurityException()
@@ -445,24 +459,37 @@ object DataManager {
                         }
 
                         // write file content
-                        val fos = FileOutputStream(newFile)
-
-                        zis.copyTo(fos)
-
-                        fos.close()
+                        FileOutputStream(newFile).use { fos ->
+                            zis.copyTo(fos)
+                        }
                     }
                 }
+
+                entryCount++
+                val progress = (entryCount * 100 / totalEntryCount)
+                fileTransferNotification.showProgressNotification(
+                    notificationTag, progress.coerceAtMost(100),
+                    FileTransferNotification.NotificationType.Import
+                )
+
                 zipEntry = zis.nextEntry
             }
 
             zis.closeEntry()
             zis.close()
-            sourceFileStream?.close()
+            sourceFileStream.close()
 
+            fileTransferNotification.showSuccessNotification(
+                notificationTag,
+                FileTransferNotification.NotificationType.Import,
+                true
+            )
+            return FileOpCode.SUCCESS
 
         } catch (e: IOException) {
             Utils.exportToLog(application, "@ DataManager.importBackup() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+            fileTransferNotification.showFailureNotification(notificationTag, e)
             return if (e.message.toString().lowercase().contains("no space left")) {
                 FileOpCode.NO_SPACE
             } else {
@@ -471,19 +498,20 @@ object DataManager {
         } catch (e: SecurityException) {
             Utils.exportToLog(application, "@ DataManager.importBackup() ", e)
             Log.e(Constants.TAG_ERROR, "@DataManager.importBackup() ", e)
+            fileTransferNotification.showFailureNotification(notificationTag, e)
             return FileOpCode.FAIL
         }
-
-        return FileOpCode.SUCCESS
     }
 
     fun exportBackup(exportUri: Uri): Any {
+        val notificationTag = "Backup"
+        val backupName = "SafeSpace-" + SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
+            .format(System.currentTimeMillis()) + ".zip"
+        val uniqueNotificationId = backupName.hashCode()
+        val fileTransferNotification =
+            FileTransferNotification(application.applicationContext, uniqueNotificationId)
 
         try {
-            val backupName =
-                "SafeSpace-" + SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
-                    .format(System.currentTimeMillis()) + ".zip"
-
             val directory = DocumentFile.fromTreeUri(application, exportUri)
             val file = directory!!.createFile("application/zip", backupName)
             val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
@@ -491,32 +519,66 @@ object DataManager {
             val inputDirectory = File(getFilesDir() + Constants.ROOT)
 
             ZipOutputStream(BufferedOutputStream(FileOutputStream(pfd!!.fileDescriptor))).use { zos ->
+                var totalFiles = 0
+                var processedFiles = 0
 
+                // Count total files
+                inputDirectory.walkTopDown().forEach { if (it.isFile) totalFiles++ }
+
+                /*
+                 * Add a metadata.txt file to the ZIP archive
+                 * This file will contain the total number of files in the backup and the time of backup.
+                 *
+                 * Due to the nature of ZipInputStream, it is not possible to count the total number
+                 * of entries in the ZIP file without reading through each entry. Once we've read the
+                 * entries to count them, we cannot read them again for extraction.
+                 *
+                 * To work around this, we first write the metadata to the ZIP file, then write the
+                 * actual files. This allows us to have the total number of files available for progress
+                 * notifications during the backup import.
+                 */
+                val metadataEntry = ZipEntry(Constants.BACKUP_METADATA)
+                zos.putNextEntry(metadataEntry)
+                zos.write("totalFiles=$totalFiles".toByteArray())
+                zos.write("\n".toByteArray())
+                zos.write("backupTime=${System.currentTimeMillis()}".toByteArray())
+                zos.closeEntry()
+
+                // Write files to zip
                 inputDirectory.walkTopDown().forEach { file ->
-                    val zipFileName = Constants.ROOT +
-                            file.absolutePath.removePrefix(inputDirectory.absolutePath)
-
+                    val zipFileName =
+                        Constants.ROOT + file.absolutePath.removePrefix(inputDirectory.absolutePath)
                     val entry = ZipEntry("$zipFileName${(if (file.isDirectory) "/" else "")}")
-
                     zos.putNextEntry(entry)
 
                     if (file.isFile) {
                         file.inputStream().use { fis -> fis.copyTo(zos) }
+                        processedFiles++
+                        val progress = (processedFiles * 100 / totalFiles)
+                        fileTransferNotification.showProgressNotification(
+                            notificationTag, progress,
+                            FileTransferNotification.NotificationType.Export
+                        )
                     }
                 }
-
             }
             pfd.close()
 
+            fileTransferNotification.showSuccessNotification(
+                notificationTag,
+                FileTransferNotification.NotificationType.Export,
+                isBackupFile = true
+            )
+            return FileOpCode.SUCCESS
         } catch (e: IOException) {
             Utils.exportToLog(application, "@ DataManager.exportBackup() ", e)
+            fileTransferNotification.showFailureNotification(notificationTag, e)
             return if (e.message.toString().lowercase().contains("no space left")) {
                 FileOpCode.NO_SPACE
             } else {
                 FileOpCode.FAIL
             }
         }
-        return FileOpCode.SUCCESS
     }
 
     fun selectItem(id: UUID) = privateItemList.update {

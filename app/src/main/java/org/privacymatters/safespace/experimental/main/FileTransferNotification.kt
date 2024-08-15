@@ -61,7 +61,7 @@ class FileTransferNotification(private val context: Context, private val notific
      * @param fileName Name of the file copied
      * @param type Type of notification
      */
-    fun showSuccessNotification(fileName: String, type: NotificationType) {
+    fun showSuccessNotification(fileName: String, type: NotificationType, isBackupFile: Boolean = false) {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
@@ -73,8 +73,10 @@ class FileTransferNotification(private val context: Context, private val notific
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val (icon, title) = when (type) {
-            NotificationType.Export -> Pair(android.R.drawable.stat_sys_upload, "File exported successfully!")
-            NotificationType.Import -> Pair(android.R.drawable.stat_sys_download, "File imported successfully!")
+            NotificationType.Export -> android.R.drawable.stat_sys_upload to
+                    if (isBackupFile) "Backup file created successfully!" else "File exported successfully!"
+            NotificationType.Import -> android.R.drawable.stat_sys_download to
+                    if (isBackupFile) "Backup file imported successfully!" else "File imported successfully!"
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
