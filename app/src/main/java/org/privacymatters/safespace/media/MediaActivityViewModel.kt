@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
-import org.privacymatters.safespace.experimental.main.DataManager
-import org.privacymatters.safespace.experimental.main.Item
+import org.privacymatters.safespace.main.DataManager
+import org.privacymatters.safespace.main.Item
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 

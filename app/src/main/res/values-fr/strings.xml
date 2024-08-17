@@ -85,17 +85,9 @@
     <string name="auth_stuck">Verrouillez et déverrouillez votre écran si vous êtes bloqué ici.</string>
 
     <string name="about_text">À propos</string>
-    <string name="about_title" translatable="false">Espace sécurisé</string>
     <string name="about_sub_title1">Un espace sûr pour tous vos contenus numériques importants.</string>
     <string name="about_sub_title2">Utilise un stockage spécifique à l\'application pour stocker des fichiers. Ces fichiers sont cryptés et ne sont pas visibles par d\'autres applications et ne sont pas accessibles lorsque le téléphone est verrouillé.</string>
     <string name="about_foss">Bibliothèques et ressources utilisées :</string>
-
-    <string name="glide" translatable="false">Glisser</string>
-    <string name="androidx" translatable="false">AndroidX</string>
-    <string name="camerax" translatable="false">CameraX</string>
-    <string name="photoview" translatable="false">PhotoView par Chris banes</string>
-    <string name="exo" translatable="false">Exo player</string>
-    <string name="material" translatable="false">Google Material 3</string>
 
     <string name="root_check_title">Contrôle Root</string>
     <string name="root_check_subtitle">Il n\'est pas recommandé d\'utiliser cette application sur un téléphone rooté. L\'application va maintenant se fermer.</string>

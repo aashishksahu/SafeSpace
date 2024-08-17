@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.settings
+package org.privacymatters.safespace.settings
 
 import android.os.Bundle
 import android.view.ViewGroup.MarginLayoutParams
@@ -9,7 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.depracated.lib.Reload
+import org.privacymatters.safespace.utils.Reload
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

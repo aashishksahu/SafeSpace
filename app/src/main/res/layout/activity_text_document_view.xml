@@ -28,23 +28,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mode">
 
-        <EditText
-            android:id="@+id/textView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:autofillHints=""
-            android:background="?attr/background"
-            android:fontFamily="monospace"
-            android:gravity="start|top"
-            android:hint="@string/textAreaHint"
-            android:inputType="textMultiLine"
-            android:padding="10sp"
-            android:scrollbars="vertical"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:autofillHints=""
+                android:background="?attr/background"
+                android:fontFamily="monospace"
+                android:gravity="start|top"
+                android:hint="@string/textAreaHint"
+                android:inputType="textMultiLine"
+                android:padding="10sp"
+                android:scrollbars="vertical"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="60dp" />
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <ImageButton
@@ -55,9 +65,9 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:clickable="true"
+        android:src="@drawable/keyboard_arrow_down_32dp_e8eaed_fill0_wght400_grad0_opsz40"
         app:backgroundTint="?attr/colorPrimary"
         app:fabSize="mini"
-        android:src="@drawable/keyboard_arrow_down_32dp_e8eaed_fill0_wght400_grad0_opsz40"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="?attr/colorOnPrimary" />

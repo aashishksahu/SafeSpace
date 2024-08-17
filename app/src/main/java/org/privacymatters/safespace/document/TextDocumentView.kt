@@ -15,8 +15,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.depracated.lib.Reload
-import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.utils.Reload
+import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.utils.Utils
@@ -160,7 +160,7 @@ class TextDocumentView : AppCompatActivity() {
 
         try {
             if (contentToSave?.isNotEmpty() == true && file != null) {
-                file.writeText(contentToSave+"\n\n\n")
+                file.writeText(contentToSave)
             }
 
         } catch (e: Exception) {

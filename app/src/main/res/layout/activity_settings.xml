@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".experimental.settings.SettingsActivity">
+    tools:context=".settings.SettingsActivity">
 
     <TextView
         android:id="@+id/settings_title"
@@ -21,7 +21,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_container"
-        android:name="org.privacymatters.safespace.experimental.settings.SettingsFragment"
+        android:name="org.privacymatters.safespace.settings.SettingsFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="30sp"

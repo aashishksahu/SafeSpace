@@ -17,7 +17,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.RootCheck
@@ -73,9 +73,7 @@ class AuthActivity : AppCompatActivity() {
         // for debug builds only, REMOVE BEFORE RELEASE BUILD
 //        val intent = Intent(applicationContext, MainnActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-//        enableEdgeToEdge()
-//        startActivity(intent)
-//        finish()
+//        enableEdgeToEdged
 
         // check if app pin is set
         isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)

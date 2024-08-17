@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import org.privacymatters.safespace.experimental.main.ui.SafeSpaceTheme
+import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
 import java.io.File
