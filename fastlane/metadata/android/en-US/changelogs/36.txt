@@ -1,0 +1,3 @@
+* Fixed an issue with text editor where saved file showed 0KB in the list
+* Improvements to Notifications
+* Other bug fixes and improvements
