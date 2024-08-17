@@ -4,16 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.depracated.lib.Reload
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+
+        val app_title = findViewById<TextView>(R.id.app_title)
+
+        ViewCompat.setOnApplyWindowInsetsListener(app_title) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateLayoutParams<MarginLayoutParams> {
+                topMargin = insets.top
+            }
+
+            WindowInsetsCompat.CONSUMED
+        }
 
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
@@ -29,17 +47,9 @@ class AboutActivity : AppCompatActivity() {
     inner class LibRVAdapter : RecyclerView.Adapter<LibRVAdapter.ViewHolder>() {
 
         inner class LibrariesUsed(
-            name: String,
-            link: String
-        ) {
-            var name: String
+            var name: String,
             var link: String
-
-            init {
-                this.name = name
-                this.link = link
-            }
-        }
+        )
 
         private val librariesUsedList: ArrayList<LibrariesUsed> = arrayListOf(
             LibrariesUsed(
