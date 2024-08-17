@@ -118,4 +118,12 @@
     <string name="migration_headline">更改日志</string>
     <string name="migration_content">添加了查看崩溃日志的选项，如果您发现任何问题，请与我分享。它们位于设置 -> 日志中</string>
     <string name="logs">日志</string>
+    <string name="notif_export">导出中</string>
+    <string name="notif_import">导入中</string>
+    <string name="notif_imp_bckp_success">备份文件导入成功！</string>
+    <string name="notif_exp_bckp_success">备份文件创建成功！</string>
+    <string name="notif_imp_file_success">文件导入成功！</string>
+    <string name="notif_exp_file_success">文件导出成功！</string>
+    <string name="notif_exp_file_caption_s">已成功复制</string>
+    <string name="notif_exp_file_caption_e">复制失败</string>
 </resources>

@@ -18,15 +18,11 @@
     <string name="open_camera">Camera</string>
     <string name="photo">Photo</string>
     <string name="video">Vidéo</string>
-    <string name="q1080p" translatable="false">1080p</string>
-    <string name="q720p" translatable="false">720p</string>
-    <string name="q480p" translatable="false">480p</string>
     <string name="video_quality">Qualité vidéo</string>
     <string name="switch_camera">Changer de caméra</string>
     <string name="flash_toggle">Flash</string>
     <string name="start_capture">Commencer la capture</string>
     <string name="video_error">Erreur interne, impossible d\'enregistrer la vidéo</string>
-    <string name="video_timer" translatable="false">00:00</string>
     <string name="permission_denied">Demande d\'autorisation refusée</string>
     <string name="import_files_error">Certains fichiers n\'ont pas été importés, veuillez réessayer</string>
     <string name="create_folder_invalid_error">Seuls les lettres et les chiffres sont autorisés </string>
@@ -127,6 +123,14 @@
     <string name="migration_headline">Journal des modifications</string>
     <string name="migration_content">Ajout d\'une option pour voir les journaux de plantage, veuillez les partager avec moi si vous rencontrez des problèmes. Ils se trouvent dans les paramètres -> journaux.</string>
     <string name="logs">Journaux</string>
+    <string name="notif_export">Exportation</string>
+    <string name="notif_import">Importation</string>
+    <string name="notif_imp_bckp_success">Le fichier de sauvegarde a été importé avec succès !</string>
+    <string name="notif_exp_bckp_success">Le fichier de sauvegarde a été créé avec succès !</string>
+    <string name="notif_imp_file_success">Le fichier a été importé avec succès !</string>
+    <string name="notif_exp_file_success">Le fichier a été exporté avec succès !</string>
+    <string name="notif_exp_file_caption_s">A été copié avec succès</string>
+    <string name="notif_exp_file_caption_e">Échec de la copie</string>
 
 
 </resources>
