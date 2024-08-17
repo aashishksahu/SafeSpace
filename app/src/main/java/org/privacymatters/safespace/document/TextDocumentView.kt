@@ -2,14 +2,17 @@ package org.privacymatters.safespace.document
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.depracated.lib.Reload
@@ -46,6 +49,7 @@ class TextDocumentView : AppCompatActivity() {
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
 
@@ -55,9 +59,36 @@ class TextDocumentView : AppCompatActivity() {
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
 
+        val mode = findViewById<TextView>(R.id.mode)
         scrollView = findViewById(R.id.scrollView2)
         scrollTo = findViewById(R.id.scrollTo)
         textFileContentView = findViewById(R.id.textView)
+
+        ViewCompat.setOnApplyWindowInsetsListener(mode) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateLayoutParams<MarginLayoutParams> {
+                topMargin = insets.top + 10
+            }
+
+            WindowInsetsCompat.CONSUMED
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollTo) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateLayoutParams<MarginLayoutParams> {
+                leftMargin = insets.left
+                bottomMargin = insets.bottom + 10
+                rightMargin = insets.right + 10
+            }
+
+            WindowInsetsCompat.CONSUMED
+        }
+
+        textFileContentView.addTextChangedListener {
+            saveFile(textFileContentView.text.toString(), file)
+        }
 
         scrollView.setOnScrollChangeListener(({ _, _, y, _, oldY ->
             if ((y - oldY) >= 0) { // going down
@@ -80,7 +111,6 @@ class TextDocumentView : AppCompatActivity() {
 
         val content = StringBuilder()
 
-        val mode = findViewById<TextView>(R.id.mode)
         mode.text = file.name
 
         try {
@@ -126,28 +156,15 @@ class TextDocumentView : AppCompatActivity() {
         textFileContentView.setText(content.toString())
     }
 
-    override fun onStop() {
-        super.onStop()
-        saveFile(textFileContentView.text.toString(), file)
-    }
-
     private fun saveFile(contentToSave: String?, file: File?) {
 
         try {
             if (contentToSave?.isNotEmpty() == true && file != null) {
-                file.writeText(contentToSave)
+                file.writeText(contentToSave+"\n\n\n")
             }
 
         } catch (e: Exception) {
-
             Utils.exportToLog(application, "@TextDocumentView.saveFile()", e)
-
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.save_error),
-                Toast.LENGTH_LONG
-            ).show()
-            Log.e(Constants.TAG_ERROR, "@TextDocumentView.saveFile ", e)
         }
     }
 

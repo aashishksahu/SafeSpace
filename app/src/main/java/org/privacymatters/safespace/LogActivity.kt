@@ -3,10 +3,13 @@ package org.privacymatters.safespace
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +35,7 @@ class LogActivity : ComponentActivity() {
     private val content = StringBuilder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val logsFolder = File(application.filesDir.canonicalPath + File.separator + "logs")
@@ -57,36 +61,38 @@ class LogActivity : ComponentActivity() {
 
         setContent {
             SafeSpaceTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        IconButton(
+                Box(Modifier.safeDrawingPadding()) {
+                    Scaffold(modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            IconButton(
 
-                            onClick = {
-                                Utils.clearLogs(application)
-                            }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
-                                contentDescription = getString(R.string.context_menu_delete),
-                                tint = MaterialTheme.colorScheme.primary
+                                onClick = {
+                                    Utils.clearLogs(application)
+                                }) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.delete_white_36dp),
+                                    contentDescription = getString(R.string.context_menu_delete),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }) { innerPadding ->
+                        SelectionContainer {
+                            Text(
+                                text = content.toString(),
+                                modifier = Modifier
+                                    .padding(
+                                        PaddingValues(
+                                            top = innerPadding.calculateTopPadding(),
+                                            bottom = innerPadding.calculateBottomPadding(),
+                                            start = 5.dp,
+                                            end = 5.dp
+                                        )
+                                    )
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                                    .horizontalScroll(rememberScrollState())
                             )
                         }
-                    }) { innerPadding ->
-                    SelectionContainer {
-                        Text(
-                            text = content.toString(),
-                            modifier = Modifier
-                                .padding(
-                                    PaddingValues(
-                                        top = innerPadding.calculateTopPadding(),
-                                        bottom = innerPadding.calculateBottomPadding(),
-                                        start = 5.dp,
-                                        end = 5.dp
-                                    )
-                                )
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState())
-                                .horizontalScroll(rememberScrollState())
-                        )
                     }
                 }
             }

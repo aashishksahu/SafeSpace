@@ -7,14 +7,17 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
@@ -67,8 +70,12 @@ class MainnActivity : AppCompatActivity() {
             }
         }
 
+        enableEdgeToEdge()
+
         setContent {
+
             MainActivity()
+
         }
 
         // back button - system navigation
@@ -125,21 +132,23 @@ class MainnActivity : AppCompatActivity() {
 
                     AnimatedContent(appBarState, label = "") { target ->
 
-                        when (target) {
-                            ActionBarType.NORMAL -> {
-                                bottomAppBar.NormalActionBar()
-                            }
+                        Box(Modifier.safeDrawingPadding()) {
+                            when (target) {
+                                ActionBarType.NORMAL -> {
+                                    bottomAppBar.NormalActionBar()
+                                }
 
-                            ActionBarType.LONG_PRESS -> {
-                                bottomAppBar.LongPressActionBar()
-                            }
+                                ActionBarType.LONG_PRESS -> {
+                                    bottomAppBar.LongPressActionBar()
+                                }
 
-                            ActionBarType.MOVE -> {
-                                bottomAppBar.MoveActionBar()
-                            }
+                                ActionBarType.MOVE -> {
+                                    bottomAppBar.MoveActionBar()
+                                }
 
-                            ActionBarType.COPY -> {
-                                bottomAppBar.CopyActionBar()
+                                ActionBarType.COPY -> {
+                                    bottomAppBar.CopyActionBar()
+                                }
                             }
                         }
                     }
