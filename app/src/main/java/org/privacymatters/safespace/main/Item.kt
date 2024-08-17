@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main
+package org.privacymatters.safespace.main
 
 import java.util.UUID
 

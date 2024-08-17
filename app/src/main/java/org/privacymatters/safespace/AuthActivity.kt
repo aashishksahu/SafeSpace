@@ -11,12 +11,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.RootCheck
@@ -69,9 +70,15 @@ class AuthActivity : AppCompatActivity() {
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
+        // for debug builds only, REMOVE BEFORE RELEASE BUILD
+//        val intent = Intent(applicationContext, MainnActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//        enableEdgeToEdged
+
         // check if app pin is set
         isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
 
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 

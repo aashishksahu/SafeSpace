@@ -123,4 +123,12 @@
     <string name="migration_headline">Registro de cambios</string>
     <string name="migration_content">Se agregó la opción de ver los registros de fallas. Compártelos conmigo si encuentras algún problema. Están en configuración -> registros.</string>
     <string name="logs">Registros</string>
+    <string name="notif_export">Exportando</string>
+    <string name="notif_import">Importando</string>
+    <string name="notif_imp_bckp_success">¡Archivo de respaldo importado exitosamente!</string>
+    <string name="notif_exp_bckp_success">¡Archivo de respaldo creado exitosamente!</string>
+    <string name="notif_imp_file_success">¡Archivo importado exitosamente!</string>
+    <string name="notif_exp_file_success">¡Archivo exportado exitosamente!</string>
+    <string name="notif_exp_file_caption_s">Fue copiado exitosamente</string>
+    <string name="notif_exp_file_caption_e">Falló al copiar</string>
 </resources>

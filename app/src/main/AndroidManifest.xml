@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".experimental.main.AppNotification"
+        android:name="org.privacymatters.safespace.main.AppNotification"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
@@ -27,12 +27,12 @@
             android:exported="false"
             android:theme="@style/Theme.SafeSpace" />
         <activity
-            android:name=".experimental.settings.SettingsActivity"
+            android:name="org.privacymatters.safespace.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.SafeSpace" />
         <activity
-            android:name=".experimental.main.MainnActivity"
+            android:name="org.privacymatters.safespace.main.MainnActivity"
             android:exported="false"
             android:theme="@style/Theme.SafeSpace" />
         <activity

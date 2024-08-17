@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main.ui
+package org.privacymatters.safespace.main.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -45,9 +45,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.experimental.main.ActionBarType
-import org.privacymatters.safespace.experimental.main.MainnActivity
-import org.privacymatters.safespace.experimental.settings.SettingsActivity
+import org.privacymatters.safespace.main.ActionBarType
+import org.privacymatters.safespace.main.MainnActivity
+import org.privacymatters.safespace.settings.SettingsActivity
 import org.privacymatters.safespace.utils.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)

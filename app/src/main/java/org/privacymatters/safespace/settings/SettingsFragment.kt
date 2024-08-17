@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.settings
+package org.privacymatters.safespace.settings
 
 import android.content.Context
 import android.content.Intent
@@ -21,8 +21,8 @@ import org.privacymatters.safespace.AboutActivity
 import org.privacymatters.safespace.AuthActivity
 import org.privacymatters.safespace.LogActivity
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.experimental.main.DataManager
-import org.privacymatters.safespace.experimental.main.FileOpCode
+import org.privacymatters.safespace.main.DataManager
+import org.privacymatters.safespace.main.FileOpCode
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.SetTheme

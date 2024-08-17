@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main.ui
+package org.privacymatters.safespace.main.ui
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -42,13 +42,13 @@ import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.camera.CameraActivity
 import org.privacymatters.safespace.document.TextDocumentView
-import org.privacymatters.safespace.experimental.main.ActionBarType
-import org.privacymatters.safespace.experimental.main.FileOpCode
-import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.main.ActionBarType
+import org.privacymatters.safespace.main.FileOpCode
+import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 
 class BottomAppBar(private val activity: MainnActivity) {
-    //Todo: Make bottom app bar fixed width, reduce the gap
+
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private val renameShowDialog = mutableStateOf(false)

@@ -30,8 +30,8 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.depracated.lib.Reload
-import org.privacymatters.safespace.experimental.main.DataManager
+import org.privacymatters.safespace.utils.Reload
+import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 import java.io.File

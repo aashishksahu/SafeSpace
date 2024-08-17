@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main
+package org.privacymatters.safespace.main
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

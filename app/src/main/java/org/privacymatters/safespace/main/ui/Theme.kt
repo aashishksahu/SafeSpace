@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main.ui
+package org.privacymatters.safespace.main.ui
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

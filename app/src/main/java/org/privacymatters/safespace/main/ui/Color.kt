@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main.ui
+package org.privacymatters.safespace.main.ui
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF35618E)

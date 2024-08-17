@@ -1,4 +1,4 @@
-package org.privacymatters.safespace.experimental.main.ui
+package org.privacymatters.safespace.main.ui
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,9 +44,9 @@ import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.document.PDFView
 import org.privacymatters.safespace.document.TextDocumentView
-import org.privacymatters.safespace.experimental.main.ActionBarType
-import org.privacymatters.safespace.experimental.main.Item
-import org.privacymatters.safespace.experimental.main.MainnActivity
+import org.privacymatters.safespace.main.ActionBarType
+import org.privacymatters.safespace.main.Item
+import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.media.MediaActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils

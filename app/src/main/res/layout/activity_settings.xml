@@ -5,10 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".experimental.settings.SettingsActivity">
+    tools:context=".settings.SettingsActivity">
 
     <TextView
-        android:id="@+id/app_title"
+        android:id="@+id/settings_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20sp"
@@ -21,14 +21,14 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_container"
-        android:name="org.privacymatters.safespace.experimental.settings.SettingsFragment"
+        android:name="org.privacymatters.safespace.settings.SettingsFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_title" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_title" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

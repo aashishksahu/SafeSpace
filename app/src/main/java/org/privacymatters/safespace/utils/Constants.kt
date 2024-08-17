@@ -31,6 +31,7 @@ class Constants {
         const val XML = "xml"
         const val ZIP = "zip"
         const val BIN = "BIN"
+        const val BACKUP_METADATA = "metadata.txt"
 
 //        const val ROOT = "root"
         const val ROOT = "zfx2a4i6wm"
