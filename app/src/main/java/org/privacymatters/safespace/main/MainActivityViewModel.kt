@@ -246,6 +246,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
                     ops.deleteFile(item)
                 }
             }
+            clearSelection()
             getItems()
         }
     }
