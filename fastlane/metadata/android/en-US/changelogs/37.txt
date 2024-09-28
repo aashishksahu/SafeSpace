@@ -1,0 +1,2 @@
+* Fixed an issue where files were created with special characters
+* fixed selection counter

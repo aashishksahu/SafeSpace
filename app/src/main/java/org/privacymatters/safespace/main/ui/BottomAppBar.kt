@@ -52,6 +52,7 @@ class BottomAppBar(private val activity: MainnActivity) {
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private val renameShowDialog = mutableStateOf(false)
+    private val namePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private var name: String = ""
 
     @Composable
@@ -137,8 +138,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         if (showDialog.value) {
                             Prompt(
-                                onConfirmation = {
-                                    if (name.isNotEmpty()) {
+                                onConfirmation = { isValid ->
+                                    if (name.isNotEmpty() && isValid) {
                                         try {
                                             activity.viewModel.createFolder(name)
                                         } catch (e: Exception) {
@@ -183,8 +184,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                         )
                         if (showDialog.value) {
                             Prompt(
-                                onConfirmation = {
-                                    if (name.isNotEmpty()) {
+                                onConfirmation = { isValid ->
+                                    if (name.isNotEmpty() && isValid) {
                                         val noteFile = activity.viewModel.createTextNote(name)
                                         val documentViewIntent = Intent(
                                             activity.application, TextDocumentView::class.java
@@ -294,8 +295,8 @@ class BottomAppBar(private val activity: MainnActivity) {
                             )
                             if (showDialog.value) {
                                 Prompt(
-                                    onConfirmation = {
-                                        if (name.isNotEmpty()) {
+                                    onConfirmation = { isValid ->
+                                        if (name.isNotEmpty() && isValid) {
 
                                             if (!activity.viewModel.renameFile(name)) {
                                                 showMessage(activity.getString(R.string.generic_error))
@@ -525,11 +526,13 @@ class BottomAppBar(private val activity: MainnActivity) {
 
     @Composable
     fun Prompt(
-        onConfirmation: () -> Unit, onDismiss: () -> Unit, dialogTitle: String, okBtnText: String
+        onConfirmation: (Boolean) -> Unit,
+        onDismiss: () -> Unit,
+        dialogTitle: String,
+        okBtnText: String
     ) {
         val textFieldContent = remember { mutableStateOf(TextFieldValue(name)) }
         val isValid = remember { mutableStateOf(true) }
-        val namePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
 
         AlertDialog(title = {
             Text(text = dialogTitle)
@@ -573,7 +576,7 @@ class BottomAppBar(private val activity: MainnActivity) {
             onDismiss()
             textFieldContent.value = TextFieldValue("")
         }, confirmButton = {
-            TextButton(onClick = { onConfirmation() }) {
+            TextButton(onClick = { onConfirmation(isValid.value) }) {
                 Text(text = okBtnText)
             }
         })
