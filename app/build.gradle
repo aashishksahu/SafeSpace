@@ -52,7 +52,7 @@ android {
     }
     signingConfigs {
         getByName("debug") {
-            storeFile file("../testkey.keystore")
+            storeFile file("testkey.keystore")
             storePassword "testkey"
             keyAlias "testkey"
             keyPassword "testkey"
