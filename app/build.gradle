@@ -51,11 +51,13 @@ android {
         }
     }
     signingConfigs {
-        getByName("debug") {
-            storeFile file("testkey.keystore")
-            storePassword "testkey"
-            keyAlias "testkey"
-            keyPassword "testkey"
+        if System.getenv("GITHUB_ACTIONS") == "true" {
+            getByName("debug") {
+               storeFile file("testkey.keystore")
+               storePassword "testkey"
+               keyAlias "testkey"
+               keyPassword "testkey"
+           }
         }
     }
 }
