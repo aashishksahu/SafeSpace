@@ -1,10 +1,10 @@
-name: App Debug
+name: Android CI
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - .github/workflows/debugCompile.yml
+      - .github/workflows/android.yml
       - app/**
       - build.gradle.kts
       - gradle.properties
@@ -13,7 +13,7 @@ on:
       - settings.gradle.kts
   pull_request:
     paths:
-      - .github/workflows/debugCompile.yml
+      - .github/workflows/android.yml
       - app/**
       - build.gradle.kts
       - gradle.properties
