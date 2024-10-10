@@ -5,4 +5,8 @@
         <item name="android:background">?attr/cardBackgroundColor</item>
     </style>
 
+    <style name="Theme.SafeSpace.SwitchPreferenceCompat" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/preference_material_switch</item>
+    </style>
+
 </resources>
