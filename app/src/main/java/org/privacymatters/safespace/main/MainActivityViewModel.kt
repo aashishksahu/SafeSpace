@@ -94,7 +94,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun returnToPreviousLocation() {
         if (ops.internalPath.last() != Constants.ROOT) {
-            ops.internalPath.removeLast()
+            ops.internalPath.removeAt(ops.internalPath.lastIndex)
         }
     }
 
@@ -282,7 +282,6 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
 
             val data: Intent? = result.data
-
             //If multiple files selected
             if (data?.clipData != null) {
                 val count = data.clipData?.itemCount ?: 0
