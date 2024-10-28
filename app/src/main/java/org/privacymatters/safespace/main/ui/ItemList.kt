@@ -99,7 +99,7 @@ class ItemList(private val activity: MainnActivity) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(top = 5.dp)
+//                .padding(10.dp)
                 .combinedClickable(
                     onClick = {
                         openItem(item)
@@ -114,9 +114,9 @@ class ItemList(private val activity: MainnActivity) {
         ) {
             GlideImage(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(84.dp)
                     .padding(10.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.primary),
                 model = File(activity.viewModel.getIconPath(item.name)).canonicalPath,
                 contentDescription = activity.getString(R.string.file_icon_description),
@@ -126,14 +126,14 @@ class ItemList(private val activity: MainnActivity) {
             )
             Column(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(end=10.dp, top = 10.dp, bottom = 10.dp)
             ) {
                 val (name, ext) = Utils.getFileNameAndExtension(item.name)
 
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )
@@ -143,6 +143,10 @@ class ItemList(private val activity: MainnActivity) {
                         .fillMaxWidth()
                         .padding(top = 10.dp)
                 ) {
+                        Text(
+                            text = Utils.convertLongToDate(item.lastModified),
+                            color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
+                        )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = Utils.getSize(item.size),
@@ -163,10 +167,6 @@ class ItemList(private val activity: MainnActivity) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Text(
-                        text = Utils.convertLongToDate(item.lastModified),
-                        color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground,
-                    )
                 }
             }
         }
@@ -179,7 +179,7 @@ class ItemList(private val activity: MainnActivity) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(top = 5.dp)
+//                .padding(10.dp)
                 .combinedClickable(
                     onClick = {
                         openItem(item)
@@ -194,21 +194,22 @@ class ItemList(private val activity: MainnActivity) {
         ) {
             Image(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(84.dp)
                     .padding(10.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.primary),
                 painter = painterResource(R.drawable.folder_36dp),
                 contentDescription = activity.getString(R.string.file_folder_placeholder)
             )
             Column(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(end=10.dp, top = 10.dp, bottom = 10.dp)
             ) {
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = if (item.isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onBackground
                 )

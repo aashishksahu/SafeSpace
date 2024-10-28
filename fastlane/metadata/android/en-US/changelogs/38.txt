@@ -1,0 +1,1 @@
+Minor UI changes and bug fixes
