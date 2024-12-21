@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class MediaActivity : AppCompatActivity() {
@@ -23,6 +24,8 @@ class MediaActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
+
+        LockTimer.stop()
 
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
@@ -81,6 +84,16 @@ class MediaActivity : AppCompatActivity() {
             )
         }
 
+    }
+
+    override fun onResume() {
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
     }
 }
 

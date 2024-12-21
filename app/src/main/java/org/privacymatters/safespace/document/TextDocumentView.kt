@@ -18,6 +18,7 @@ import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
@@ -44,14 +45,15 @@ class TextDocumentView : AppCompatActivity() {
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         SetTheme.setTheme(
-            delegate,
-            applicationContext,
+            delegate, applicationContext,
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
+
+        LockTimer.stop()
 
         ops.ready(application)
 
@@ -168,5 +170,14 @@ class TextDocumentView : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
+    }
 
 }

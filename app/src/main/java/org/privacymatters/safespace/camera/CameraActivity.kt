@@ -33,6 +33,7 @@ import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.text.SimpleDateFormat
@@ -111,6 +112,8 @@ class CameraActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+
+        LockTimer.stop()
 
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
         window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.black)
@@ -536,6 +539,16 @@ class CameraActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    override fun onResume() {
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
     }
 }
 

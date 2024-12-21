@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
 import java.io.File
@@ -37,6 +38,8 @@ class LogActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        LockTimer.stop()
 
         val logsFolder = File(application.filesDir.canonicalPath + File.separator + "logs")
         val logFile = File(logsFolder.canonicalPath + File.separator + "safe_space_log.txt")
@@ -97,5 +100,15 @@ class LogActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
     }
 }

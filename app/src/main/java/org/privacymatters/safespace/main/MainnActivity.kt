@@ -38,11 +38,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.ui.BottomAppBar
 import org.privacymatters.safespace.main.ui.ItemList
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.main.ui.TopAppBar
+import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
+import java.util.concurrent.locks.Lock
 
 class MainnActivity : AppCompatActivity() {
 
@@ -72,6 +74,8 @@ class MainnActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
 
+        LockTimer.stop()
+
         setContent {
 
             MainActivity()
@@ -91,14 +95,6 @@ class MainnActivity : AppCompatActivity() {
             }
         })
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (Reload.value) {
-            viewModel.getItems()
-            Reload.value = false
-        }
     }
 
     @Composable
@@ -254,6 +250,22 @@ class MainnActivity : AppCompatActivity() {
             )
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        LockTimer.checkLock(this)
+
+        if (Reload.value) {
+            viewModel.getItems()
+            Reload.value = false
+        }
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
     }
 }
 

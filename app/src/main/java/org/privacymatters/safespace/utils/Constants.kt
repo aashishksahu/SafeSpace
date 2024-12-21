@@ -3,6 +3,7 @@ package org.privacymatters.safespace.utils
 class Constants {
     companion object {
 
+        const val BACK_ACTION = "backAction"
         const val NEXT_LINE = "________________________\n"
         const val MIGRATION_COMPLETE = "root_migration"
         const val TAG_ERROR = "org.privacymatters.safespace:E"
@@ -33,7 +34,7 @@ class Constants {
         const val BIN = "BIN"
         const val BACKUP_METADATA = "metadata.txt"
 
-//        const val ROOT = "root"
+        //        const val ROOT = "root"
         const val ROOT = "zfx2a4i6wm"
         const val APP_FIRST_RUN = "FIRST_RUN"
         const val USE_BIOMETRIC = "USE_BIOMETRIC"

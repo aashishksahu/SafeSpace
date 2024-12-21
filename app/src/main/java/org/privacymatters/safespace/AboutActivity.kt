@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class AboutActivity : AppCompatActivity() {
@@ -20,6 +21,8 @@ class AboutActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+
+        LockTimer.stop()
 
         val app_title = findViewById<TextView>(R.id.app_title)
 
@@ -97,5 +100,15 @@ class AboutActivity : AppCompatActivity() {
             holder.name.text = libItem.name
             holder.link.text = libItem.link
         }
+    }
+
+    override fun onResume() {
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.start()
+        super.onPause()
     }
 }
