@@ -22,11 +22,9 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
-        LockTimer.stop()
+        val appTitle = findViewById<TextView>(R.id.app_title)
 
-        val app_title = findViewById<TextView>(R.id.app_title)
-
-        ViewCompat.setOnApplyWindowInsetsListener(app_title) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(appTitle) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             v.updateLayoutParams<MarginLayoutParams> {
@@ -103,12 +101,12 @@ class AboutActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        LockTimer.checkLock(this)
+        LockTimer.stop()
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start()
+        LockTimer.start(this)
         super.onPause()
     }
 }

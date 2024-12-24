@@ -113,8 +113,6 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        LockTimer.stop()
-
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
         window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.black)
 
@@ -542,12 +540,11 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start()
+        LockTimer.start(this)
         super.onPause()
     }
 }

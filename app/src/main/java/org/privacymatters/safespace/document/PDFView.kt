@@ -94,12 +94,11 @@ class PDFView : AppCompatActivity() {
     }
 
     override fun onResume() {
-        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start()
+        LockTimer.start(this)
         super.onPause()
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -44,7 +45,6 @@ import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.main.ui.TopAppBar
 import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
-import java.util.concurrent.locks.Lock
 
 class MainnActivity : AppCompatActivity() {
 
@@ -73,8 +73,6 @@ class MainnActivity : AppCompatActivity() {
         }
 
         enableEdgeToEdge()
-
-        LockTimer.stop()
 
         setContent {
 
@@ -255,7 +253,8 @@ class MainnActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        LockTimer.checkLock(this)
+        LockTimer.stop()
+        LockTimer.start(this)
 
         if (Reload.value) {
             viewModel.getItems()
@@ -263,9 +262,16 @@ class MainnActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        LockTimer.start()
-        super.onPause()
+    override fun onStop() {
+        LockTimer.stop()
+        LockTimer.start(this)
+        super.onStop()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        LockTimer.stop()
+        LockTimer.start(this)
+        return super.onTouchEvent(event)
     }
 }
 

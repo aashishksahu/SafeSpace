@@ -22,8 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
 
-        LockTimer.stop()
-
         val settingsTitle = findViewById<TextView>(R.id.settings_title)
 
         ViewCompat.setOnApplyWindowInsetsListener(settingsTitle) { v, windowInsets ->
@@ -44,12 +42,14 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        LockTimer.checkLock(this)
+        LockTimer.stop()
+        LockTimer.start(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start()
+        LockTimer.stop()
+        LockTimer.start(this)
         super.onPause()
     }
 }
