@@ -25,7 +25,6 @@ import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
 import java.util.concurrent.Executor
-import java.util.concurrent.locks.Lock
 
 
 /*
