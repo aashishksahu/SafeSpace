@@ -35,11 +35,9 @@ class Constants {
 
         //        const val ROOT = "root"
         const val ROOT = "zfx2a4i6wm"
-        const val APP_FIRST_RUN = "FIRST_RUN"
         const val USE_BIOMETRIC = "USE_BIOMETRIC"
         const val USE_BIOMETRIC_BCKP = "USE_BIOMETRIC_BCKP"
 
-        const val FILE_EXIST = "FILE_EXIST"
 
         const val CAMERA_SELECTOR = "CAMERA_SELECTOR"
         const val DEFAULT_FRONT_CAMERA = "DEFAULT_FRONT_CAMERA"
