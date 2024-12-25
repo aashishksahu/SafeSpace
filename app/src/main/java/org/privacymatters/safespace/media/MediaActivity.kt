@@ -1,6 +1,7 @@
 package org.privacymatters.safespace.media
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class MediaActivity : AppCompatActivity() {
@@ -22,6 +24,10 @@ class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_media)
 
         // This switch ensures that only switching from activities of this app, the item list
@@ -81,6 +87,18 @@ class MediaActivity : AppCompatActivity() {
             )
         }
 
+    }
+
+    override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.stop()
+        LockTimer.start()
+        super.onPause()
     }
 }
 

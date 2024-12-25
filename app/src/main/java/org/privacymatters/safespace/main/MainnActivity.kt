@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -38,11 +39,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.ui.BottomAppBar
 import org.privacymatters.safespace.main.ui.ItemList
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.main.ui.TopAppBar
+import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
 
 class MainnActivity : AppCompatActivity() {
 
@@ -59,6 +61,10 @@ class MainnActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         registerFilePickerListener()
         selectExportDirActivityResult()
@@ -91,14 +97,6 @@ class MainnActivity : AppCompatActivity() {
             }
         })
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (Reload.value) {
-            viewModel.getItems()
-            Reload.value = false
-        }
     }
 
     @Composable
@@ -254,6 +252,24 @@ class MainnActivity : AppCompatActivity() {
             )
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        LockTimer.stop()
+        LockTimer.checkLock(this)
+
+        if (Reload.value) {
+            viewModel.getItems()
+            Reload.value = false
+        }
+    }
+
+    override fun onPause() {
+        LockTimer.stop()
+        LockTimer.start()
+        super.onPause()
     }
 }
 

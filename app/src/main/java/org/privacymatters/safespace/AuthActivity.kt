@@ -7,10 +7,12 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -20,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
 import java.util.concurrent.Executor
@@ -75,11 +78,16 @@ class AuthActivity : AppCompatActivity() {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
 //        enableEdgeToEdged
 
+
         // check if app pin is set
         isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_auth)
 
         authTouch = findViewById(R.id.fingerprint)
@@ -142,6 +150,15 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
+        // back button - system navigation
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (LockTimer.firstActivity) { // back button works if there are no previous activities in stack
+                    finish()
+                }
+            }
+        })
+
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
@@ -172,9 +189,13 @@ class AuthActivity : AppCompatActivity() {
 
             blockBiometric(false, 0)
 
-            val intent = Intent(applicationContext, MainnActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            LockTimer.removeLock()
+
+            if (LockTimer.firstActivity) {
+                val intent = Intent(applicationContext, MainnActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
             finish()
         } else {
             pinField.error = getString(R.string.pin_error5)
@@ -345,6 +366,8 @@ class AuthActivity : AppCompatActivity() {
                     EncPref.setBoolean(Constants.HARD_PIN_SET, true, applicationContext)
 
                     finish()
+                    val intent = Intent(applicationContext, AuthActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
 
                 }
@@ -372,9 +395,14 @@ class AuthActivity : AppCompatActivity() {
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    val intent = Intent(applicationContext, MainnActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+
+                    LockTimer.removeLock()
+
+                    if (LockTimer.firstActivity) {
+                        val intent = Intent(applicationContext, MainnActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
                     finish()
                 }
 

@@ -3,6 +3,7 @@ package org.privacymatters.safespace.document
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -15,9 +16,10 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
@@ -26,11 +28,12 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.IOException
 
-enum class ScrollDirection {
-    GO_UP, GO_DOWN
-}
 
-class TextDocumentView : AppCompatActivity() {
+class TextDocumentActivity : AppCompatActivity() {
+
+    enum class ScrollDirection {
+        GO_UP, GO_DOWN
+    }
 
     private lateinit var textFileContentView: EditText
     private lateinit var scrollTo: ImageButton
@@ -44,13 +47,16 @@ class TextDocumentView : AppCompatActivity() {
         val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
 
         SetTheme.setTheme(
-            delegate,
-            applicationContext,
+            delegate, applicationContext,
             sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
         )
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_text_document_view)
 
         ops.ready(application)
@@ -168,5 +174,16 @@ class TextDocumentView : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.stop()
+        LockTimer.start()
+        super.onPause()
+    }
 
 }

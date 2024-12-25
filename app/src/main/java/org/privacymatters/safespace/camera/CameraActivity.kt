@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.media.MediaActionSound
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -30,9 +31,10 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.text.SimpleDateFormat
@@ -110,6 +112,10 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_camera)
 
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
@@ -536,6 +542,18 @@ class CameraActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.stop()
+        LockTimer.start()
+        super.onPause()
     }
 }
 

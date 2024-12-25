@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,17 +14,22 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_about)
 
-        val app_title = findViewById<TextView>(R.id.app_title)
+        val appTitle = findViewById<TextView>(R.id.app_title)
 
-        ViewCompat.setOnApplyWindowInsetsListener(app_title) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(appTitle) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             v.updateLayoutParams<MarginLayoutParams> {
@@ -97,5 +103,17 @@ class AboutActivity : AppCompatActivity() {
             holder.name.text = libItem.name
             holder.link.text = libItem.link
         }
+    }
+
+    override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LockTimer.stop()
+        LockTimer.start()
+        super.onPause()
     }
 }
