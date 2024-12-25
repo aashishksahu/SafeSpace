@@ -25,8 +25,6 @@ class MediaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
 
-        LockTimer.stop()
-
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
@@ -87,11 +85,14 @@ class MediaActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start(this)
+        LockTimer.stop()
+        LockTimer.start()
         super.onPause()
     }
 }

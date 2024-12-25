@@ -41,7 +41,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.camera.CameraActivity
-import org.privacymatters.safespace.document.TextDocumentView
+import org.privacymatters.safespace.document.TextDocumentActivity
 import org.privacymatters.safespace.main.ActionBarType
 import org.privacymatters.safespace.main.FileOpCode
 import org.privacymatters.safespace.main.MainnActivity
@@ -188,7 +188,7 @@ class BottomAppBar(private val activity: MainnActivity) {
                                     if (name.isNotEmpty() && isValid) {
                                         val noteFile = activity.viewModel.createTextNote(name)
                                         val documentViewIntent = Intent(
-                                            activity.application, TextDocumentView::class.java
+                                            activity.application, TextDocumentActivity::class.java
                                         )
 
                                         documentViewIntent.putExtra(

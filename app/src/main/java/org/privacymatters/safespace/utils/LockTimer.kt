@@ -15,24 +15,26 @@ class LockTimer {
 
         var firstActivity = true
 
-        fun start(activity: Activity) {
+        fun start() {
             timer = object : CountDownTimer(5000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                 }
 
                 override fun onFinish() {
-                    if (!isLocked) {
-                        isLocked = true
-                        val intent = Intent(activity.applicationContext, AuthActivity::class.java)
-                        firstActivity = false
-                        activity.startActivity(intent)
-                    }
+                    isLocked = true
                 }
             }.start()
         }
 
+        fun checkLock(activity: Activity) {
+            if (isLocked) {
+                val intent = Intent(activity.applicationContext, AuthActivity::class.java)
+                firstActivity = false
+                activity.startActivity(intent)
+            }
+        }
+
         fun stop() {
-            removeLock()
             timer?.cancel()
         }
 

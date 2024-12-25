@@ -15,10 +15,10 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
@@ -27,11 +27,12 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.IOException
 
-enum class ScrollDirection {
-    GO_UP, GO_DOWN
-}
 
-class TextDocumentView : AppCompatActivity() {
+class TextDocumentActivity : AppCompatActivity() {
+
+    enum class ScrollDirection {
+        GO_UP, GO_DOWN
+    }
 
     private lateinit var textFileContentView: EditText
     private lateinit var scrollTo: ImageButton
@@ -52,8 +53,6 @@ class TextDocumentView : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_document_view)
-
-        LockTimer.stop()
 
         ops.ready(application)
 
@@ -171,11 +170,14 @@ class TextDocumentView : AppCompatActivity() {
     }
 
     override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start(this)
+        LockTimer.stop()
+        LockTimer.start()
         super.onPause()
     }
 

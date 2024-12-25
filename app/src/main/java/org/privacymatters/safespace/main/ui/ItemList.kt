@@ -42,8 +42,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.document.PDFView
-import org.privacymatters.safespace.document.TextDocumentView
+import org.privacymatters.safespace.document.PDFActivity
+import org.privacymatters.safespace.document.TextDocumentActivity
 import org.privacymatters.safespace.main.ActionBarType
 import org.privacymatters.safespace.main.Item
 import org.privacymatters.safespace.main.MainnActivity
@@ -254,7 +254,7 @@ class ItemList(private val activity: MainnActivity) {
                         var documentViewIntent: Intent? = null
 
                         if (filePath.split('.').last() == Constants.PDF) {
-                            documentViewIntent = Intent(activity, PDFView::class.java)
+                            documentViewIntent = Intent(activity, PDFActivity::class.java)
 
                         } else if (filePath.split('.').last() in arrayOf(
                                 Constants.TXT,
@@ -262,7 +262,7 @@ class ItemList(private val activity: MainnActivity) {
                                 Constants.XML
                             )
                         ) {
-                            documentViewIntent = Intent(activity, TextDocumentView::class.java)
+                            documentViewIntent = Intent(activity, TextDocumentActivity::class.java)
                         }
 
                         if (documentViewIntent != null) {

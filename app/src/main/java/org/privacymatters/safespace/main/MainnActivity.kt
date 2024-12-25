@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -254,7 +253,7 @@ class MainnActivity : AppCompatActivity() {
         super.onResume()
 
         LockTimer.stop()
-        LockTimer.start(this)
+        LockTimer.checkLock(this)
 
         if (Reload.value) {
             viewModel.getItems()
@@ -262,16 +261,10 @@ class MainnActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
+    override fun onPause() {
         LockTimer.stop()
-        LockTimer.start(this)
-        super.onStop()
-    }
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        LockTimer.stop()
-        LockTimer.start(this)
-        return super.onTouchEvent(event)
+        LockTimer.start()
+        super.onPause()
     }
 }
 

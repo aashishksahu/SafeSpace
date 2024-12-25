@@ -43,13 +43,13 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onResume() {
         LockTimer.stop()
-        LockTimer.start(this)
+        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
         LockTimer.stop()
-        LockTimer.start(this)
+        LockTimer.start()
         super.onPause()
     }
 }

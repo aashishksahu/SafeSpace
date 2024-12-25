@@ -30,10 +30,10 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
 import java.text.SimpleDateFormat
@@ -540,11 +540,14 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start(this)
+        LockTimer.stop()
+        LockTimer.start()
         super.onPause()
     }
 }

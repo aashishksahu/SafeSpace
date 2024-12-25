@@ -184,7 +184,7 @@ class AuthActivity : AppCompatActivity() {
 
             blockBiometric(false, 0)
 
-            LockTimer.stop()
+            LockTimer.removeLock()
 
             if (LockTimer.firstActivity) {
                 val intent = Intent(applicationContext, MainnActivity::class.java)
@@ -391,7 +391,7 @@ class AuthActivity : AppCompatActivity() {
                 ) {
                     super.onAuthenticationSucceeded(result)
 
-                    LockTimer.stop()
+                    LockTimer.removeLock()
 
                     if (LockTimer.firstActivity) {
                         val intent = Intent(applicationContext, MainnActivity::class.java)

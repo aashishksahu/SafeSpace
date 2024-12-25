@@ -101,11 +101,14 @@ class LogActivity : ComponentActivity() {
     }
 
     override fun onResume() {
+        LockTimer.stop()
+        LockTimer.checkLock(this)
         super.onResume()
     }
 
     override fun onPause() {
-        LockTimer.start(this)
+        LockTimer.stop()
+        LockTimer.start()
         super.onPause()
     }
 }

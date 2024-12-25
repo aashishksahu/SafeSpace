@@ -3,7 +3,6 @@ package org.privacymatters.safespace.utils
 class Constants {
     companion object {
 
-        const val BACK_ACTION = "backAction"
         const val NEXT_LINE = "________________________\n"
         const val MIGRATION_COMPLETE = "root_migration"
         const val TAG_ERROR = "org.privacymatters.safespace:E"

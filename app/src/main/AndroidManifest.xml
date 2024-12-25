@@ -58,11 +58,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".document.TextDocumentView"
+            android:name=".document.TextDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
         <activity
-            android:name=".document.PDFView"
+            android:name=".document.PDFActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
 
