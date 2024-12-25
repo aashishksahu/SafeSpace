@@ -3,6 +3,7 @@ package org.privacymatters.safespace.document
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -52,6 +53,10 @@ class TextDocumentActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_text_document_view)
 
         ops.ready(application)

@@ -16,7 +16,7 @@ class LockTimer {
         var firstActivity = true
 
         fun start() {
-            timer = object : CountDownTimer(5000, 1000) {
+            timer = object : CountDownTimer(300000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                 }
 

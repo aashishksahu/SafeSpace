@@ -2,6 +2,7 @@ package org.privacymatters.safespace.settings
 
 import android.os.Bundle
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,10 @@ import org.privacymatters.safespace.utils.Reload
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 

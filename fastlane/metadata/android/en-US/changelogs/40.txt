@@ -1,0 +1,1 @@
+auto lock in background and minor ui fixes
