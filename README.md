@@ -124,7 +124,7 @@ telemetry services. Again don't trust me, just check the code :)
 
 ## Contact Me
 
-app.aashishksahu@gmail.com
+frm.backtrack881@passinbox.com
 
 ## License
 
