@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace 'org.privacymatters.safespace'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "org.privacymatters.safespace"
