@@ -116,7 +116,7 @@
     <string name="same_path">स्रोत और लक्ष्य स्थान समान हैं</string>
     <string name="only_files">केवल फ़ाइलें ही निर्यात की जाएंगी</string>
     <string name="migration_headline">परिवर्तन लॉग</string>
-    <string name="migration_content">क्रैश लॉग देखने का विकल्प जोड़ा गया है, अगर आपको कोई समस्या आती है तो कृपया उसे मेरे साथ साझा करें। वे सेटिंग्स -> लॉग में हैं।</string>
+    <string name="migration_content">पृष्ठभूमि में 5 मिनट की निष्क्रियता के बाद ऐप अब ऑटो लॉक हो जाएगा</string>
     <string name="logs">लॉग्स</string>
     <string name="notif_export">निर्यात</string>
     <string name="notif_import">आयात</string>

@@ -121,7 +121,7 @@
     <string name="title_activity_settings">Ajustes</string>
     <string name="only_files">Solo se exportarán los archivos</string>
     <string name="migration_headline">Registro de cambios</string>
-    <string name="migration_content">Se agregó la opción de ver los registros de fallas. Compártelos conmigo si encuentras algún problema. Están en configuración -> registros.</string>
+    <string name="migration_content">La aplicación ahora se bloqueará automáticamente después de 5 minutos de inactividad en segundo plano</string>
     <string name="logs">Registros</string>
     <string name="notif_export">Exportando</string>
     <string name="notif_import">Importando</string>

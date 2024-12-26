@@ -121,7 +121,7 @@
     <string name="title_activity_settings">Réglages</string>
     <string name="only_files">Seuls les fichiers seront exportés</string>
     <string name="migration_headline">Journal des modifications</string>
-    <string name="migration_content">Ajout d\'une option pour voir les journaux de plantage, veuillez les partager avec moi si vous rencontrez des problèmes. Ils se trouvent dans les paramètres -> journaux.</string>
+    <string name="migration_content">L\'application se verrouille automatiquement après 5 minutes d\'inactivité en arrière-plan</string>
     <string name="logs">Journaux</string>
     <string name="notif_export">Exportation</string>
     <string name="notif_import">Importation</string>
