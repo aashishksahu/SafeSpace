@@ -115,7 +115,7 @@
     <string name="same_path">Kaynak ve hedef konum aynıdır</string>
     <string name="only_files">Yalnızca dosyalar dışa aktarılacak</string>
     <string name="migration_headline">Değişiklik Günlüğü</string>
-    <string name="migration_content">Çökme günlüklerini görme seçeneği eklendi, herhangi bir sorun bulursanız lütfen bunları benimle paylaşın. Bunlar ayarlar -> günlükler bölümündedir</string>
+    <string name="migration_content">Uygulama artık arka planda 5 dakika hareketsizlikten sonra otomatik kilitlenecek</string>
     <string name="logs">Kütükler</string>
     <string name="notif_export">Dışa aktarılıyor</string>
     <string name="notif_import">İçe aktarılıyor</string>

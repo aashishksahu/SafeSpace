@@ -116,7 +116,7 @@
     <string name="same_path">源和目标位置相同</string>
     <string name="only_files">仅导出文件</string>
     <string name="migration_headline">更改日志</string>
-    <string name="migration_content">添加了查看崩溃日志的选项，如果您发现任何问题，请与我分享。它们位于设置 -> 日志中</string>
+    <string name="migration_content">该应用程序现在将在后台不活动5分钟后自动锁定</string>
     <string name="logs">日志</string>
     <string name="notif_export">导出中</string>
     <string name="notif_import">导入中</string>
