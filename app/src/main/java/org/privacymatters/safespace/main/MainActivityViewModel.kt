@@ -94,7 +94,7 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     fun returnToPreviousLocation() {
         if (ops.internalPath.last() != Constants.ROOT) {
-            ops.internalPath.removeLast()
+            ops.internalPath.removeAt(ops.internalPath.size - 1)
         }
     }
 
