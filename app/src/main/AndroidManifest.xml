@@ -60,6 +60,7 @@
         <activity
             android:name=".document.TextDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".document.PDFActivity"
