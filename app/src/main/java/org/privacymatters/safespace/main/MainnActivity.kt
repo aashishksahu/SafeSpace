@@ -212,12 +212,6 @@ class MainnActivity : AppCompatActivity() {
         )
     }
 
-    private fun showMessage(msg: String) {
-        lifecycleScope.launch {
-            snackBarHostState.showSnackbar(msg)
-        }
-    }
-
     @Composable
     private fun ShowChangeLog() {
         var migrationMsg by remember { mutableStateOf(true) }
