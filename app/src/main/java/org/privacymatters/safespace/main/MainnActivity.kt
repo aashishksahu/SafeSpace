@@ -187,7 +187,6 @@ class MainnActivity : AppCompatActivity() {
                         val uri = intent?.data
                         if (uri != null) {
                             viewModel.exportItems(uri)
-                            showMessage(getString(R.string.only_files))
                         }
                     }
                 }
