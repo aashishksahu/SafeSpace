@@ -58,7 +58,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                         CoroutineScope(Dispatchers.Main).launch {
                                             Toast.makeText(
                                                 requireActivity().applicationContext,
-                                                getString(R.string.export_backup_success),
+                                                getString(R.string.notif_imp_bckp_success),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
@@ -110,7 +110,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                         CoroutineScope(Dispatchers.Main).launch {
                                             Toast.makeText(
                                                 requireActivity().baseContext,
-                                                getString(R.string.export_backup_success),
+                                                getString(R.string.notif_exp_bckp_success),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }

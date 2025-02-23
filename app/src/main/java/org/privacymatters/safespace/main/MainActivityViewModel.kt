@@ -13,12 +13,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.main.DataManager.joinPath
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
@@ -356,15 +358,19 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     }
 
     fun exportItems(uri: Uri) {
-        viewModelScope.launch {
-            for (item in transferList) {
-                if (item.isSelected) {
-                    ops.exportItems(uri, item)
-                }
+        for (item in transferList) {
+            if (item.isSelected) {
+                val fileToExport = File(joinPath(DataManager.getInternalPath(), item.name))
+
+                val exportRoot = DocumentFile.fromTreeUri(application, uri)
+
+                ops.exportItems(exportRoot, fileToExport)
+
             }
-            clearSelection()
-            transferList.clear()
         }
+        clearSelection()
+        transferList.clear()
+
     }
 
     fun setFromPath() {

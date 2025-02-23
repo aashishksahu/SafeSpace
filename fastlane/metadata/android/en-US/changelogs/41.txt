@@ -1,0 +1,2 @@
+Added ability to export folders
+Fixed an issue where text is hidden behind keyboard in notes editor
