@@ -1,26 +1,43 @@
 package org.privacymatters.safespace.document
 
-import android.content.Context
 import android.os.Bundle
-import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.widget.NestedScrollView
-import androidx.core.widget.addTextChangedListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
+import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.Reload
-import org.privacymatters.safespace.utils.SetTheme
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader
 import java.io.File
@@ -31,142 +48,143 @@ import java.io.IOException
 
 class TextDocumentActivity : AppCompatActivity() {
 
-    enum class ScrollDirection {
-        GO_UP, GO_DOWN
-    }
-
-    private lateinit var textFileContentView: EditText
-    private lateinit var scrollTo: ImageButton
-    private lateinit var scrollView: NestedScrollView
-    private var scrollDirection = ScrollDirection.GO_DOWN
-    private lateinit var file: File
     private val ops = DataManager
+    private var content: String = ""
+    private lateinit var file: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
-
-        SetTheme.setTheme(
-            delegate, applicationContext,
-            sharedPref.getString(getString(R.string.change_theme), getString(R.string.System))!!
-        )
-
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
-        setContentView(R.layout.activity_text_document_view)
+        enableEdgeToEdge()
 
         ops.ready(application)
+
+        file = File(intent.extras?.getString(Constants.INTENT_KEY_PATH)!!)
 
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
+        setContent {
+            Box(Modifier.safeDrawingPadding()) {
 
-        val mode = findViewById<TextView>(R.id.mode)
-        scrollView = findViewById(R.id.scrollView2)
-        scrollTo = findViewById(R.id.scrollTo)
-        textFileContentView = findViewById(R.id.textView)
+                SafeSpaceTheme {
 
-        ViewCompat.setOnApplyWindowInsetsListener(mode) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    TextEditor(file)
 
-            v.updateLayoutParams<MarginLayoutParams> {
-                topMargin = insets.top + 10
-            }
-
-            WindowInsetsCompat.CONSUMED
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(scrollTo) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            v.updateLayoutParams<MarginLayoutParams> {
-                leftMargin = insets.left
-                bottomMargin = insets.bottom + 10
-                rightMargin = insets.right + 10
-            }
-
-            WindowInsetsCompat.CONSUMED
-        }
-
-        textFileContentView.addTextChangedListener {
-            saveFile(textFileContentView.text.toString(), file)
-        }
-
-        scrollView.setOnScrollChangeListener(({ _, _, y, _, oldY ->
-            if ((y - oldY) >= 0) { // going down
-                scrollDirection = ScrollDirection.GO_UP
-                scrollTo.setImageResource(R.drawable.keyboard_arrow_up_24dp_e8eaed_fill0_wght400_grad0_opsz24)
-            } else { // going up
-                scrollDirection = ScrollDirection.GO_DOWN
-                scrollTo.setImageResource(R.drawable.keyboard_arrow_down_32dp_e8eaed_fill0_wght400_grad0_opsz40)
-            }
-        }))
-
-        scrollTo.setOnClickListener {
-            when (scrollDirection) {
-                ScrollDirection.GO_UP -> scrollView.fullScroll(NestedScrollView.FOCUS_UP)
-                ScrollDirection.GO_DOWN -> scrollView.fullScroll(NestedScrollView.FOCUS_DOWN)
+                }
             }
         }
+    }
 
-        file = File(intent.extras?.getString(Constants.INTENT_KEY_PATH)!!)
+    @Composable
+    private fun TextEditor(file: File) {
 
-        val content = StringBuilder()
+        Scaffold(
+            topBar = {
+                Text(
+                    modifier = Modifier.padding(10.dp),
+                    text = file.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            },
+        ) { innerPadding ->
 
-        mode.text = file.name
+            val fileContent = readContent(file)
+            var text by remember { mutableStateOf(fileContent) }
 
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(innerPadding)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(color = MaterialTheme.colorScheme.background),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                value = text,
+                onValueChange = {
+                    text = it
+                    content = it
+                })
+        }
+    }
+
+    @Composable
+    private fun readContent(file: File): String {
+        val fileContent = StringBuilder()
         try {
 
             val buffer = BufferedReader(FileReader(file))
             var line: String?
 
             while (buffer.readLine().also { line = it } != null) {
-                content.append(line)
-                content.append('\n')
+                fileContent.append(line)
+                fileContent.append('\n')
             }
             buffer.close()
+
 
         } catch (e: FileNotFoundException) {
 
             Utils.exportToLog(application, "@TextDocumentView.onCreate()", e)
 
-            val builder = MaterialAlertDialogBuilder(textFileContentView.context)
+            Alert(
+                title = getString(R.string.text_exception_title),
+                dialogText = getString(R.string.text_exception_subtitle)
+            )
 
-            builder.setTitle(getString(R.string.text_exception_title))
-                .setCancelable(true)
-                .setMessage(getString(R.string.text_exception_subtitle))
-                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                    // Dismiss the dialog
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
         } catch (e: IOException) {
             Utils.exportToLog(application, "@TextDocumentView.onCreate()", e)
-            val builder = MaterialAlertDialogBuilder(textFileContentView.context)
 
-            builder.setTitle(getString(R.string.text_exception_IO))
-                .setCancelable(true)
-                .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                    // Dismiss the dialog
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
+            Alert(
+                title = getString(R.string.text_exception_title),
+                dialogText = getString(R.string.text_exception_IO)
+            )
+
         }
 
-        textFileContentView.setText(content.toString())
+        return fileContent.toString()
+    }
+
+    @Composable
+    private fun Alert(title: String, dialogText: String) {
+        var alertVisible by remember { mutableStateOf(true) }
+        if (alertVisible) {
+            AlertDialog(
+                icon = {
+                    Icon(Icons.Filled.Info, contentDescription = "")
+                },
+                title = { Text(text = title) },
+                text = { Text(text = dialogText) },
+                onDismissRequest = {},
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            alertVisible = false
+                        }
+                    ) {
+                        Text(getString(R.string.ok))
+                    }
+                }
+            )
+        }
     }
 
     private fun saveFile(contentToSave: String?, file: File?) {
 
         try {
-            if (contentToSave?.isNotEmpty() == true && file != null) {
-                file.writeText(contentToSave)
+            if (contentToSave != null) {
+                file?.writeText(contentToSave)
             }
 
         } catch (e: Exception) {
@@ -181,6 +199,7 @@ class TextDocumentActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        saveFile(content, file)
         LockTimer.stop()
         LockTimer.start()
         super.onPause()

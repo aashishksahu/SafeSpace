@@ -7,10 +7,12 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.utils.Constants
@@ -380,34 +382,51 @@ object DataManager {
         }
     }
 
-    suspend fun exportItems(
-        exportUri: Uri,
-        selectedItem: Item
-    ) = withContext(Dispatchers.IO) {
+    fun exportItems(
+        exportDir: DocumentFile?,
+        fileToExport: File
+    ) {
 
-        try {
-            val fileToExport = File(joinPath(getInternalPath(), selectedItem.name))
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
 
-            val fis = FileInputStream(fileToExport)
+                if (fileToExport.isDirectory) {
+                    exportDir?.createDirectory(fileToExport.name)
 
-            val directory = DocumentFile.fromTreeUri(application, exportUri)
-            val file = directory!!.createFile("*", selectedItem.name)
-            val pfd = application.contentResolver.openFileDescriptor(file!!.uri, "w")
-            val fos = FileOutputStream(pfd!!.fileDescriptor)
+                    val subFolder = exportDir?.listFiles()
+                        ?.find { it.isDirectory && it.name == fileToExport.name }
 
-            copyFileWithProgressNotifications(
-                selectedItem.name, fis, fos,
-                FileTransferNotification.NotificationType.Export,
-                application.applicationContext
-            )
+                    val filesInFolder = fileToExport.listFiles()
 
-            fos.close()
-            pfd.close()
+                    filesInFolder?.forEach { file ->
+                        exportItems(subFolder, file)
+                    }
+                } else {
+                    exportDir?.let {
+
+                        val createdFile = it.createFile("*", fileToExport.name)
+                        val fis = FileInputStream(fileToExport)
+
+                        val pfd = application.contentResolver
+                            .openFileDescriptor(createdFile?.uri!!, "w")
+
+                        val fos = FileOutputStream(pfd!!.fileDescriptor)
+
+                        copyFileWithProgressNotifications(
+                            fileToExport.name, fis, fos,
+                            FileTransferNotification.NotificationType.Export,
+                            application.applicationContext
+                        )
+                        fos.close()
+                        pfd.close()
+                    }
+                }
 
 
-        } catch (e: Exception) {
-            Utils.exportToLog(application, "@ DataManager.exportItems() ", e)
-            Log.e(Constants.TAG_ERROR, "@DataManager.exportItems() ", e)
+            } catch (e: Exception) {
+                Utils.exportToLog(application, "@ DataManager.exportItems() ", e)
+                Log.e(Constants.TAG_ERROR, "@DataManager.exportItems() ", e)
+            }
         }
     }
 
