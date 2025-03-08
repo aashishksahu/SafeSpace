@@ -16,8 +16,8 @@ android {
         
         minSdk 29
         targetSdk 35
-        versionCode 41
-        versionName "2.2.0"
+        versionCode 42
+        versionName "2.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation "com.github.bumptech.glide:compose:1.0.0-beta01"
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.activity:activity-ktx:1.9.3'
+    implementation 'androidx.activity:activity-ktx:1.10.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7'
@@ -82,16 +82,16 @@ dependencies {
 
 //  Compose
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
-    implementation 'androidx.activity:activity-compose:1.9.3'
-    implementation platform('androidx.compose:compose-bom:2024.12.01')
+    implementation 'androidx.activity:activity-compose:1.10.1'
+    implementation platform('androidx.compose:compose-bom:2025.02.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     debugImplementation 'androidx.compose.ui:ui-tooling'
-    implementation "androidx.compose.runtime:runtime-livedata:1.7.6"
+    implementation "androidx.compose.runtime:runtime-livedata:1.7.8"
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
-    androidTestImplementation platform('androidx.compose:compose-bom:2024.12.01')
+    androidTestImplementation platform('androidx.compose:compose-bom:2025.02.00')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
 
 //  For Camera
@@ -106,11 +106,11 @@ dependencies {
 
 //  For App functionality
     implementation 'androidx.core:core-ktx:1.15.0'
-    implementation "androidx.recyclerview:recyclerview:1.3.2"
+    implementation "androidx.recyclerview:recyclerview:1.4.0"
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    implementation "androidx.fragment:fragment-ktx:1.8.5"
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation "androidx.fragment:fragment-ktx:1.8.6"
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'

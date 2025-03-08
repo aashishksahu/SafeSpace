@@ -69,6 +69,9 @@ class TextDocumentActivity : AppCompatActivity() {
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
+
+        content = readContent(file)
+
         setContent {
             Box(Modifier.safeDrawingPadding()) {
 
@@ -96,8 +99,7 @@ class TextDocumentActivity : AppCompatActivity() {
             },
         ) { innerPadding ->
 
-            val fileContent = readContent(file)
-            var text by remember { mutableStateOf(fileContent) }
+            var text by remember { mutableStateOf(content) }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -119,7 +121,6 @@ class TextDocumentActivity : AppCompatActivity() {
         }
     }
 
-    @Composable
     private fun readContent(file: File): String {
         val fileContent = StringBuilder()
         try {
@@ -133,24 +134,10 @@ class TextDocumentActivity : AppCompatActivity() {
             }
             buffer.close()
 
-
         } catch (e: FileNotFoundException) {
-
             Utils.exportToLog(application, "@TextDocumentView.onCreate()", e)
-
-            Alert(
-                title = getString(R.string.text_exception_title),
-                dialogText = getString(R.string.text_exception_subtitle)
-            )
-
         } catch (e: IOException) {
             Utils.exportToLog(application, "@TextDocumentView.onCreate()", e)
-
-            Alert(
-                title = getString(R.string.text_exception_title),
-                dialogText = getString(R.string.text_exception_IO)
-            )
-
         }
 
         return fileContent.toString()
