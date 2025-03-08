@@ -1,0 +1,1 @@
+Fixed a bug where a text file content gets erased while pressing back the button
