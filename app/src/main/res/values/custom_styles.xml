@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="dialogThemeMenu" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:background">?attr/cardBackgroundColor</item>
-    </style>
-
 </resources>

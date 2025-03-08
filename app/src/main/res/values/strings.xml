@@ -7,11 +7,7 @@
     <string name="import_files">File</string>
     <string name="export_backup">Export Zip Backup</string>
     <string name="change_theme">Change Theme</string>
-    <string name="dark_theme_text">Dark</string>
-    <string name="light_theme_text">Light</string>
-    <string name="amoled_theme_text">Amoled Dark</string>
     <string name="export_backup_msg">Exporting zip archive in background, large files will take time..</string>
-    <string name="export_backup_success">Export Complete</string>
     <string name="backup_err_space">Not Enough Storage Available</string>
     <string name="import_backup">Import Zip Backup</string>
     <string name="backup_err_other">Unexpected Error, Please try again</string>
@@ -29,14 +25,10 @@
     <string name="video_error">Internal Error, could not save video</string>
     <string name="video_timer" translatable="false">00:00</string>
     <string name="permission_denied">Permission request denied</string>
-    <string name="import_files_error">Some files were not imported, please try again</string>
     <string name="create_folder_invalid_error">Only letters and numbers allowed </string>
-    <string name="folder_already_exists">This Folder Already Exists</string>
     <string name="file_icon_description">File or folder icon</string>
     <string name="context_menu_rename">Rename</string>
-    <string name="context_menu_rename_hint">Enter name</string>
     <string name="context_menu_delete">Delete</string>
-    <string name="multi_clear">Clear</string>
     <string name="multi_export">Export</string>
     <string name="context_menu_move">Move</string>
     <string name="context_menu_copy">Copy</string>
@@ -46,43 +38,25 @@
     <string name="share_dialog_title">Warning!</string>
     <string name="share_dialog_description">You\'re sharing this file with a third-party app, make sure you trust the app.</string>
     <string name="share_chooser_title">Share with…</string>
-    <string name="directory_indicator">Folder</string>
-    <string name="file_indicator">File</string>
-    <string name="import_files_progress">Importing in background, please wait…</string>
     <string name="media_view_desc">Media View</string>
-    <string name="textAreaHint">Write Something</string>
-    <string name="save">Save</string>
-    <string name="save_success">File Saved!</string>
-    <string name="save_error">Error while saving file!</string>
-    <string name="move_file_title">Move Here</string>
     <string name="move_copy_file_failure">Action failed</string>
     <string name="move_copy_file_success">File(s) moved/copied successfully</string>
     <string name="copy_file_title">Copy Here</string>
-    <string name="copy_title">Copy</string>
-    <string name="move_title">Move</string>
     <string name="move_btn_text">Move here</string>
     <string name="unsupported_format">File format not supported</string>
     <string name="create_txt_menu">Note</string>
-    <string name="new_text_note">New Text Note</string>
     <string name="file_exists_error">This File Already Exists</string>
     <string name="same_path">Source and target location are same</string>
-    <string name="nothing_here">Nothing Here ¯\\_(ツ)_/¯</string>
     <string name="file_folder_placeholder">Folder</string>
     <string name="items">Items</string>
     <string name="item">Item</string>
     <string name="pdf_exception_title">Unable to open the document</string>
     <string name="pdf_exception_subtitle">The document has problems. If this is a password protected document, they are not yet supported.</string>
     <string name="text_exception_title">Not found</string>
-    <string name="text_exception_subtitle">This text document does not exist. It was probably deleted.</string>
     <string name="text_exception_IO">Unable to open the text note</string>
-    <string name="export_in_progress">Exporting in background, please wait… </string>
 
-    <string name="auth_fail">Authentication failed!</string>
     <string name="auth_login">Login</string>
 
-    <string name="auth_alert">No Biometric or PIN Set</string>
-    <string name="auth_alert_update">Please update your phone and try again</string>
-    <string name="auth_no_biometric_msg">It is recommended to use a PIN or Password to keep your data secure</string>
     <string name="auth_stuck">Lock and unlock your screen if you are stuck here.</string>
 
     <string name="about_text">About</string>
@@ -112,7 +86,6 @@
     <string name="asc">Ascending</string>
     <string name="desc">Descending</string>
     <string name="sort_by_title_file">Sort Files By</string>
-    <string name="sort_by_title_folder">Sort Folders By Name</string>
     <string name="sort_by_order">Order</string>
     <string name="pin_text_box">Enter Pin</string>
     <string name="set_pin_text">Set PIN</string>
@@ -122,17 +95,11 @@
     <string name="pin_error4">PIN does not match</string>
     <string name="pin_error5">Incorrect PIN</string>
     <string name="pin_error6">Too many wrong attempts, try again later</string>
-    <string name="multi_move">Move selected files</string>
-    <string name="multi_copy">Copy selected files</string>
     <string name="change_pin">Change PIN</string>
     <string name="current_pin">Current PIN</string>
     <string name="pin_lost_warning">IMPORTANT: DO NOT forget your PIN. Always keep a backup of your data.</string>
-    <string name="compress_folder">Compress</string>
-    <string name="extract_zip">Extract the Zip file</string>
-    <string name="biometric_toggle">Unlock Using Biometrics</string>
     <string name="biometric_title">Biometric Unlock</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="only_files">Only files will be exported</string>
     <string name="migration_headline">Change Log</string>
     <string name="migration_content">The app will now auto lock after 5 minutes of inactivity in background</string>
     <string name="logs">Logs</string>
