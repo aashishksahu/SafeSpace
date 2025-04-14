@@ -131,6 +131,7 @@
     <string name="notif_exp_file_success">Le fichier a été exporté avec succès !</string>
     <string name="notif_exp_file_caption_s">A été copié avec succès</string>
     <string name="notif_exp_file_caption_e">Échec de la copie</string>
+    <string name="open_single">Épingler cet Article</string>
 
 
 </resources>

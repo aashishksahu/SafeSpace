@@ -30,6 +30,9 @@ class MediaActivityViewModel(application: Application) : AndroidViewModel(applic
 
         getItems()
 
+        if (ops.lockItem)
+            ops.clearSelection()
+
     }
 
     private fun getItems() {

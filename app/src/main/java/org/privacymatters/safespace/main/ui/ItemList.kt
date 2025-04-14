@@ -245,7 +245,6 @@ class ItemList(private val activity: MainnActivity) {
                     Constants.VIDEO_TYPE,
                     Constants.AUDIO_TYPE -> {
                         val mediaViewIntent = Intent(activity, MediaActivity::class.java)
-//                        mediaViewIntent.putExtra(Constants.INTENT_KEY_INDEX, index)
                         activity.viewModel.ops.openedItem = item
                         activity.startActivity(mediaViewIntent)
                     }

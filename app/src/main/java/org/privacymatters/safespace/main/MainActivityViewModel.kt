@@ -31,6 +31,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.UUID
+import androidx.core.content.edit
 
 enum class ActionBarType {
     NORMAL, LONG_PRESS, MOVE, COPY
@@ -45,10 +46,8 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
 
     private var transferList: ArrayList<Item> = arrayListOf()
 
-    // 0: NormalActionBar, 1: LongPressActionBar, 2: MoveActionBar, 3: CopyActionBar
     var appBarType = mutableStateOf(ActionBarType.NORMAL)
 
-    //    var scrollToPosition = ops.positionHistory
     var selectedFileCount = mutableIntStateOf(0)
     var selectedFolderCount = mutableIntStateOf(0)
 
@@ -73,10 +72,10 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun sortItems(sortBy: String, sortOrder: String) {
         ops.getSortedItems(sortBy, sortOrder)
 
-        sharedPref.edit()
-            .putString(Constants.FILE_SORT_BY, sortBy)
-            .putString(Constants.FILE_SORT_ORDER, sortOrder)
-            .apply()
+        sharedPref.edit {
+            putString(Constants.FILE_SORT_BY, sortBy)
+                .putString(Constants.FILE_SORT_ORDER, sortOrder)
+        }
     }
 
     fun getInternalPath() {
@@ -354,7 +353,12 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         appBarType.value = ActionBarType.NORMAL
         transferList.clear()
 
-        ops.clearSelection()
+        if (!ops.lockItem) {
+            // while opening a single item using the pin icon,
+            // clear the app bar but not the selection, it
+            // will be cleared in the init of MediaActivityViewModel
+            ops.clearSelection()
+        }
     }
 
     fun exportItems(uri: Uri) {
@@ -380,9 +384,9 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
     fun migrateFromRoot() {
         viewModelScope.launch {
             if (ops.migrateFromRoot() == FileOpCode.SUCCESS) {
-                sharedPref.edit()
-                    .putBoolean(Constants.MIGRATION_COMPLETE, true)
-                    .apply()
+                sharedPref.edit {
+                    putBoolean(Constants.MIGRATION_COMPLETE, true)
+                }
             }
         }
     }
@@ -406,4 +410,9 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         }
         return false
     }
+
+    fun getSingleSelectedItem(): Item? {
+        return ops.itemListFlow.value.find { it.isSelected }
+    }
+
 }

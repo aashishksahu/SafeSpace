@@ -126,4 +126,5 @@
     <string name="notif_exp_file_success">फ़ाइल सफलतापूर्वक निर्यात की गई!</string>
     <string name="notif_exp_file_caption_s">सफलतापूर्वक कॉपी किया गया</string>
     <string name="notif_exp_file_caption_e">कॉपी करने में विफल</string>
+    <string name="open_single">इस आइटम को पिन करें</string>
 </resources>

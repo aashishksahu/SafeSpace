@@ -1,7 +1,9 @@
 package org.privacymatters.safespace.document
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,15 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.utils.Constants
@@ -82,6 +78,16 @@ class TextDocumentActivity : AppCompatActivity() {
                 }
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (ops.lockItem) {
+                    LockTimer.setLockManually()
+                }
+                finish()
+            }
+        })
+
     }
 
     @Composable
@@ -143,29 +149,29 @@ class TextDocumentActivity : AppCompatActivity() {
         return fileContent.toString()
     }
 
-    @Composable
-    private fun Alert(title: String, dialogText: String) {
-        var alertVisible by remember { mutableStateOf(true) }
-        if (alertVisible) {
-            AlertDialog(
-                icon = {
-                    Icon(Icons.Filled.Info, contentDescription = "")
-                },
-                title = { Text(text = title) },
-                text = { Text(text = dialogText) },
-                onDismissRequest = {},
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            alertVisible = false
-                        }
-                    ) {
-                        Text(getString(R.string.ok))
-                    }
-                }
-            )
-        }
-    }
+//    @Composable
+//    private fun Alert(title: String, dialogText: String) {
+//        var alertVisible by remember { mutableStateOf(true) }
+//        if (alertVisible) {
+//            AlertDialog(
+//                icon = {
+//                    Icon(Icons.Filled.Info, contentDescription = "")
+//                },
+//                title = { Text(text = title) },
+//                text = { Text(text = dialogText) },
+//                onDismissRequest = {},
+//                confirmButton = {
+//                    TextButton(
+//                        onClick = {
+//                            alertVisible = false
+//                        }
+//                    ) {
+//                        Text(getString(R.string.ok))
+//                    }
+//                }
+//            )
+//        }
+//    }
 
     private fun saveFile(contentToSave: String?, file: File?) {
 
@@ -189,7 +195,14 @@ class TextDocumentActivity : AppCompatActivity() {
         saveFile(content, file)
         LockTimer.stop()
         LockTimer.start()
+
         super.onPause()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (listOf(KeyEvent.KEYCODE_ESCAPE, 4).contains(keyCode)) {
+            if (ops.lockItem) LockTimer.setLockManually()
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 }

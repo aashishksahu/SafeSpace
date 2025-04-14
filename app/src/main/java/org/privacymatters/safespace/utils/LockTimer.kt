@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
 import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.main.DataManager
 
 class LockTimer {
 
     companion object {
+        val ops = DataManager
 
         private var timer: CountDownTimer? = null
 
@@ -39,7 +41,13 @@ class LockTimer {
         }
 
         fun removeLock() {
+            ops.lockItem =
+                false // unlock item opened using pin icon after successful authentication
             isLocked = false
+        }
+
+        fun setLockManually() {
+            isLocked = true
         }
 
 

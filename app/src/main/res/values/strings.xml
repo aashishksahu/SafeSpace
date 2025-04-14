@@ -111,6 +111,7 @@
     <string name="notif_exp_file_success">File exported successfully!</string>
     <string name="notif_exp_file_caption_s">was successfully copied</string>
     <string name="notif_exp_file_caption_e">Failed to copy</string>
+    <string name="open_single">Pin this Item</string>
 
 
 </resources>
