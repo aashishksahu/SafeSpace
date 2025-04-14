@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">"अब आप किसी दस्तावेज़ को लंबे समय तक दबा सकते हैं और एकल आइटम खोलने के लिए पिन आइकन का उपयोग कर सकते हैं, सूची में वापस जाने के लिए पास कोड की आवश्यकता होगी "</string>
     <string name="cancel">İptal</string>
     <string name="create">Oluştur</string>
     <string name="ok">Tamam</string>
@@ -82,7 +83,7 @@
     <string name="title_activity_settings">Ayarlar</string>
     <string name="same_path">Kaynak ve hedef konum aynıdır</string>
     <string name="migration_headline">Değişiklik Günlüğü</string>
-    <string name="migration_content">Uygulama artık arka planda 5 dakika hareketsizlikten sonra otomatik kilitlenecek</string>
+    <string name="migration_content">Artık bir belgeye uzun süre basabilir ve tek bir öğeyi açmak için pim simgesini kullanabilirsiniz, listeye geri dönmek için şifre gerekir</string>
     <string name="logs">Kütükler</string>
     <string name="notif_export">Dışa aktarılıyor</string>
     <string name="notif_import">İçe aktarılıyor</string>

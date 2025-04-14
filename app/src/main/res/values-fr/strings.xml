@@ -88,7 +88,7 @@
     <string name="biometric_title">Déverrouillage biométrique</string>
     <string name="title_activity_settings">Réglages</string>
     <string name="migration_headline">Journal des modifications</string>
-    <string name="migration_content">L\'application se verrouille automatiquement après 5 minutes d\'inactivité en arrière-plan</string>
+    <string name="migration_content">Vous pouvez maintenant appuyer longuement sur un document et utiliser l\'icône de la broche pour ouvrir un seul élément, le code de passe sera nécessaire pour revenir à la liste</string>
     <string name="logs">Journaux</string>
     <string name="notif_export">Exportation</string>
     <string name="notif_import">Importation</string>

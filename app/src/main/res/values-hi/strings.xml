@@ -83,7 +83,7 @@
     <string name="title_activity_settings">सेटिंग्स</string>
     <string name="same_path">स्रोत और लक्ष्य स्थान समान हैं</string>
     <string name="migration_headline">परिवर्तन लॉग</string>
-    <string name="migration_content">पृष्ठभूमि में 5 मिनट की निष्क्रियता के बाद ऐप अब ऑटो लॉक हो जाएगा</string>
+    <string name="migration_content">"अब आप किसी दस्तावेज़ को लंबे समय तक दबा सकते हैं और एकल आइटम खोलने के लिए पिन आइकन का उपयोग कर सकते हैं, सूची में वापस जाने के लिए पास कोड की आवश्यकता होगी "</string>
     <string name="logs">लॉग्स</string>
     <string name="notif_export">निर्यात</string>
     <string name="notif_import">आयात</string>

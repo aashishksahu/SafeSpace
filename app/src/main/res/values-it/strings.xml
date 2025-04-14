@@ -88,7 +88,7 @@
     <string name="biometric_title">Sblocco biometrico</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="migration_headline">Registro delle modifiche</string>
-    <string name="migration_content">L\'app ora si bloccherà automaticamente dopo 5 minuti di inattività in background</string>
+    <string name="migration_content">"Ora puoi premere a lungo un documento e utilizzare l'icona a forma di pin per aprire un singolo elemento, il codice di passaggio sarà richiesto per tornare all'elenco "</string>
     <string name="logs">Registri</string>
     <string name="notif_export">Esportazione</string>
     <string name="notif_import">Importazione</string>

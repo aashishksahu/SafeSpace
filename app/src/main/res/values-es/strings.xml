@@ -88,7 +88,7 @@
     <string name="biometric_title">Desbloquo biométrico</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="migration_headline">Registro de cambios</string>
-    <string name="migration_content">La aplicación ahora se bloqueará automáticamente después de 5 minutos de inactividad en segundo plano</string>
+    <string name="migration_content">"Ahora puede presionar durante mucho tiempo un documento y usar el icono del pin para abrir un solo elemento, se requerirá que el código de acceso vuelva a la lista "</string>
     <string name="logs">Registros</string>
     <string name="notif_export">Exportando</string>
     <string name="notif_import">Importando</string>
