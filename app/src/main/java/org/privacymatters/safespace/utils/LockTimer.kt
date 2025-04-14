@@ -31,7 +31,8 @@ class LockTimer {
         fun checkLock(activity: Activity) {
             if (isLocked) {
                 val intent = Intent(activity.applicationContext, AuthActivity::class.java)
-                firstActivity = false
+                // if the lock is due to going back from a pinned item, it will always go to mainn activity
+                if (!ops.lockItem) firstActivity = false
                 activity.startActivity(intent)
             }
         }
