@@ -7,18 +7,20 @@
 ![Downloads](https://img.shields.io/github/downloads/aashishksahu/SafeSpace/total?labelColor=%23102C57&color=%23F8F0E5)
 
 <p float="left">
-  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" />
-  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" />
-  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" />
-  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" />
-  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="phoneScreenshots/1.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" alt="phoneScreenshots/2.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="phoneScreenshots/3.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="phoneScreenshots/4.png" />
+  <img width="200px" src="https://github.com/aashishksahu/SafeSpace/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" alt="phoneScreenshots/5.png" />
 </p>
 
 ## Installation
 
 Download the APK from [here](https://github.com/aashishksahu/SafeSpace/releases)
 
-[<img alt="alt_text" width="200px" src="https://user-content.gitlab-static.net/0cdd89e5cc347206465251782615ab91f99a542d/68747470733a2f2f6664726f69642e6769746c61622e696f2f617274776f726b2f62616467652f6765742d69742d6f6e2e706e67" />](https://f-droid.org/en/packages/org.privacymatters.safespace/)
+[<img alt="F-Droid" width="200px" src="https://user-content.gitlab-static.net/0cdd89e5cc347206465251782615ab91f99a542d/68747470733a2f2f6664726f69642e6769746c61622e696f2f617274776f726b2f62616467652f6765742d69742d6f6e2e706e67" />](https://f-droid.org/en/packages/org.privacymatters.safespace/)
+[<img alt="OpenAPK" width="200px" src="https://www.openapk.net/images/openapk-badge.png" />](https://www.openapk.net/safe-space/org.privacymatters.safespace/)
+[<img alt="Android Freeware" width="200px" src="https://www.androidfreeware.net/images/androidfreeware-badge.png" />](https://www.androidfreeware.net/download-safe-space-apk.html)
 
 ## Disclaimer
 
@@ -49,7 +51,7 @@ Whatever happens on your phone stays on your phone (for Safe space app).
 I've been getting emails from Paypal sending me money, since I have never used Paypal (not very
 popular in my country), I thought it was a scam. It is only recently (Dec 2023) that I realised that
 users of my app were sending me money (Thank you for that btw!!).
-Currently I am not accepting any monetary contributions as this app is not incuring any expenses
+Currently I am not accepting any monetary contributions as this app is not incurring any expenses
 apart from a weekend or two of coding. Also, this app is my tiny contribution towards combating the
 reign of big tech and their malicious ways of business and I want everyone to use the full version
 of it without any paywalls.
@@ -96,7 +98,7 @@ the MIME types in their app's design.
 
 In simple terms, most apps have file access permissions that are often not required for that app to
 function (e.g. - MS Office apps) and can actually read sensitive information from your files (e.g. -
-Aadhar number, PAN number etc.). These apps may not necessarily access information beyond what is
+Aadhaar number, PAN number etc.). These apps may not necessarily access information beyond what is
 required but they have the possibility to do so, which means, that you and your privacy are at the
 mercy of such app developers.
 
