@@ -33,11 +33,9 @@ government agencies and other such organizations. I recommend investing in a lig
 more reliable methods of information protection such as Tails OS and VeraCrypt (This is not an
 endorsement, just a suggestion). It is your sole responsibility what you store in this app.
 
-## Contributing
+## Contributions and New Features
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change. This app is new and bound to have a few bugs, it would
-mean a lot to me if you can contribute to the project in any way possible.
+SafeSpace has seen a good amount of growth in the last two years, I am truly grateful for that, however, due to time constraints and responsibilites in life and work, I am pausing development of new features. This means that the app will not be getting any new features by me, however, if you wish to contribute new features, you're most welcome, I'd be very happy to merge your PR. Also, This does **NOT** mean that the app is out of support. I will provide bug fixes as soon as possible and will be active in discussions.
 
 ## Privacy Policy
 
