@@ -588,7 +588,6 @@ class BottomAppBar(private val activity: MainnActivity) {
     }
 
     private fun importFiles() {
-//        showMessage(activity.getString(R.string.import_files_progress))
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.type = "*/*"
