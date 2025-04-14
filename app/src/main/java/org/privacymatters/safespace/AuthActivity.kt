@@ -26,6 +26,7 @@ import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
 import java.util.concurrent.Executor
+import androidx.core.content.edit
 
 
 /*
@@ -242,21 +243,23 @@ class AuthActivity : AppCompatActivity() {
 
             val biometricBackup = sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)
 
-            sharedPref.edit()
-                .putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
-                .putBoolean(
-                    Constants.USE_BIOMETRIC_BCKP,
-                    biometricBackup
-                )
-                .putBoolean(Constants.USE_BIOMETRIC, false)
-                .apply()
+            sharedPref.edit {
+                putLong(Constants.TIME_TO_UNLOCK_START, blockDuration + System.currentTimeMillis())
+                    .putBoolean(
+                        Constants.USE_BIOMETRIC_BCKP,
+                        biometricBackup
+                    )
+                    .putBoolean(Constants.USE_BIOMETRIC, false)
+            }
         } else {
             val biometricRestore = sharedPref.getBoolean(Constants.USE_BIOMETRIC_BCKP, false)
 
-            sharedPref.edit().putBoolean(
-                Constants.USE_BIOMETRIC,
-                biometricRestore
-            ).apply()
+            sharedPref.edit {
+                putBoolean(
+                    Constants.USE_BIOMETRIC,
+                    biometricRestore
+                )
+            }
         }
     }
 
@@ -272,10 +275,10 @@ class AuthActivity : AppCompatActivity() {
     private fun unlockLogin() {
         removeLoginBlockMsg()
         okBtn.isEnabled = true
-        sharedPref.edit()
-            .putLong(Constants.TIME_TO_UNLOCK_DURATION, Constants.DEF_NUM_FLAG)
-            .putLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
-            .apply()
+        sharedPref.edit {
+            putLong(Constants.TIME_TO_UNLOCK_DURATION, Constants.DEF_NUM_FLAG)
+                .putLong(Constants.TIME_TO_UNLOCK_START, Constants.DEF_NUM_FLAG)
+        }
     }
 
     private fun checkLoginUnlocked(): Pair<Boolean, Long> {
@@ -388,7 +391,8 @@ class AuthActivity : AppCompatActivity() {
 
         executor = ContextCompat.getMainExecutor(this)
 
-        biometricPrompt = BiometricPrompt(this, executor,
+        biometricPrompt = BiometricPrompt(
+            this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
 
                 override fun onAuthenticationSucceeded(

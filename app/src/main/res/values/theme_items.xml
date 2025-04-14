@@ -1,9 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array
-        name="theme_names">
-        <item>@string/dark_theme_text</item>
-        <item>@string/light_theme_text</item>
-        <item>@string/amoled_theme_text</item>
-    </string-array>
-</resources>
+<resources />

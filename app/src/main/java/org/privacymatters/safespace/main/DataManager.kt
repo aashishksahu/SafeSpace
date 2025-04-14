@@ -49,6 +49,8 @@ object DataManager {
 
     var positionHistory = mutableIntStateOf(-1)
 
+    var lockItem = false // if true, navigating away from the activity will show passcode screen
+
     var openedItem: Item? = null
 
     fun ready(app: Application): Int {

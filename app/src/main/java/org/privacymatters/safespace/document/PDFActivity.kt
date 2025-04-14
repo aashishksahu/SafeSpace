@@ -3,7 +3,9 @@ package org.privacymatters.safespace.document
 import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
+import android.view.KeyEvent
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -89,6 +91,15 @@ class PDFActivity : AppCompatActivity() {
             alert.show()
         }
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (ops.lockItem) {
+                    LockTimer.setLockManually()
+                }
+                finish()
+            }
+        })
+
     }
 
     override fun onStop() {
@@ -105,6 +116,15 @@ class PDFActivity : AppCompatActivity() {
     override fun onPause() {
         LockTimer.stop()
         LockTimer.start()
+
         super.onPause()
     }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (listOf(KeyEvent.KEYCODE_ESCAPE, 4).contains(keyCode)) {
+            if (ops.lockItem) LockTimer.setLockManually()
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
 }

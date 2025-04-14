@@ -43,12 +43,18 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.document.PDFActivity
+import org.privacymatters.safespace.document.TextDocumentActivity
 import org.privacymatters.safespace.main.ActionBarType
+import org.privacymatters.safespace.main.Item
 import org.privacymatters.safespace.main.MainnActivity
+import org.privacymatters.safespace.media.MediaActivity
 import org.privacymatters.safespace.settings.SettingsActivity
 import org.privacymatters.safespace.utils.Constants
+import org.privacymatters.safespace.utils.Utils
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TopAppBar(private val activity: MainnActivity) {
@@ -141,6 +147,17 @@ class TopAppBar(private val activity: MainnActivity) {
                 var shareAlertState by remember { mutableStateOf(false) }
 
                 if (selectedFileCountState < 2 && selectedFolderCountState < 1) {
+
+                    IconButton(onClick = {
+                        activity.viewModel.getSingleSelectedItem()?.let { openSingleItem(it) }
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.pin_on),
+                            contentDescription = stringResource(R.string.open_single),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
                     IconButton(
 
                         onClick = {
@@ -387,10 +404,63 @@ class TopAppBar(private val activity: MainnActivity) {
         activity.startActivity(settingsIntent)
     }
 
-//    private fun showMessage(msg: String) {
-//        activity.lifecycleScope.launch {
-//            activity.snackBarHostState.showSnackbar(msg)
-//        }
-//    }
+    private fun openSingleItem(item: Item) {
+        if (item.isDir) {
+            activity.viewModel.travelToLocation(item.name)
+        } else {
+            val filePath =
+                activity.viewModel.getPath(item.name)
+
+            when (Utils.getFileType(item.name)) {
+                Constants.IMAGE_TYPE,
+                Constants.VIDEO_TYPE,
+                Constants.AUDIO_TYPE -> {
+                    val mediaViewIntent = Intent(activity, MediaActivity::class.java)
+                    activity.viewModel.ops.openedItem = item
+
+                    activity.viewModel.ops.lockItem = true
+                    activity.viewModel.clearSelection()
+
+                    activity.startActivity(mediaViewIntent)
+                }
+
+                Constants.DOCUMENT_TYPE, Constants.TXT, Constants.JSON, Constants.XML, Constants.PDF -> {
+
+                    var documentViewIntent: Intent? = null
+
+                    if (filePath.split('.').last() == Constants.PDF) {
+                        documentViewIntent = Intent(activity, PDFActivity::class.java)
+
+                    } else if (filePath.split('.').last() in arrayOf(
+                            Constants.TXT,
+                            Constants.JSON,
+                            Constants.XML
+                        )
+                    ) {
+                        documentViewIntent = Intent(activity, TextDocumentActivity::class.java)
+                    }
+
+                    if (documentViewIntent != null) {
+                        documentViewIntent.putExtra(Constants.INTENT_KEY_PATH, filePath)
+
+                        activity.viewModel.ops.lockItem = true
+                        activity.viewModel.clearSelection()
+
+                        activity.startActivity(documentViewIntent)
+                    }
+                }
+
+                else -> {
+                    showMessage(activity.getString(R.string.unsupported_format))
+                }
+            }
+        }
+    }
+
+    private fun showMessage(msg: String) {
+        activity.lifecycleScope.launch {
+            activity.snackBarHostState.showSnackbar(msg)
+        }
+    }
 
 }

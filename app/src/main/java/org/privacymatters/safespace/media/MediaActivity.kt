@@ -1,7 +1,9 @@
 package org.privacymatters.safespace.media
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +36,10 @@ class MediaActivity : AppCompatActivity() {
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
 
+        // only open a single item if opened via the pin pin icon
+        if (viewModel.ops.lockItem) {
+            viewModel.mediaList = listOf(viewModel.mediaList[viewModel.currentPosition])
+        }
         // hide navigation and status bar
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -73,6 +79,15 @@ class MediaActivity : AppCompatActivity() {
                 viewModel.setPosition(position)
             }
         })
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewModel.ops.lockItem) {
+                    LockTimer.setLockManually()
+                }
+                finish()
+            }
+        })
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -96,9 +111,18 @@ class MediaActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+
         LockTimer.stop()
         LockTimer.start()
+
         super.onPause()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (listOf(KeyEvent.KEYCODE_ESCAPE, 4).contains(keyCode)) {
+            if (viewModel.ops.lockItem) LockTimer.setLockManually()
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
 

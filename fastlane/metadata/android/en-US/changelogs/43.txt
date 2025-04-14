@@ -1,0 +1,1 @@
+Added option to pin a single document or media file, it will require authentication to go back to the list
