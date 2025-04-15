@@ -32,6 +32,7 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.UUID
 import androidx.core.content.edit
+import org.privacymatters.safespace.BuildConfig
 
 enum class ActionBarType {
     NORMAL, LONG_PRESS, MOVE, COPY
@@ -391,8 +392,20 @@ class MainActivityViewModel(private val application: Application) : AndroidViewM
         }
     }
 
+    fun isUpdated(): Boolean {
+        val oldVersionCode = sharedPref.getInt(Constants.VERSION_CODE, 0)
+        return oldVersionCode != BuildConfig.VERSION_CODE
+    }
+
+    fun updateVersionCode() {
+        sharedPref.edit {
+            putInt(Constants.VERSION_CODE, BuildConfig.VERSION_CODE)
+        }
+    }
+
     fun isMigrationComplete(): Boolean {
-        return sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
+        val isMigrated = sharedPref.getBoolean(Constants.MIGRATION_COMPLETE, false)
+        return isMigrated
     }
 
     fun exportToLog(msg: String, e: Exception) {

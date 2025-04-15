@@ -14,13 +14,12 @@ android {
 
     defaultConfig {
         applicationId "org.privacymatters.safespace"
-        
+
         minSdk 29
         targetSdk 35
-        versionCode 43
-        versionName "2.3.0"
+        versionCode 44
+        versionName "2.3.1"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -48,7 +47,7 @@ android {
     }
     packaging {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
     dependenciesInfo {
