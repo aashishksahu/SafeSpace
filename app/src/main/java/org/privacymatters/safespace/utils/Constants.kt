@@ -3,6 +3,8 @@ package org.privacymatters.safespace.utils
 class Constants {
     companion object {
 
+        const val VERSION_CODE = "version_code"
+
         const val NEXT_LINE = "________________________\n"
         const val MIGRATION_COMPLETE = "root_migration"
         const val TAG_ERROR = "org.privacymatters.safespace:E"
@@ -19,7 +21,6 @@ class Constants {
 
         const val OTHER_TYPE = "other"
         const val INTENT_KEY_PATH = "path"
-//        const val INTENT_KEY_INDEX = "index"
 
         const val CAMERA_MODE = "CAMERA_MODE"
         const val PHOTO = "PHOTO"
@@ -33,7 +34,6 @@ class Constants {
         const val BIN = "BIN"
         const val BACKUP_METADATA = "metadata.txt"
 
-        //        const val ROOT = "root"
         const val ROOT = "zfx2a4i6wm"
         const val USE_BIOMETRIC = "USE_BIOMETRIC"
         const val USE_BIOMETRIC_BCKP = "USE_BIOMETRIC_BCKP"

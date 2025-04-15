@@ -106,6 +106,12 @@ class MainnActivity : AppCompatActivity() {
                 viewModel.appBarType
             }
 
+            // migrate data from root folder to avoid issues with user created root folder inside
+            // show changelog if migration or update happens
+            if (!viewModel.isMigrationComplete() || viewModel.isUpdated()) {
+                ShowChangeLog()
+            }
+
             Scaffold(
                 snackbarHost = {
                     SnackbarHost(hostState = snackBarHostState)
@@ -151,10 +157,6 @@ class MainnActivity : AppCompatActivity() {
                 }
             ) { innerPadding ->
                 val lazyListDisplay = ItemList(this)
-                // migrate data from root folder to avoid issues with user created root folder inside
-                if (!viewModel.isMigrationComplete()) {
-                    ShowChangeLog()
-                }
 
                 Column(
                     modifier = Modifier
@@ -234,6 +236,7 @@ class MainnActivity : AppCompatActivity() {
                     TextButton(
                         onClick = {
                             viewModel.migrateFromRoot()
+                            viewModel.updateVersionCode()
                             migrationMsg = false
                         }
                     ) {
