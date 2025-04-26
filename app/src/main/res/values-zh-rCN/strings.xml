@@ -44,8 +44,8 @@
     <string name="file_exists_error">文件已存在</string>
     <string name="same_path">不能与原始的位置相同</string>
     <string name="file_folder_placeholder">文件夹</string>
-    <string name="items">文件(夹)</string>
-    <string name="item">文件</string>
+    <string name="items">个文件(夹)</string>
+    <string name="item">个文件(夹)</string>
     <string name="pdf_exception_title">无法打开此文件</string>
     <string name="pdf_exception_subtitle">此文件存在问题。目前不支持受密码保护的文件</string>
     <string name="text_exception_title">未找到</string>
