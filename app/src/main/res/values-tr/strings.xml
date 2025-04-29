@@ -1,97 +1,115 @@
 <resources>
-    <string name="app_name">"अब आप किसी दस्तावेज़ को लंबे समय तक दबा सकते हैं और एकल आइटम खोलने के लिए पिन आइकन का उपयोग कर सकते हैं, सूची में वापस जाने के लिए पास कोड की आवश्यकता होगी "</string>
+    <string name="app_name" translatable="false">Safe Space</string>
     <string name="cancel">İptal</string>
     <string name="create">Oluştur</string>
     <string name="ok">Tamam</string>
-    <string name="create_folder">Dosya</string>
-    <string name="import_files">veri</string>
-    <string name="export_backup">Zip Yedeklemesini Dışa Aktar</string>
+    <string name="create_folder">Klasör</string>
+    <string name="import_files">Dosya</string>
+    <string name="export_backup">Zip Yedek Dışa Aktar</string>
     <string name="change_theme">Temayı Değiştir</string>
-    <string name="export_backup_msg">ZIP arşivi arka planda dışa aktarılıyor, büyük dosyalar zaman alacak..</string>
+    <string name="export_backup_msg">Zip arşivi arka planda dışa aktarılıyor, büyük dosyalar zaman alacaktır..</string>
     <string name="backup_err_space">Yeterli Depolama Alanı Yok</string>
-    <string name="import_backup">Zip Yedeklemesini İçe Aktar</string>
+    <string name="import_backup">Zip Yedeği İçe Aktar</string>
     <string name="backup_err_other">Beklenmeyen Hata, Lütfen tekrar deneyin</string>
-    <string name="import_backup_msg">ZIP arşivi arka planda içe aktarılıyor, büyük dosyalar zaman alacak..</string>
-    <string name="open_camera">kamera</string>
+    <string name="import_backup_msg">Zip arşivi arka planda içe aktarılıyor, büyük dosyalar zaman alacaktır..</string>
+    <string name="open_camera">Kamera</string>
     <string name="photo">Fotoğraf</string>
     <string name="video">Video</string>
+    <string name="q1080p" translatable="false">1080p</string>
+    <string name="q720p" translatable="false">720p</string>
+    <string name="q480p" translatable="false">480p</string>
     <string name="video_quality">Video Kalitesi</string>
     <string name="switch_camera">Kamerayı Değiştir</string>
     <string name="flash_toggle">Flaş</string>
-    <string name="start_capture">Yakalamayı Başlat</string>
-    <string name="video_error">Dahili Hata, video kaydedilemedi</string>
-    <string name="permission_denied">İzin isteği reddedildi</string>
-    <string name="create_folder_invalid_error">Yalnızca harf ve sayılara izin verilir </string>
+    <string name="start_capture">Çekime Başla</string>
+    <string name="video_error">İç Hata, video kaydedilemedi</string>
+    <string name="video_timer" translatable="false">00:00</string>
+    <string name="permission_denied">İzin talebi reddedildi</string>
+    <string name="create_folder_invalid_error">Sadece harf ve rakamlar kullanılabilir</string>
     <string name="file_icon_description">Dosya veya klasör simgesi</string>
-    <string name="context_menu_rename">Yeniden adlandır</string>
+    <string name="context_menu_rename">Yeniden Adlandır</string>
     <string name="context_menu_delete">Sil</string>
     <string name="multi_export">Dışa Aktar</string>
     <string name="context_menu_move">Taşı</string>
     <string name="context_menu_copy">Kopyala</string>
     <string name="context_menu_share">Paylaş</string>
-    <string name="generic_error">Bir hata oluştu. Lütfen tekrar deneyin</string>
+    <string name="generic_error">Bir şeyler yanlış gitti. Lütfen tekrar deneyin</string>
     <string name="delete_confirmation">Bunu silmek istediğinizden emin misiniz?</string>
     <string name="share_dialog_title">Uyarı!</string>
-    <string name="share_dialog_description">Bu dosyayı üçüncü taraf bir uygulama ile paylaşıyorsunuz, uygulamaya güvendiğinizden emin olun.</string>
-    <string name="share_chooser_title">Paylaş…</string>
+    <string name="share_dialog_description">Bu dosyayı üçüncü taraf bir uygulamayla paylaşıyorsunuz, uygulamaya güvendiğinizden emin olun.</string>
+    <string name="share_chooser_title">Şununla paylaş…</string>
     <string name="media_view_desc">Medya Görünümü</string>
-    <string name="move_copy_file_failure">Eylem başarısız</string>
+    <string name="move_copy_file_failure">İşlem başarısız</string>
     <string name="move_copy_file_success">Dosya(lar) başarıyla taşındı/kopyalandı</string>
     <string name="copy_file_title">Buraya Kopyala</string>
-    <string name="move_btn_text">Buraya taşı veya kopyala</string>
-    <string name="unsupported_format">Dosya biçimi desteklenmiyor</string>
+    <string name="move_btn_text">Buraya taşı</string>
+    <string name="unsupported_format">Dosya formatı desteklenmiyor</string>
     <string name="create_txt_menu">Not</string>
-    <string name="file_exists_error">Bu Dosya Zaten Var</string>
+    <string name="file_exists_error">Bu Dosya Zaten Mevcut</string>
+    <string name="same_path">Kaynak ve hedef konum aynı</string>
     <string name="file_folder_placeholder">Klasör</string>
-    <string name="items">Maddeler</string>
-    <string name="item">Sıra</string>
+    <string name="items">Öğeler</string>
+    <string name="item">Öğe</string>
     <string name="pdf_exception_title">Belge açılamıyor</string>
-    <string name="pdf_exception_subtitle">Belgede sorunlar var. Bu parola korumalı bir belgeyse, henüz desteklenmemektedir.</string>
+    <string name="pdf_exception_subtitle">Belgede sorunlar var. Eğer bu parola korumalı bir belge ise, şu an için desteklenmiyor.</string>
     <string name="text_exception_title">Bulunamadı</string>
     <string name="text_exception_IO">Metin notu açılamıyor</string>
+
     <string name="auth_login">Giriş</string>
-    <string name="auth_stuck">Burada takılı kalırsanız ekranınızı kilitleyin ve kilidini açın.</string>
+
+    <string name="auth_stuck">Burada takılı kaldıysanız ekranınızı kilitleyin ve kilidini açın.</string>
+
     <string name="about_text">Hakkında</string>
-    <string name="about_sub_title1">Tüm önemli dijital eşyalarınız için Güvenli Alan.</string>
-    <string name="about_sub_title2">Dosyaları depolamak için uygulamaya özel depolama kullanır, bu dosyalar şifrelenir ve diğer uygulamalar tarafından görülemez ve telefon kilitlendiğinde erişilemez.</string>
-    <string name="about_foss">Kullanılan kütüphaneler ve varlıklar:</string>
-    <string name="root_check_title">Kök Kontrolü</string>
-    <string name="root_check_subtitle">Bu uygulamayı köklü bir telefonda kullanmanız önerilmez. Uygulama şimdi kapanacak.</string>
+    <string name="about_title" translatable="false">Safe Space</string>
+    <string name="about_sub_title1">Tüm önemli dijital eşyalarınız için Güvenli Bir Alan.</string>
+    <string name="about_sub_title2">Dosyaları depolamak için uygulamaya özel depolama kullanır, bu dosyalar şifrelenir ve diğer uygulamalar tarafından görülemez ve telefon kilitliyken erişilemez.</string>
+    <string name="about_foss">Kullanılan Kütüphaneler ve varlıklar:</string>
+
+    <string name="glide" translatable="false">Glide</string>
+    <string name="androidx" translatable="false">AndroidX</string>
+    <string name="camerax" translatable="false">CameraX</string>
+    <string name="photoview" translatable="false">PhotoView by Chris banes</string>
+    <string name="exo" translatable="false">Exo player</string>
+    <string name="material" translatable="false">Google Material 3</string>
+
+    <string name="root_check_title">Root Kontrolü</string>
+    <string name="root_check_subtitle">Bu uygulamayı rootlu bir telefonda kullanmanız önerilmez. Uygulama şimdi kapanacak.</string>
+
     <string name="System">Sistem</string>
     <string name="Light">Açık</string>
     <string name="Dark">Koyu</string>
     <string name="sort">Sırala</string>
-    <string name="name">Adı</string>
+
+    <string name="name">İsim</string>
     <string name="size">Boyut</string>
     <string name="date">Tarih</string>
     <string name="asc">Artan</string>
     <string name="desc">Azalan</string>
-    <string name="sort_by_title_file">Dosyaları Sıralama Ölçütü</string>
-    <string name="sort_by_order">Sipariş</string>
-    <string name="pin_text_box">PIN kodunu girin</string>
-    <string name="set_pin_text">PIN\'İ AYARLA</string>
-    <string name="confirm_pin_text">PIN KODUNU ONAYLAYIN</string>
-    <string name="pin_error">PIN KODU boş olamaz</string>
-    <string name="pin_error2">PIN KODU en az 4 karakter olmalıdır</string>
-    <string name="pin_error4">PIN KODU EŞLEŞMİYOR</string>
+    <string name="sort_by_title_file">Dosyaları Şuna Göre Sırala</string>
+    <string name="sort_by_order">Sıralama</string>
+    <string name="pin_text_box">PIN Girin</string>
+    <string name="set_pin_text">PIN Belirle</string>
+    <string name="confirm_pin_text">PIN\'i Onayla</string>
+    <string name="pin_error">PIN boş olamaz</string>
+    <string name="pin_error2">PIN en az 4 karakter olmalıdır</string>
+    <string name="pin_error4">PIN eşleşmiyor</string>
     <string name="pin_error5">Yanlış PIN</string>
-    <string name="pin_error6">Çok fazla yanlış deneme var, daha sonra tekrar deneyin</string>
-    <string name="change_pin">PIN KODUNU DEĞİŞTİR</string>
+    <string name="pin_error6">Çok fazla hatalı deneme, daha sonra tekrar deneyin</string>
+    <string name="change_pin">PIN Değiştir</string>
     <string name="current_pin">Mevcut PIN</string>
-    <string name="pin_lost_warning">ÖNEMLİ: PIN KODUNUZU unutmayın. Verilerinizin her zaman yedeğini alın.</string>
+    <string name="pin_lost_warning">ÖNEMLİ: PIN\'inizi UNUTMAYIN. Her zaman verilerinizin yedeğini alın.</string>
     <string name="biometric_title">Biyometrik Kilit Açma</string>
     <string name="title_activity_settings">Ayarlar</string>
-    <string name="same_path">Kaynak ve hedef konum aynıdır</string>
-    <string name="migration_headline">Değişiklik Günlüğü</string>
-    <string name="migration_content">Artık bir belgeye uzun süre basabilir ve tek bir öğeyi açmak için pim simgesini kullanabilirsiniz, listeye geri dönmek için şifre gerekir</string>
-    <string name="logs">Kütükler</string>
-    <string name="notif_export">Dışa aktarılıyor</string>
-    <string name="notif_import">İçe aktarılıyor</string>
-    <string name="notif_imp_bckp_success">Yedek dosya başarıyla içe aktarıldı!</string>
-    <string name="notif_exp_bckp_success">Yedek dosya başarıyla oluşturuldu!</string>
+    <string name="migration_headline">Değişiklik Kaydı</string>
+    <string name="migration_content">"Artık bir belgeye uzun basıp iğne simgesini kullanarak tek bir öğeyi açabilirsiniz, listeye geri dönmek için şifre gerekecektir "</string>
+    <string name="logs">Günlükler</string>
+    <string name="notif_export">Dışa Aktarılıyor</string>
+    <string name="notif_import">İçe Aktarılıyor</string>
+    <string name="notif_imp_bckp_success">Yedek dosyası başarıyla içe aktarıldı!</string>
+    <string name="notif_exp_bckp_success">Yedek dosyası başarıyla oluşturuldu!</string>
     <string name="notif_imp_file_success">Dosya başarıyla içe aktarıldı!</string>
     <string name="notif_exp_file_success">Dosya başarıyla dışa aktarıldı!</string>
-    <string name="notif_exp_file_caption_s">Başarıyla kopyalandı</string>
-    <string name="notif_exp_file_caption_e">Kopyalama başarısız oldu</string>
-    <string name="open_single">Bu Ürünü Sabitle</string>
+    <string name="notif_exp_file_caption_s">başarıyla kopyalandı</string>
+    <string name="notif_exp_file_caption_e">Kopyalanamadı</string>
+    <string name="open_single">Bu Öğeyi Sabitle</string>
 </resources>
