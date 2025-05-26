@@ -90,26 +90,30 @@ class MediaFragment(private val mediaPath: String) : Fragment() {
 
     private fun initializePlayer(path: String) {
 
-        MediaPlayer.player?.release()
+        try {
+            MediaPlayer.player?.release()
 
-        MediaPlayer.player = ExoPlayer.Builder(requireContext())
-            .build()
+            MediaPlayer.player = ExoPlayer.Builder(requireContext())
+                .build()
 
-        // create a media item.
-        val mediaItem = MediaItem.fromUri(path)
+            // create a media item.
+            val mediaItem = MediaItem.fromUri(path)
 
-        MediaPlayer.player!!.setMediaItem(mediaItem)
+            MediaPlayer.player!!.setMediaItem(mediaItem)
 
-        MediaPlayer.player!!.prepare()
+            MediaPlayer.player!!.prepare()
 
-        // Finally assign this media source to the player
-        MediaPlayer.player!!.apply {
-            playWhenReady = true // start playing when the exoplayer has setup
-            seekTo(0, 0L) // Start from the beginning
-            prepare() // Change the state from idle.
-        }.also {
-            // Do not forget to attach the player to the view
-            playerView.player = it
+            // Finally assign this media source to the player
+            MediaPlayer.player!!.apply {
+                playWhenReady = true // start playing when the exoplayer has setup
+                seekTo(0, 0L) // Start from the beginning
+                prepare() // Change the state from idle.
+            }.also {
+                // Do not forget to attach the player to the view
+                playerView.player = it
+            }
+        } catch (e: Exception) {
+            activity?.let { Utils.exportToLog(it.application, "@MediaFragment.initializePlayer() ", e) }
         }
     }
 }

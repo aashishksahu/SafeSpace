@@ -1,7 +1,6 @@
 package org.privacymatters.safespace.main.ui
 
 import android.content.Intent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -91,7 +90,7 @@ class ItemList(private val activity: MainnActivity) {
         }
     }
 
-    @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     private fun FileCard(item: Item) {
 
@@ -173,7 +172,6 @@ class ItemList(private val activity: MainnActivity) {
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun FolderCard(item: Item) {
         val haptics = LocalHapticFeedback.current
