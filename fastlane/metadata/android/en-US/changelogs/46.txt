@@ -1,0 +1,1 @@
+Fixed app crash caused by sorting
