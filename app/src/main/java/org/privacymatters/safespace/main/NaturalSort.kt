@@ -74,7 +74,11 @@ fun naturalCompareAscending(o1: Item, o2: Item): Int {
                 // Only count consecutive zeroes
                 numZeroS1 = 0
             }
-            charS1 = charAt(s1, ++strIndex1)
+            try {
+                charS1 = charAt(s1, ++strIndex1)
+            } catch (exp: StringIndexOutOfBoundsException) {
+                break
+            }
         }
         while (Character.isSpaceChar(charS2) || charS2 == '0') {
             if (charS2 == '0') {
@@ -83,7 +87,11 @@ fun naturalCompareAscending(o1: Item, o2: Item): Int {
                 // Only count consecutive zeroes
                 numZeroS2 = 0
             }
-            charS2 = charAt(s2, ++strIndex2)
+            try {
+                charS2 = charAt(s2, ++strIndex2)
+            } catch (exp: StringIndexOutOfBoundsException) {
+                break
+            }
         }
 
         // Process run of digits
@@ -178,7 +186,11 @@ fun naturalCompareDescending(o1: Item, o2: Item): Int {
                 // Only count consecutive zeroes
                 numZeroS1 = 0
             }
-            charS1 = charAt(s1, ++strIndex1)
+            try {
+                charS1 = charAt(s1, ++strIndex1)
+            } catch (exp: StringIndexOutOfBoundsException) {
+                break
+            }
         }
         while (Character.isSpaceChar(charS2) || charS2 == '0') {
             if (charS2 == '0') {
@@ -187,7 +199,11 @@ fun naturalCompareDescending(o1: Item, o2: Item): Int {
                 // Only count consecutive zeroes
                 numZeroS2 = 0
             }
-            charS2 = charAt(s2, ++strIndex2)
+            try {
+                charS2 = charAt(s2, ++strIndex2)
+            } catch (exp: StringIndexOutOfBoundsException) {
+                break
+            }
         }
 
         // Process run of digits
