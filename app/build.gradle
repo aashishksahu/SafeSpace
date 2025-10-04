@@ -15,6 +15,7 @@ android {
     defaultConfig {
         applicationId "org.privacymatters.safespace"
 
+
         minSdk 29
         targetSdk 35
         versionCode 47
