@@ -5,7 +5,7 @@ import com.android.tools.profgen.DexFile
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20"
 }
 
 android {
@@ -70,7 +70,7 @@ dependencies {
     implementation 'androidx.media3:media3-common:1.8.0'
 
 //  For Pictures
-    implementation 'com.github.bumptech.glide:glide:5.0.5'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'gradle downgrade for F-Droid build
     implementation "com.github.bumptech.glide:compose:1.0.0-beta08"
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.activity:activity-ktx:1.11.0'
