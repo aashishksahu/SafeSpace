@@ -43,7 +43,11 @@
             android:name=".camera.CameraActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <property
+                android:name="android.window.orientation_policy"
+                android:value="portrait_only" />
+        </activity>
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
@@ -60,8 +64,8 @@
         <activity
             android:name=".document.TextDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".document.PDFActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

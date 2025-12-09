@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import androidx.core.content.edit
 
 class EncPref {
     companion object {
@@ -26,7 +27,7 @@ class EncPref {
             val oldPin = encPref!!.getInt(Constants.HARD_PIN, -1)
 
             if (oldPin != -1) {
-                encPref!!.edit().putString(Constants.HARD_PIN, oldPin.toString()).apply()
+                encPref!!.edit { putString(Constants.HARD_PIN, oldPin.toString()) }
             }
 
 
@@ -40,9 +41,9 @@ class EncPref {
         fun setBoolean(pref: String, value: Boolean, applicationContext: Context) {
             init(applicationContext)
 
-            encPref!!.edit()
-                .putBoolean(pref, value)
-                .apply()
+            encPref!!.edit {
+                putBoolean(pref, value)
+            }
 
         }
 
@@ -55,26 +56,26 @@ class EncPref {
         fun setString(pref: String, value: String, applicationContext: Context) {
             init(applicationContext)
 
-            encPref!!.edit()
-                .putString(pref, value)
-                .apply()
+            encPref!!.edit {
+                putString(pref, value)
+            }
         }
 
 
         fun clearString(pref: String, applicationContext: Context) {
             init(applicationContext)
 
-            encPref!!.edit()
-                .putString(pref, "-1")
-                .apply()
+            encPref!!.edit {
+                putString(pref, "-1")
+            }
         }
 
         fun clearBoolean(pref: String, applicationContext: Context) {
             init(applicationContext)
 
-            encPref!!.edit()
-                .putBoolean(pref, false)
-                .apply()
+            encPref!!.edit {
+                putBoolean(pref, false)
+            }
         }
 
     }

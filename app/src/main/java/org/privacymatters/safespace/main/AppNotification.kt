@@ -20,7 +20,7 @@ class AppNotification: Application() {
         channel.description = "Shows file transfer progress."
 
         val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 }

@@ -103,7 +103,7 @@ class Utils {
             val lastDelimiterIndex = name.lastIndexOf('.')
 
             if (lastDelimiterIndex != -1) {
-                nameOnly = name.substring(0, lastDelimiterIndex)
+                nameOnly = name.take(lastDelimiterIndex)
                 ext = name.substring(lastDelimiterIndex + 1)
 
             }
@@ -119,7 +119,7 @@ class Utils {
             val lastDelimiterIndex = name.lastIndexOf(File.separator)
 
             if (lastDelimiterIndex != -1) {
-                path = name.substring(0, lastDelimiterIndex)
+                path = name.take(lastDelimiterIndex)
                 file = name.substring(lastDelimiterIndex + 1)
 
             }

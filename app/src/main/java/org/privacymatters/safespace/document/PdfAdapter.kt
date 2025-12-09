@@ -11,11 +11,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.privacymatters.safespace.R
+import androidx.core.graphics.createBitmap
 
 class PdfAdapter(private val renderer: PdfRenderer) :
     RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val pdfView: ImageView = view.findViewById(R.id.pdfView)
         val pageNumView: TextView = view.findViewById(R.id.pageNum)
@@ -36,9 +37,7 @@ class PdfAdapter(private val renderer: PdfRenderer) :
 
     private fun PdfRenderer.Page.renderAndClose() = use {
 
-        val bitmap = Bitmap.createBitmap(
-            width, height, Bitmap.Config.ARGB_8888
-        )
+        val bitmap = createBitmap(width, height)
 
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.WHITE)

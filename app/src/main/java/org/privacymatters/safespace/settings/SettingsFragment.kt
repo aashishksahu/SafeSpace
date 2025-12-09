@@ -26,6 +26,7 @@ import org.privacymatters.safespace.main.FileOpCode
 import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.utils.EncPref
 import org.privacymatters.safespace.utils.SetTheme
+import androidx.core.content.edit
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -225,10 +226,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         Constants.HARD_PIN_SET,
                         requireActivity().applicationContext
                     )
-                    sharedPref.edit()
-                        .putBoolean(Constants.USE_BIOMETRIC, false)
-                        .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
-                        .apply()
+                    sharedPref.edit {
+                        putBoolean(Constants.USE_BIOMETRIC, false)
+                            .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+                        }
 
                     // requireActivity().finish() //causes memory leak
                     val intent =
@@ -272,12 +273,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     changeThemeTextView.editText?.text.toString()
                 )
 
-                sharedPref.edit()
-                    .putString(
+                sharedPref.edit {
+                    putString(
                         getString(R.string.change_theme),
                         changeThemeTextView.editText?.text.toString()
                     )
-                    .apply()
+                }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog

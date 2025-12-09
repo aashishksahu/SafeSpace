@@ -62,7 +62,7 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // load theme from preferences
-        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE)
 
         if (!sharedPref.getBoolean(Constants.USE_BIOMETRIC, false)) {
             biometricPossible = false
