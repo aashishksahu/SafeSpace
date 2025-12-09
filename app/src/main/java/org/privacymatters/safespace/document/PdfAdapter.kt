@@ -1,6 +1,5 @@
 package org.privacymatters.safespace.document
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer

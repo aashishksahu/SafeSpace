@@ -3,7 +3,6 @@ package org.privacymatters.safespace.main
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 
 class AppNotification: Application() {
     override fun onCreate() {
