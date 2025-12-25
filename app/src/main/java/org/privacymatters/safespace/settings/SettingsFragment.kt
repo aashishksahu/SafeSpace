@@ -18,15 +18,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.AboutActivity
-import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.auth.AuthActivity
 import org.privacymatters.safespace.LogActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.main.FileOpCode
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.auth.EncPref
 import org.privacymatters.safespace.utils.SetTheme
 import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -221,15 +222,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 ) {
 
                     // clear pin from shared prefs and reset enrollment status
-                    EncPref.clearString(Constants.HARD_PIN, requireActivity().applicationContext)
-                    EncPref.clearBoolean(
-                        Constants.HARD_PIN_SET,
-                        requireActivity().applicationContext
-                    )
+                    lifecycleScope.launch {
+                        EncPref.clearPassword(
+                            Constants.HARD_PIN,
+                            requireActivity().applicationContext
+                        )
+                        EncPref.clearBoolean(
+                            Constants.HARD_PIN_SET,
+                            requireActivity().applicationContext
+                        )
+                    }
+
                     sharedPref.edit {
                         putBoolean(Constants.USE_BIOMETRIC, false)
                             .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
-                        }
+                    }
 
                     // requireActivity().finish() //causes memory leak
                     val intent =

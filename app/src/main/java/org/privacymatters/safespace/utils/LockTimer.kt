@@ -3,7 +3,7 @@ package org.privacymatters.safespace.utils
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.auth.AuthActivity
 import org.privacymatters.safespace.main.DataManager
 
 class LockTimer {
