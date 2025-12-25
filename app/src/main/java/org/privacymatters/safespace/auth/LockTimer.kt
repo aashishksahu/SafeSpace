@@ -1,9 +1,8 @@
-package org.privacymatters.safespace.utils
+package org.privacymatters.safespace.auth
 
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import org.privacymatters.safespace.auth.AuthActivity
 import org.privacymatters.safespace.main.DataManager
 
 class LockTimer {

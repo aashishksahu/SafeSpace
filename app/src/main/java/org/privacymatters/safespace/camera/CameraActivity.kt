@@ -36,7 +36,7 @@ import androidx.core.view.WindowInsetsCompat
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.Utils
 import java.io.File

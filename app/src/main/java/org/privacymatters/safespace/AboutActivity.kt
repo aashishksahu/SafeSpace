@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class AboutActivity : AppCompatActivity() {

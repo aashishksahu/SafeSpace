@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import org.privacymatters.safespace.R
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class SettingsActivity : AppCompatActivity() {

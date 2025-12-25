@@ -41,7 +41,7 @@ import org.privacymatters.safespace.main.ui.BottomAppBar
 import org.privacymatters.safespace.main.ui.ItemList
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.main.ui.TopAppBar
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 
 class MainnActivity : AppCompatActivity() {

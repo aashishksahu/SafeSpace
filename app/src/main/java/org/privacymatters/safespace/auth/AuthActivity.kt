@@ -23,7 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme
 import java.util.concurrent.Executor
