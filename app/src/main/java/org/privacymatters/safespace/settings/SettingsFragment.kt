@@ -27,7 +27,6 @@ import org.privacymatters.safespace.utils.Constants
 import org.privacymatters.safespace.auth.EncPref
 import org.privacymatters.safespace.utils.SetTheme
 import androidx.core.content.edit
-import androidx.lifecycle.lifecycleScope
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -215,23 +214,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setView(changePinLayout)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                if (currentPinEditText.text.toString() == EncPref.getString(
-                        Constants.HARD_PIN,
-                        context
-                    )
+                if (currentPinEditText.text.toString() == EncPref.getPassword(context)
                 ) {
 
                     // clear pin from shared prefs and reset enrollment status
-                    lifecycleScope.launch {
-                        EncPref.clearPassword(
-                            Constants.HARD_PIN,
-                            requireActivity().applicationContext
-                        )
-                        EncPref.clearBoolean(
-                            Constants.HARD_PIN_SET,
-                            requireActivity().applicationContext
-                        )
-                    }
+                    EncPref.clearPassword(requireActivity().applicationContext)
+                    EncPref.clearPasswordStatus(requireActivity().applicationContext)
 
                     sharedPref.edit {
                         putBoolean(Constants.USE_BIOMETRIC, false)

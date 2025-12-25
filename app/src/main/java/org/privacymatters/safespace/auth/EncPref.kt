@@ -15,7 +15,12 @@ import org.privacymatters.safespace.utils.KVMHelper
 class EncPref {
     companion object {
         private var encPref: SharedPreferences? = null
+
+        private var initialized = false
+
         private fun init(applicationContext: Context) {
+
+            if (initialized) return
 
             if (encPref == null) {
                 val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -37,12 +42,16 @@ class EncPref {
             }
 
             // migrate to Jetpack Datastore
-            CoroutineScope(Dispatchers.IO).launch {
+            // Shared preferences runs on main thread, jetpack datastore runs on IO thread,
+            // can't redesign the entire auth flow because Google felt cute one day and changed things.
+            // Hence, "runBlocking". It won't cause any visible performance lag
+
+            runBlocking {
                 val hardPinSetInDataStore =
                     KVMHelper.getValue(applicationContext, Constants.HARD_PIN_SET)
 
                 // if this is true, then pin is migrated to jetpack datastore
-                if (hardPinSetInDataStore == "true") return@launch
+                if (hardPinSetInDataStore == "true") return@runBlocking
 
                 val hardPin = encPref!!.getString(Constants.HARD_PIN, "")
 
@@ -60,77 +69,75 @@ class EncPref {
                         Constants.HARD_PIN,
                         hardPin
                     )
-                    KVMHelper.setValueEncrypted(
+                    KVMHelper.setValue(
                         applicationContext,
                         Constants.HARD_PIN_SET,
                         "true"
                     )
                 }
             }
+            initialized = true
+        }
+
+        fun getPasswordStatus(applicationContext: Context): Boolean {
+            init(applicationContext)
+
+            return runBlocking {
+                KVMHelper.getValue(
+                    applicationContext,
+                    Constants.HARD_PIN_SET
+                ) == "true"
+            }
 
         }
 
-        fun getBoolean(pref: String, applicationContext: Context): Boolean {
+        fun setPasswordStatus(value: Boolean, applicationContext: Context) {
             init(applicationContext)
 
-            val kvmPref = runBlocking { KVMHelper.getValue(applicationContext, pref) == "true" }
-
-            return if (kvmPref)
-                true
-            else
-                encPref!!.getBoolean(pref, false)
-        }
-
-        suspend fun setBoolean(pref: String, value: Boolean, applicationContext: Context) {
-            init(applicationContext)
-
-            KVMHelper.setValue(applicationContext, pref, value.toString())
-
-//            encPref!!.edit {
-//                putBoolean(pref, value)
-//            }
+            runBlocking {
+                KVMHelper.setValue(applicationContext, Constants.HARD_PIN_SET, value.toString())
+            }
 
         }
 
-        fun getString(pref: String, applicationContext: Context): String? {
+        fun getPassword(applicationContext: Context): String? {
             init(applicationContext)
 
-            val kvmPref = runBlocking { KVMHelper.getValue(applicationContext, pref) }
-
-            return kvmPref.ifEmpty { encPref!!.getString(pref, "-1") }
+            return runBlocking {
+                KVMHelper.getValueEncrypted(
+                    applicationContext,
+                    Constants.HARD_PIN
+                )
+            }
 
         }
 
 
-        suspend fun setPassword(pref: String, value: String, applicationContext: Context) {
+        fun setPassword(value: String, applicationContext: Context) {
             init(applicationContext)
 
-            KVMHelper.setValueEncrypted(applicationContext, pref, value)
+            runBlocking {
+                KVMHelper.setValueEncrypted(applicationContext, Constants.HARD_PIN, value)
+            }
 
-//            encPref!!.edit {
-//                putString(pref, value)
-//            }
         }
 
 
-        suspend fun clearPassword(pref: String, applicationContext: Context) {
+        fun clearPassword(applicationContext: Context) {
             init(applicationContext)
 
-            KVMHelper.setValueEncrypted(applicationContext, pref, "-1")
+            runBlocking {
+                KVMHelper.setValueEncrypted(applicationContext, Constants.HARD_PIN, "-1")
+            }
 
-//            encPref!!.edit {
-//                putString(pref, "-1")
-//            }
         }
 
-        suspend fun clearBoolean(pref: String, applicationContext: Context) {
+        fun clearPasswordStatus(applicationContext: Context) {
             init(applicationContext)
 
-            KVMHelper.setValue(applicationContext, pref, "false")
-
-//            encPref!!.edit {
-//                putBoolean(pref, false)
-//            }
+            runBlocking {
+                KVMHelper.setValue(applicationContext, Constants.HARD_PIN_SET, "false")
+            }
         }
 
     }

@@ -19,7 +19,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
@@ -82,7 +81,7 @@ class AuthActivity : AppCompatActivity() {
 
 
         // check if app pin is set
-        isHardPinSet = EncPref.getBoolean(Constants.HARD_PIN_SET, applicationContext)
+        isHardPinSet = EncPref.getPasswordStatus(applicationContext)
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -182,10 +181,7 @@ class AuthActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun authenticateUsingHardPin() {
-        if (pinField.text.toString() == EncPref.getString(
-                Constants.HARD_PIN,
-                applicationContext
-            )
+        if (pinField.text.toString() == EncPref.getPassword(applicationContext)
         ) {
             attemptCount = 0
 
@@ -366,10 +362,8 @@ class AuthActivity : AppCompatActivity() {
                     pinField.hint = getString(R.string.set_pin_text)
                 } else {
 
-                    lifecycleScope.launch {
-                        EncPref.setPassword(Constants.HARD_PIN, confirmPIN, applicationContext)
-                        EncPref.setBoolean(Constants.HARD_PIN_SET, true, applicationContext)
-                    }
+                    EncPref.setPassword(confirmPIN, applicationContext)
+                    EncPref.setPasswordStatus(true, applicationContext)
 
                     finish()
                     val intent = Intent(applicationContext, AuthActivity::class.java)
