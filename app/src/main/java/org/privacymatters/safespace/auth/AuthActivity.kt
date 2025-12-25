@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.MainnActivity
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.auth.EncPref
 import org.privacymatters.safespace.utils.LockTimer
 import org.privacymatters.safespace.utils.RootCheck
 import org.privacymatters.safespace.utils.SetTheme

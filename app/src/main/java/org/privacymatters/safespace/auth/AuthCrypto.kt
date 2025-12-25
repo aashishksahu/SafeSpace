@@ -2,7 +2,6 @@ package org.privacymatters.safespace.auth
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import org.privacymatters.safespace.utils.KVM
 import java.security.KeyStore
 import java.security.SecureRandom
 import javax.crypto.Cipher
