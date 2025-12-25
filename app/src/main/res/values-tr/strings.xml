@@ -101,7 +101,7 @@
     <string name="biometric_title">Biyometrik Kilit Açma</string>
     <string name="title_activity_settings">Ayarlar</string>
     <string name="migration_headline">Değişiklik Kaydı</string>
-    <string name="migration_content">"Artık bir belgeye uzun basıp iğne simgesini kullanarak tek bir öğeyi açabilirsiniz, listeye geri dönmek için şifre gerekecektir "</string>
+    <string name="migration_content">Bu sürüm, bazı telefonlarda bir kamera hatasını düzeltir ve dahili iyileştirmeler sağlar</string>
     <string name="logs">Günlükler</string>
     <string name="notif_export">Dışa Aktarılıyor</string>
     <string name="notif_import">İçe Aktarılıyor</string>
