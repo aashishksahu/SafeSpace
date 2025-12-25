@@ -3,7 +3,6 @@ package org.privacymatters.safespace.main
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 
 class AppNotification: Application() {
     override fun onCreate() {
@@ -20,7 +19,7 @@ class AppNotification: Application() {
         channel.description = "Shows file transfer progress."
 
         val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 }

@@ -1,0 +1,2 @@
+fixed green camera glitch on some phones
+app improvements

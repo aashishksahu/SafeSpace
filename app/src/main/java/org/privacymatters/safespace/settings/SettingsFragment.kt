@@ -18,14 +18,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.privacymatters.safespace.AboutActivity
-import org.privacymatters.safespace.AuthActivity
+import org.privacymatters.safespace.auth.AuthActivity
 import org.privacymatters.safespace.LogActivity
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.main.FileOpCode
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.EncPref
+import org.privacymatters.safespace.auth.EncPref
 import org.privacymatters.safespace.utils.SetTheme
+import androidx.core.content.edit
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -213,22 +214,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setView(changePinLayout)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                if (currentPinEditText.text.toString() == EncPref.getString(
-                        Constants.HARD_PIN,
-                        context
-                    )
+                if (currentPinEditText.text.toString() == EncPref.getPassword(context)
                 ) {
 
                     // clear pin from shared prefs and reset enrollment status
-                    EncPref.clearString(Constants.HARD_PIN, requireActivity().applicationContext)
-                    EncPref.clearBoolean(
-                        Constants.HARD_PIN_SET,
-                        requireActivity().applicationContext
-                    )
-                    sharedPref.edit()
-                        .putBoolean(Constants.USE_BIOMETRIC, false)
-                        .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
-                        .apply()
+                    EncPref.clearPassword(requireActivity().applicationContext)
+                    EncPref.clearPasswordStatus(requireActivity().applicationContext)
+
+                    sharedPref.edit {
+                        putBoolean(Constants.USE_BIOMETRIC, false)
+                            .putBoolean(Constants.USE_BIOMETRIC_BCKP, false)
+                    }
 
                     // requireActivity().finish() //causes memory leak
                     val intent =
@@ -272,12 +268,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     changeThemeTextView.editText?.text.toString()
                 )
 
-                sharedPref.edit()
-                    .putString(
+                sharedPref.edit {
+                    putString(
                         getString(R.string.change_theme),
                         changeThemeTextView.editText?.text.toString()
                     )
-                    .apply()
+                }
             }
             .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
                 // Dismiss the dialog

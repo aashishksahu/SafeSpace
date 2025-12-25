@@ -83,7 +83,7 @@
     <string name="biometric_title">使用生物特征解锁</string>
     <string name="title_activity_settings">设置</string>
     <string name="migration_headline">更改日志</string>
-    <string name="migration_content">"现在你可以通过长按选择文件并使用图钉图标打开单个文件，返回文件夹时需要输入PIN码"</string>
+    <string name="migration_content">本次发布修复了部分手机的摄像头故障，并带来了内部改进</string>
     <string name="logs">日志</string>
     <string name="notif_export">导出中</string>
     <string name="notif_import">导入中</string>

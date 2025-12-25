@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name="org.privacymatters.safespace.main.AppNotification"
+        android:name=".main.AppNotification"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
@@ -27,12 +27,12 @@
             android:exported="false"
             android:theme="@style/Theme.SafeSpace" />
         <activity
-            android:name="org.privacymatters.safespace.settings.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.SafeSpace" />
         <activity
-            android:name="org.privacymatters.safespace.main.MainnActivity"
+            android:name=".main.MainnActivity"
             android:exported="false"
             android:theme="@style/Theme.SafeSpace" />
         <activity
@@ -43,12 +43,16 @@
             android:name=".camera.CameraActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <property
+                android:name="android.window.orientation_policy"
+                android:value="portrait_only" />
+        </activity>
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".AuthActivity"
+            android:name=".auth.AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.SafeSpace">
             <intent-filter>
@@ -60,8 +64,8 @@
         <activity
             android:name=".document.TextDocumentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".document.PDFActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

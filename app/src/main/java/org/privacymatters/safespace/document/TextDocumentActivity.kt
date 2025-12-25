@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.main.ui.SafeSpaceTheme
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.Utils
 import java.io.BufferedReader

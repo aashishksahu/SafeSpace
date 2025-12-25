@@ -28,12 +28,15 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import org.privacymatters.safespace.R
 import org.privacymatters.safespace.main.DataManager
 import org.privacymatters.safespace.utils.Constants
-import org.privacymatters.safespace.utils.LockTimer
+import org.privacymatters.safespace.auth.LockTimer
 import org.privacymatters.safespace.utils.Reload
 import org.privacymatters.safespace.utils.Utils
 import java.io.File
@@ -118,9 +121,6 @@ class CameraActivity : AppCompatActivity() {
         )
         setContentView(R.layout.activity_camera)
 
-        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
-        window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.black)
-
         // This switch ensures that only switching from activities of this app, the item list
         // will reload (to prevent clearing of selected items during app switching)
         Reload.value = true
@@ -146,7 +146,7 @@ class CameraActivity : AppCompatActivity() {
         qualityButton = findViewById(R.id.quality_selector)
         timerText = findViewById(R.id.videoTimer)
 
-        cameraSelector = if (cameraSelectorText == Constants.DEFAULT_BACK_CAMERA ||
+        cameraSelector = if (cameraSelectorText == Constants.DEFAULT_FRONT_CAMERA ||
             cameraSelectorText.isNullOrEmpty()
         ) {
             CameraSelector.DEFAULT_BACK_CAMERA
@@ -288,6 +288,14 @@ class CameraActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+
+        val rootLayout = findViewById<ConstraintLayout>(R.id.camera_activity)
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
     }
 
     private fun switchMode() {
@@ -342,57 +350,46 @@ class CameraActivity : AppCompatActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(applicationContext)
 
         cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            // Preview
-            preview = Preview.Builder()
-//                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+            viewFinder.post {
+                preview = Preview.Builder()
+                    .build()
+                    .also {
+                        it.surfaceProvider = viewFinder.surfaceProvider
+                    }
+
+                val qualitySelector = QualitySelector.from(
+                    Quality.HD,
+                    FallbackStrategy.lowerQualityOrHigherThan(Quality.SD)
+                )
+
+                if (recorder == null) {
+                    recorder = Recorder.Builder()
+                        .setQualitySelector(qualitySelector)
+                        .build()
                 }
 
-            // video capture
-            val qualitySelector = QualitySelector.from(
-                Quality.SD,
-                FallbackStrategy.lowerQualityOrHigherThan(Quality.SD)
-            )
+                videoCapture = VideoCapture.withOutput(recorder!!)
 
-            if (recorder == null) {
-                recorder = Recorder.Builder()
-                    .setQualitySelector(qualitySelector)
+                cameraViewModel.timerCounterText.observe(this) { timeCount ->
+                    timerText.text = timeCount
+                }
+
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .build()
+
+                try {
+                    cameraProvider.unbindAll()
+
+                    cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture, videoCapture
+                    )
+                } catch (e: Exception) {
+                    Utils.exportToLog(application, "@CameraActivity.startCamera()", e)
+                }
             }
-
-            videoCapture = VideoCapture.withOutput(recorder!!)
-
-            cameraViewModel.timerCounterText.observe(this) { timeCount ->
-                timerText.text = timeCount
-            }
-
-            // image capture
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-//                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-                .build()
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview
-                )
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, videoCapture
-                )
-
-            } catch (e: Exception) {
-                Utils.exportToLog(application, "@CameraActivity.startCamera()", e)
-            }
-
         }, ContextCompat.getMainExecutor(applicationContext))
     }
 
@@ -556,4 +553,3 @@ class CameraActivity : AppCompatActivity() {
         super.onPause()
     }
 }
-

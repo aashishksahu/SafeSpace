@@ -52,7 +52,7 @@ class BottomAppBar(private val activity: MainnActivity) {
     private val createFolderShowDialog = mutableStateOf(false)
     private val createNoteShowDialog = mutableStateOf(false)
     private val renameShowDialog = mutableStateOf(false)
-    private val namePattern = Regex("[~`!@#\$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
+    private val namePattern = Regex("[~`!@#$%^&*()+=|\\\\:;\"'>?/<,\\[\\]{}]")
     private var name: String = ""
 
     @Composable
