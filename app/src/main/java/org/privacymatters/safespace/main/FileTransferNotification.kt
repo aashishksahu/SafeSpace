@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.privacymatters.safespace.R
+import org.privacymatters.safespace.auth.AuthActivity
 
 /**
  * Class to handle file transfer notifications
@@ -79,7 +80,7 @@ class FileTransferNotification(private val context: Context, private val notific
         ) {
             return
         }
-        val intent = Intent(context, MainnActivity::class.java)
+        val intent = Intent(context, AuthActivity::class.java)
         val pendingIntent =
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -119,7 +120,7 @@ class FileTransferNotification(private val context: Context, private val notific
         ) {
             return
         }
-        val intent = Intent(context, MainnActivity::class.java)
+        val intent = Intent(context, AuthActivity::class.java)
         val pendingIntent =
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 

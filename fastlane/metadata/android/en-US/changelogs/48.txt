@@ -1,0 +1,1 @@
+Fixed a bug where opening a success notification bypasses authentication
