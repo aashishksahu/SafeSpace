@@ -35,7 +35,7 @@ endorsement, just a suggestion). It is your sole responsibility what you store i
 
 ## Contributions and New Features
 
-SafeSpace has seen a good amount of growth in the last two years, I am truly grateful for that, however, due to time constraints and responsibilites in life and work, I am pausing development of new features. This means that the app will not be getting any new features by me, however, if you wish to contribute new features, you're most welcome, I'd be very happy to merge your PR. Also, This does **NOT** mean that the app is out of support. I will provide bug fixes as soon as possible and will be active in discussions.
+SafeSpace has seen a good amount of growth in the last few years, I am truly grateful for that, however, due to time constraints and responsibilites in life and work, I am pausing development of new features. This means that the app will not be getting any new features by me, however, if you wish to contribute new features, you're most welcome, I'd be very happy to merge your PR. Also, This does **NOT** mean that the app is out of support. I will provide critical bug fixes as soon as possible and will be active in discussions.
 
 ## Privacy Policy
 
