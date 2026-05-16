@@ -1,234 +1,53 @@
 package org.privacymatters.safespace.main
 
-/*
-    With Help From:
-    https://github.com/ritwik12/NaturalSort/blob/master/NaturalSort.java
+import java.math.BigInteger
+
+/**
+ * Robust natural sort comparison.
+ * Handles digits as numbers and other characters case-insensitively.
  */
+private fun compareNatural(s1: String, s2: String): Int {
+    var i = 0
+    var j = 0
 
-fun compareRight(str1: String, str2: String): Int {
-    val s1 = "$str1."
-    val s2 = "$str2."
+    while (i < s1.length && j < s2.length) {
+        val c1 = s1[i]
+        val c2 = s2[j]
 
-    var temp = 0
-    var strIndex1 = 0
-    var strIndex2 = 0
+        if (Character.isDigit(c1) && Character.isDigit(c2)) {
+            val num1Start = i
+            while (i < s1.length && Character.isDigit(s1[i])) i++
+            val num1Str = s1.substring(num1Start, i)
 
-    while (true) {
-        val charS1 = charAt(s1, strIndex1)
-        val charS2 = charAt(s2, strIndex2)
+            val num2Start = j
+            while (j < s2.length && Character.isDigit(s2[j])) j++
+            val num2Str = s2.substring(num2Start, j)
 
-        if (!Character.isDigit(charS1) && !Character.isDigit(charS2)) {
-            return temp
-        }
-        if (!Character.isDigit(charS1)) {
-            return -1
-        }
-        if (!Character.isDigit(charS2)) {
-            return 1
-        }
-        if (charS1.code == 0 && charS2.code == 0) {
-            return temp
-        }
-        if (temp == 0) {
-            if (charS1 < charS2) {
-                temp = -1
-            } else if (charS1 > charS2) {
-                temp = 1
+            // Compare numeric values
+            val n1 = BigInteger(num1Str)
+            val n2 = BigInteger(num2Str)
+            val cmp = n1.compareTo(n2)
+            if (cmp != 0) return cmp
+
+            // If numeric values are equal, the one with more leading zeros comes first (shorter string first)
+            if (num1Str.length != num2Str.length) {
+                return num2Str.length - num1Str.length
             }
+        } else {
+            val cmp = c1.lowercaseChar().compareTo(c2.lowercaseChar())
+            if (cmp != 0) return cmp
+            i++
+            j++
         }
-        strIndex1++
-        strIndex2++
     }
+
+    return s1.length - s2.length
 }
 
 fun naturalCompareAscending(o1: Item, o2: Item): Int {
-    val s1 = o1.name
-    val s2 = o2.name
-
-    var strIndex1 = 0
-    var strIndex2 = 0
-
-    var numZeroS1: Int
-    var numZeroS2: Int
-
-    var charS1: Char
-    var charS2: Char
-
-    while (true) {
-        // Only count the number of zeroes leading the last number compared
-        numZeroS2 = 0
-        numZeroS1 = 0
-
-        try {
-            charS1 = charAt(s1, strIndex1)
-            charS2 = charAt(s2, strIndex2)
-        } catch (exp: StringIndexOutOfBoundsException) {
-            break
-        }
-
-        // skip over leading spaces or zeros
-        while (Character.isSpaceChar(charS1) || charS1 == '0') {
-            if (charS1 == '0') {
-                numZeroS1++
-            } else {
-                // Only count consecutive zeroes
-                numZeroS1 = 0
-            }
-            try {
-                charS1 = charAt(s1, ++strIndex1)
-            } catch (exp: StringIndexOutOfBoundsException) {
-                break
-            }
-        }
-        while (Character.isSpaceChar(charS2) || charS2 == '0') {
-            if (charS2 == '0') {
-                numZeroS2++
-            } else {
-                // Only count consecutive zeroes
-                numZeroS2 = 0
-            }
-            try {
-                charS2 = charAt(s2, ++strIndex2)
-            } catch (exp: StringIndexOutOfBoundsException) {
-                break
-            }
-        }
-
-        // Process run of digits
-        if (Character.isDigit(charS1) && Character.isDigit(charS2)) {
-            val temp = compareRight(s1.substring(strIndex1), s2.substring(strIndex2))
-            if (temp != 0) {
-                return temp
-            }
-        }
-        if (charS1.code == 0 && charS2.code == 0) {
-            return numZeroS1 - numZeroS2
-        }
-        if (charS1 < charS2) {
-            return -1
-        }
-        if (charS1 > charS2) {
-            return +1
-        }
-        ++strIndex1
-        ++strIndex2
-    }
-    return 0
-}
-
-
-fun compareLeft(str1: String, str2: String): Int {
-    val s1 = "$str1."
-    val s2 = "$str2."
-
-    var temp = 0
-    var strIndex1 = 0
-    var strIndex2 = 0
-
-    while (true) {
-        val charS1 = charAt(s1, strIndex1)
-        val charS2 = charAt(s2, strIndex2)
-
-        if (!Character.isDigit(charS1) && !Character.isDigit(charS2)) {
-            return temp
-        }
-        if (!Character.isDigit(charS1)) {
-            return 1
-        }
-        if (!Character.isDigit(charS2)) {
-            return -1
-        }
-        if (charS1.code == 0 && charS2.code == 0) {
-            return temp
-        }
-        if (temp == 0) {
-            if (charS1 < charS2) {
-                temp = 1
-            } else if (charS1 > charS2) {
-                temp = -1
-            }
-        }
-        strIndex1++
-        strIndex2++
-    }
+    return compareNatural(o1.name, o2.name)
 }
 
 fun naturalCompareDescending(o1: Item, o2: Item): Int {
-    val s1 = o1.name
-    val s2 = o2.name
-
-    var strIndex1 = 0
-    var strIndex2 = 0
-
-    var numZeroS1: Int
-    var numZeroS2: Int
-
-    var charS1: Char
-    var charS2: Char
-
-    while (true) {
-        // Only count the number of zeroes leading the last number compared
-        numZeroS1 = 0
-        numZeroS2 = 0
-
-        try {
-            charS1 = charAt(s1, strIndex1)
-            charS2 = charAt(s2, strIndex2)
-        } catch (exp: StringIndexOutOfBoundsException) {
-            break
-        }
-
-        // skip over leading spaces or zeros
-        while (Character.isSpaceChar(charS1) || charS1 == '0') {
-            if (charS1 == '0') {
-                numZeroS1++
-            } else {
-                // Only count consecutive zeroes
-                numZeroS1 = 0
-            }
-            try {
-                charS1 = charAt(s1, ++strIndex1)
-            } catch (exp: StringIndexOutOfBoundsException) {
-                break
-            }
-        }
-        while (Character.isSpaceChar(charS2) || charS2 == '0') {
-            if (charS2 == '0') {
-                numZeroS2++
-            } else {
-                // Only count consecutive zeroes
-                numZeroS2 = 0
-            }
-            try {
-                charS2 = charAt(s2, ++strIndex2)
-            } catch (exp: StringIndexOutOfBoundsException) {
-                break
-            }
-        }
-
-        // Process run of digits
-        if (Character.isDigit(charS1) && Character.isDigit(charS2)) {
-            val temp = compareLeft(s1.substring(strIndex1), s2.substring(strIndex2))
-            if (temp != 0) {
-                return temp
-            }
-        }
-        if (charS1.code == 0 && charS2.code == 0) {
-            return numZeroS1 - numZeroS2
-        }
-        if (charS1 < charS2) {
-            return +1
-        }
-        if (charS1 > charS2) {
-            return -1
-        }
-        ++strIndex1
-        ++strIndex2
-    }
-    return 0
-}
-
-
-fun charAt(s: String, i: Int): Char {
-    return if (i >= s.length) throw StringIndexOutOfBoundsException() else s[i]
+    return -compareNatural(o1.name, o2.name)
 }
