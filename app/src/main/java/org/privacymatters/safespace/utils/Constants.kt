@@ -64,7 +64,8 @@ class Constants {
             "psd",
             "raw",
             "bmp",
-            "heif"
+            "heif",
+            "heic"
         )
 
         val AUDIO_EXTENSIONS = arrayOf(

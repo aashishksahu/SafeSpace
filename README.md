@@ -122,6 +122,9 @@ and I would be very happy if you choose to contribute. Besides that this app doe
 permissions and does not use any google play services or firebase or 3rd-party analytics and
 telemetry services. Again don't trust me, just check the code :)
 
+#### A note about rooted devices
+On rooted devices, your root management app like magisk may request permission while the app checks for root access. However, the app does not require or use root privileges.
+
 ## Contact Me
 
 frm.backtrack881@passinbox.com
